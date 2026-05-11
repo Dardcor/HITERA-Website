@@ -1,32 +1,96 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Mail, ArrowLeft } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { useToast } from '@/components/ui/Toast';
 
 export default function ForgotPasswordPage() {
+    const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSent, setIsSent] = useState(false);
+    const supabase = createClient();
+    const { success, error: toastError } = useToast();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email.trim()) return;
+
+        setIsLoading(true);
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/login`,
+            });
+            if (error) throw error;
+            success('Link reset password telah dikirim ke email Anda.');
+            setIsSent(true);
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Gagal mengirim email reset password.';
+            toastError(message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
-        <div className="auth-wrapper animate-fade-in">
-            <div className="glass-panel auth-container">
-                <h1 className="page-title" style={{ fontSize: '32px', textAlign: 'center', marginBottom: '8px', background: 'none', WebkitTextFillColor: 'initial', color: '#5b21b6' }}>HITERA</h1>
-                <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '40px', lineHeight: '1.6' }}>Masukkan email Vault Anda di bawah untuk menerima protokol persetujuan reset sandi enkripsi.</p>
-
-                <form style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                    <div>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                            <Mail size={16} /> Alamat Email Valid
-                        </label>
-                        <input type="email" placeholder="Ketik email terdaftar..." className="styled-input" required />
-                    </div>
-
-                    <Link href="/login" className="styled-button" style={{ marginTop: '12px' }}>
-                        Kirim Sinyal Pemulihan <ArrowRight size={20} />
-                    </Link>
-                </form>
-
-                <div style={{ textAlign: 'center', marginTop: '48px' }}>
-                    <Link href="/login" style={{ color: 'var(--text-secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '14px', opacity: 0.8, fontWeight: '500' }}>
-                        <ArrowLeft size={16} /> Batal & Kembali Bersiap
-                    </Link>
+        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4">
+            <Card className="w-full max-w-md p-8">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-[var(--accent-blue)] mb-2 tracking-tight">HITERA</h1>
+                    <p className="text-[var(--text-secondary)]">
+                        Masukkan email Anda untuk menerima link reset password.
+                    </p>
                 </div>
-            </div>
+
+                {isSent ? (
+                    <div className="text-center space-y-6">
+                        <div className="w-16 h-16 mx-auto bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-full flex items-center justify-center">
+                            <Mail size={32} />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Email Terkirim</h3>
+                            <p className="text-sm text-[var(--text-secondary)]">
+                                Cek inbox email <span className="font-bold text-[var(--accent-blue)]">{email}</span> untuk link reset password.
+                            </p>
+                        </div>
+                        <Link href="/login">
+                            <Button variant="secondary" className="w-full py-3 flex items-center justify-center gap-2">
+                                <ArrowLeft size={16} /> Kembali ke Login
+                            </Button>
+                        </Link>
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <Input
+                            label="Alamat Email"
+                            type="email"
+                            placeholder="nama@email.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+
+                        <Button type="submit" className="w-full py-3 flex items-center justify-center gap-2" isLoading={isLoading}>
+                            Kirim Link Reset <ArrowRight size={18} />
+                        </Button>
+                    </form>
+                )}
+
+                {!isSent && (
+                    <p className="text-center text-sm text-[var(--text-secondary)] mt-8">
+                        <Link
+                            href="/login"
+                            className="text-[var(--text-muted)] hover:text-[var(--accent-blue)] transition-colors inline-flex items-center gap-2"
+                        >
+                            <ArrowLeft size={14} /> Kembali ke Login
+                        </Link>
+                    </p>
+                )}
+            </Card>
         </div>
     );
 }

@@ -55,7 +55,7 @@ export default function ProfilView() {
         if (error) {
             setMessage({ type: 'error', text: 'Gagal memperbarui profil: ' + error.message });
         } else {
-            setMessage({ type: 'success', text: 'Profil berhasil diperbarui!' });
+            setMessage({ type: 'success', text: 'Profil Berhasil Disinkronisasi.' });
         }
         setSaving(false);
     };
@@ -63,16 +63,16 @@ export default function ProfilView() {
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
-            return setMessage({ type: 'error', text: 'Konfirmasi kata sandi tidak cocok.' });
+            return setMessage({ type: 'error', text: 'Konfirmasi kata sandi tidak sesuai.' });
         }
 
         setSaving(true);
         const { error } = await supabase.auth.updateUser({ password: newPassword });
 
         if (error) {
-            setMessage({ type: 'error', text: 'Gagal ganti sandi: ' + error.message });
+            setMessage({ type: 'error', text: 'Gagal memperbarui kata sandi: ' + error.message });
         } else {
-            setMessage({ type: 'success', text: 'Kata sandi berhasil diperbarui!' });
+            setMessage({ type: 'success', text: 'Kata sandi berhasil diterapkan.' });
             setNewPassword('');
             setConfirmPassword('');
         }
@@ -82,102 +82,109 @@ export default function ProfilView() {
     if (loading) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}>
-                <Loader2 size={40} color="#8b5cf6" className="animate-spin" />
+                <Loader2 size={40} color="var(--accent-color)" className="animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-            <header className="page-header">
-                <div className="page-header-icon">
-                    <UserCircle size={32} />
+        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
+            <header className="page-header" style={{ marginBottom: '24px' }}>
+                <div className="page-header-icon" style={{ padding: '20px', borderRadius: '24px' }}>
+                    <UserCircle size={36} color="var(--text-primary)" />
                 </div>
                 <div>
-                    <h1 className="page-title">Identitas Vault</h1>
-                    <p className="page-subtitle">Kelola informasi publik dan enkripsi keamanan akun Anda.</p>
+                    <h1 className="page-title">Matriks <span style={{ color: 'var(--text-primary)' }}>Identitas</span></h1>
+                    <p className="page-subtitle">Atur visibilitas publik dan perkuat protokol akun Anda.</p>
                 </div>
             </header>
 
             {message.text && (
-                <div style={{
-                    padding: '16px 24px',
-                    borderRadius: '12px',
-                    background: message.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                    border: `1px solid ${message.type === 'success' ? 'var(--success)' : 'var(--danger)'}`,
+                <div className="animate-fade-in-delay-1" style={{
+                    padding: '24px',
+                    borderRadius: '16px',
+                    background: message.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                    border: `1px solid ${message.type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(244, 63, 94, 0.3)'}`,
                     color: message.type === 'success' ? 'var(--success)' : 'var(--danger)',
-                    fontWeight: '500'
+                    fontWeight: '600',
+                    fontSize: '15px',
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    boxShadow: message.type === 'success' ? '0 0 40px rgba(16, 185, 129, 0.1)' : '0 0 40px rgba(244, 63, 94, 0.1)'
                 }}>
-                    {message.text}
+                    <ShieldCheck size={20} /> {message.text}
                 </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '40px' }}>
 
-                {/* Profile Section */}
-                <div className="glass-panel">
-                    <h2 style={{ fontSize: '22px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <User size={24} color="var(--accent-hover)" /> Pengaturan Profil
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--text-primary)' }}>
+                    <h2 style={{ fontSize: '24px', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: '700' }}>
+                        <User size={24} color="var(--text-primary)" /> Konfigurasi Identitas
                     </h2>
-                    <form onSubmit={handleUpdateProfile} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>Username Unik</label>
+                    <form onSubmit={handleUpdateProfile} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+                        <div className="input-group">
                             <input
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="styled-input"
-                                placeholder="@username_anda"
+                                placeholder=" "
                             />
+                            <label>Alias Unik (@)</label>
                         </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>Nama Lengkap</label>
+
+                        <div className="input-group">
                             <input
                                 type="text"
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
                                 className="styled-input"
-                                placeholder="Hitera User"
+                                placeholder=" "
                             />
+                            <label>Nama Lengkap Asli</label>
                         </div>
-                        <button type="submit" disabled={saving} className="styled-button">
-                            {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                            Simpan Profil
+
+                        <button type="submit" disabled={saving} className="styled-button" style={{ marginTop: '16px', background: 'linear-gradient(135deg, #3f3f46, #18181b)' }}>
+                            {saving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
+                            Sinkronisasi Profil
                         </button>
                     </form>
                 </div>
 
-                {/* Password Section */}
-                <div className="glass-panel">
-                    <h2 style={{ fontSize: '22px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <Lock size={24} color="var(--warning)" /> Keamanan Vault
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--danger)' }}>
+                    <h2 style={{ fontSize: '24px', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: '700' }}>
+                        <Lock size={24} color="var(--danger)" /> Pembaruan Sandi
                     </h2>
-                    <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>Kata Sandi Baru</label>
+                    <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+                        <div className="input-group">
                             <input
                                 type="password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 className="styled-input"
-                                placeholder="••••••••"
+                                placeholder=" "
                                 required
                             />
+                            <label>Kata Sandi Baru</label>
                         </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>Konfirmasi Sandi Baru</label>
+
+                        <div className="input-group">
                             <input
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 className="styled-input"
-                                placeholder="••••••••"
+                                placeholder=" "
                                 required
                             />
+                            <label>Konfirmasi Kata Sandi Baru</label>
                         </div>
-                        <button type="submit" disabled={saving} className="styled-button" style={{ background: 'linear-gradient(135deg, var(--warning), #fbbf24)' }}>
-                            {saving ? <Loader2 size={18} className="animate-spin" /> : <ShieldCheck size={18} />}
-                            Ubah Kata Sandi
+
+                        <button type="submit" disabled={saving} className="styled-button" style={{ marginTop: '16px', background: 'linear-gradient(135deg, var(--danger), #be123c)' }}>
+                            {saving ? <Loader2 size={20} className="animate-spin" /> : <ShieldCheck size={20} />}
+                            Terapkan Sandi Baru
                         </button>
                     </form>
                 </div>

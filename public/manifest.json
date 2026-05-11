@@ -1,20 +1,19 @@
 {
-    "name": "HITERA - Personal Ecosystem",
+    "name": "HITERA - Personal Life Management",
     "short_name": "HITERA",
-    "description": "Premium Productivity Platform for Finance, Health, and Journaling",
+    "description": "Manage your life with precision.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#0a0a0f",
-    "theme_color": "#6d28d9",
+    "theme_color": "#00c2ff",
     "icons": [
         {
-            "src": "/hitera.png",
+            "src": "/icon-192.png",
             "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any maskable"
+            "type": "image/png"
         },
         {
-            "src": "/hitera.png",
+            "src": "/icon-512.png",
             "sizes": "512x512",
             "type": "image/png"
         }

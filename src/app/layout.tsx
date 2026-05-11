@@ -1,30 +1,22 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "../css/globals.css";
-import SplashScreen from "../components/SplashScreen";
+import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ToastProvider } from "@/components/ui/Toast";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "HITERA - Hidup Teratur",
-  description: "Platform produktivitas lengkap untuk pelacakan keuangan, kesehatan, dan keseharian harian",
-  manifest: "/manifest.json"
+  title: "HITERA - Personal Life Management",
+  description: "Manajemen keuangan, kesehatan, dan tugas dalam satu aplikasi.",
+  manifest: "/manifest.json",
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   themeColor: "#0a0a0f",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -33,12 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SplashScreen />
-        {children}
+    <html lang="id">
+      <body className={`${inter.className} bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased`}>
+        <ToastProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ToastProvider>
       </body>
     </html>
   );

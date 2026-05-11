@@ -1,37 +1,36 @@
-"use client";
+'use client';
 
-import Link from 'next/link';
-import { ArrowRight, Lock, Mail, User, ArrowLeft, Loader2, CheckCircle, Eye, EyeOff } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { useToast } from '@/components/ui/Toast';
 
 export default function RegisterPage() {
-    const router = useRouter();
+    const [nama, setNama] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [fullName, setFullName] = useState('');
-    const [loading, setLoading] = useState(true); // Start with loading for session check
-    const [errorMsg, setErrorMsg] = useState('');
-    const [success, setSuccess] = useState(false);
-
-    useEffect(() => {
-        const checkActiveSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                router.push('/dashboard');
-            } else {
-                setLoading(false);
-            }
-        };
-        checkActiveSession();
-    }, [router]);
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const supabase = createClient();
+    const { success, error: toastError } = useToast();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        setErrorMsg('');
+
+        if (password !== confirmPassword) {
+            return toastError('Password tidak cocok.');
+        }
+
+        if (password.length < 8) {
+            return toastError('Password minimal 8 karakter.');
+        }
+
+        setIsLoading(true);
 
         try {
             const { error } = await supabase.auth.signUp({
@@ -39,136 +38,76 @@ export default function RegisterPage() {
                 password,
                 options: {
                     data: {
-                        full_name: fullName,
-                    }
-                }
+                        nama: nama,
+                    },
+                },
             });
 
             if (error) throw error;
 
-            setSuccess(true);
-            setTimeout(() => router.push('/login'), 3000);
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'Gagal mendaftar. Periksa koneksi atau data Anda.';
-            setErrorMsg(message);
+            success('Registrasi berhasil! Silakan cek email ATAU langsung masuk.');
+            router.push('/login');
+        } catch (err: any) {
+            toastError(err.message || 'Gagal registrasi.');
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
+
     return (
-        <div className="auth-wrapper animate-fade-in">
-            <div className="glass-panel auth-container">
-                <h1 className="page-title" style={{ fontSize: '36px', textAlign: 'center', marginBottom: '8px', background: 'none', WebkitTextFillColor: 'initial', color: '#5b21b6' }}>HITERA</h1>
-                <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '48px' }}>Inisialisasi wujud rekam nyata dirimu.</p>
-
-                {success ? (
-                    <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                        <div style={{ color: 'var(--success)', marginBottom: '24px' }}>
-                            <CheckCircle size={64} style={{ margin: '0 auto' }} />
-                        </div>
-                        <h2 style={{ fontSize: '24px', marginBottom: '12px' }}>Pendaftaran Berhasil!</h2>
-                        <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                            Sinyal identitas telah diterima. Silakan cek email Anda untuk konfirmasi atau tunggu pengalihan otomatis ke halaman Login.
-                        </p>
-                    </div>
-                ) : (
-                    <>
-                        {errorMsg && (
-                            <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--danger)', color: 'var(--danger)', padding: '12px', borderRadius: '12px', marginBottom: '24px', fontSize: '14px', textAlign: 'center' }}>
-                                {errorMsg}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                            <div>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                                    <User size={16} /> Nama Identitas
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Username"
-                                    className="styled-input"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                                    <Mail size={16} /> Alamat Email Vault
-                                </label>
-                                <input
-                                    type="email"
-                                    placeholder="nama@email.com"
-                                    className="styled-input"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    autoCapitalize="none"
-                                    required
-                                />
-                            </div>
-
-                            <div style={{ position: 'relative' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                                    <Lock size={16} /> Kata Sandi Akses
-                                </label>
-                                <div style={{ position: 'relative' }}>
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="Minimal keamanan 8 Karakter"
-                                        className="styled-input"
-                                        style={{ paddingRight: '50px' }}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                        minLength={8}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        style={{
-                                            position: 'absolute',
-                                            right: '16px',
-                                            top: '50%',
-                                            transform: 'translateY(-50%)',
-                                            background: 'none',
-                                            border: 'none',
-                                            color: 'var(--text-secondary)',
-                                            cursor: 'pointer',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            padding: '4px',
-                                            transition: 'color 0.2s',
-                                            outline: 'none'
-                                        }}
-                                        onMouseOver={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
-                                        onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
-                                    >
-                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <button type="submit" disabled={loading} className="styled-button" style={{ marginTop: '12px', opacity: loading ? 0.7 : 1 }}>
-                                {loading ? <Loader2 size={20} className="animate-spin" /> : <>Inisialisasi Identitas <ArrowRight size={20} /></>}
-                            </button>
-                        </form>
-                    </>
-                )}
-
-                <p style={{ textAlign: 'center', marginTop: '40px', fontSize: '15px' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Merasa Familiar? </span>
-                    <Link href="/login" style={{ color: 'var(--accent-hover)', textDecoration: 'none', fontWeight: '700' }}>Kembali Masuk.</Link>
-                </p>
-
-                <div style={{ textAlign: 'center', marginTop: '32px' }}>
-                    <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', opacity: 0.8 }}>
-                        <ArrowLeft size={16} /> Back to Home
-                    </Link>
+        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4">
+            <Card className="w-full max-w-md p-8">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-[var(--accent-blue)] mb-2 tracking-tight">Daftar HITERA</h1>
+                    <p className="text-[var(--text-secondary)]">Mulai manajemen hidup yang lebih baik</p>
                 </div>
-            </div>
+
+                <form onSubmit={handleRegister} className="space-y-5">
+                    <Input
+                        label="Nama Lengkap"
+                        type="text"
+                        placeholder="John Doe"
+                        value={nama}
+                        onChange={(e) => setNama(e.target.value)}
+                        required
+                    />
+                    <Input
+                        label="Email"
+                        type="email"
+                        placeholder="nama@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <Input
+                        label="Password (min 8 karakter)"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <Input
+                        label="Konfirmasi Password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                    />
+
+                    <Button type="submit" className="w-full py-3 mt-4" isLoading={isLoading}>
+                        Daftar
+                    </Button>
+                </form>
+
+                <p className="text-center text-sm text-[var(--text-secondary)] mt-8">
+                    Sudah punya akun?{' '}
+                    <Link href="/login" className="text-[var(--accent-blue)] font-semibold hover:underline">
+                        Masuk
+                    </Link>
+                </p>
+            </Card>
         </div>
     );
 }

@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+    /* Sophisticated Dark Mode Palette */
+    --bg-primary: #020204;
+    --bg-secondary: #09090e;
+    --bg-tertiary: #11111a;
+
+    --text-primary: #ffffff;
+    --text-secondary: #8a8a9d;
+    --text-muted: #525266;
+
+    --accent-color: #8b5cf6;
+    /* Vivid Violet */
+    --accent-hover: #b28af8;
+    --accent-cyan: #06b6d4;
+    /* Accent paired for gradients */
+
+    --accent-glow: rgba(139, 92, 246, 0.4);
+    --accent-glow-cyan: rgba(6, 182, 212, 0.3);
+
+    --success: #10b981;
+    --danger: #f43f5e;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+
+    /* Glassmorphism Tokens */
+    --glass-bg: rgba(20, 20, 25, 0.4);
+    --glass-bg-hover: rgba(30, 30, 40, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.15);
+
+    --shadow-color: rgba(0, 0, 0, 0.8);
+    --radius-sm: 12px;
+    --radius-md: 24px;
+    --radius-lg: 32px;
+}

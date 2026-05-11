@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Wallet, TrendingUp, TrendingDown, Trash2, PiggyBank, PlusCircle, Activity } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Trash2, PiggyBank, PlusCircle, Activity, CreditCard, PieChart } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 type Transaction = {
@@ -16,6 +16,7 @@ export default function KeuanganView() {
     const [category, setCategory] = useState('');
     const [type, setType] = useState<'pemasukan' | 'pengeluaran'>('pengeluaran');
     const [loading, setLoading] = useState(true);
+
     const fetchTransactions = useCallback(async () => {
         setLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
@@ -73,157 +74,190 @@ export default function KeuanganView() {
     const totalPengeluaran = transactions.filter(t => t.type === 'pengeluaran').reduce((acc, t) => acc + t.amount, 0);
     const sisaSaldo = totalPemasukan - totalPengeluaran;
 
+    const totalSemua = totalPemasukan + totalPengeluaran;
+    const progressPemasukan = totalSemua === 0 ? 50 : Math.round((totalPemasukan / totalSemua) * 100);
+    const progressPengeluaran = totalSemua === 0 ? 50 : Math.round((totalPengeluaran / totalSemua) * 100);
+
     const formatRupiah = (angka: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
     };
 
     return (
-        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
 
-            <header className="page-header">
-                <div className="page-header-icon">
-                    <Wallet size={32} />
+            <header className="page-header" style={{ marginBottom: '24px' }}>
+                <div className="page-header-icon" style={{ padding: '20px', borderRadius: '24px' }}>
+                    <Wallet size={36} color="var(--accent-color)" />
                 </div>
                 <div>
-                    <h1 className="page-title">Manajemen Keuangan</h1>
-                    <p className="page-subtitle">Pantau arus kas Anda secara akurat menggunakan sistem pencatatan cerdas.</p>
+                    <h1 className="page-title">Finance <span className="gradient-accent">Hub</span></h1>
+                    <p className="page-subtitle">Track precise cash flows and dominate your asset compounding architecture.</p>
                 </div>
             </header>
 
-            {/* Dashboard Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-                <div className="glass-panel" style={{ borderTop: '4px solid var(--accent-color)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Saldo</h3>
-                        <PiggyBank size={20} color="var(--accent-hover)" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+
+
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--accent-color)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                        <div>
+                            <h3 style={{ color: 'var(--text-secondary)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px' }}>Total Net Flow</h3>
+                            <p style={{ fontSize: '42px', fontWeight: '900', fontFamily: 'Outfit, sans-serif', letterSpacing: '-1px' }}>{formatRupiah(sisaSaldo)}</p>
+                        </div>
+                        <div style={{ background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), transparent)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(139,92,246,0.3)' }}>
+                            <PiggyBank size={24} color="var(--accent-hover)" />
+                        </div>
                     </div>
-                    <p style={{ fontSize: '36px', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>{formatRupiah(sisaSaldo)}</p>
+                    <div style={{ width: '100%', height: '6px', background: 'var(--bg-secondary)', borderRadius: '10px', overflow: 'hidden', display: 'flex' }}>
+                        <div style={{ width: `${progressPemasukan}%`, background: 'var(--success)', transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
+                        <div style={{ width: `${progressPengeluaran}%`, background: 'var(--danger)', transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
+                    </div>
                 </div>
 
-                <div className="glass-panel" style={{ borderTop: '4px solid var(--success)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Pemasukan</h3>
-                        <TrendingUp size={20} color="var(--success)" />
+
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--success)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <div>
+                            <h3 style={{ color: 'var(--success)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px', opacity: 0.8 }}>Gross Income</h3>
+                            <p style={{ fontSize: '32px', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>{formatRupiah(totalPemasukan)}</p>
+                        </div>
+                        <div style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), transparent)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(16, 185, 129,0.3)' }}>
+                            <TrendingUp size={24} color="var(--success)" />
+                        </div>
                     </div>
-                    <p style={{ fontSize: '28px', fontWeight: '700', color: 'var(--success)' }}>{formatRupiah(totalPemasukan)}</p>
                 </div>
 
-                <div className="glass-panel" style={{ borderTop: '4px solid var(--danger)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Pengeluaran</h3>
-                        <TrendingDown size={20} color="var(--danger)" />
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--danger)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <div>
+                            <h3 style={{ color: 'var(--danger)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px', opacity: 0.8 }}>Total Expenses</h3>
+                            <p style={{ fontSize: '32px', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>{formatRupiah(totalPengeluaran)}</p>
+                        </div>
+                        <div style={{ background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.15), transparent)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(244, 63, 94,0.3)' }}>
+                            <TrendingDown size={24} color="var(--danger)" />
+                        </div>
                     </div>
-                    <p style={{ fontSize: '28px', fontWeight: '700', color: 'var(--danger)' }}>{formatRupiah(totalPengeluaran)}</p>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 2fr', gap: '32px', alignItems: 'start' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) minmax(400px, 1.2fr)', gap: '40px', alignItems: 'start' }}>
 
-                {/* Form Input */}
                 <div className="glass-panel">
-                    <h2 style={{ fontSize: '22px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <PlusCircle size={24} color="var(--accent-hover)" /> Tambah Transaksi
+                    <h2 style={{ fontSize: '24px', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <CreditCard size={24} color="var(--accent-hover)" /> Record Transaction
                     </h2>
-                    <form onSubmit={handleAdd} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        <div style={{ display: 'flex', gap: '16px' }}>
+                    <form onSubmit={handleAdd} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
                             <div
                                 className={`custom-radio ${type === 'pemasukan' ? 'active' : ''}`}
                                 onClick={() => setType('pemasukan')}
                             >
                                 <TrendingUp size={18} color={type === 'pemasukan' ? 'var(--success)' : 'var(--text-secondary)'} />
-                                Pemasukan
+                                Inflow
                             </div>
                             <div
                                 className={`custom-radio ${type === 'pengeluaran' ? 'active' : ''}`}
                                 onClick={() => setType('pengeluaran')}
                             >
                                 <TrendingDown size={18} color={type === 'pengeluaran' ? 'var(--danger)' : 'var(--text-secondary)'} />
-                                Pengeluaran
+                                Outflow
                             </div>
                         </div>
 
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>Nominal (IDR)</label>
+                        <div className="input-group">
                             <input
                                 type="number"
-                                placeholder="Cth: 50000"
+                                placeholder=" "
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 className="styled-input"
+                                style={{ fontSize: '20px', fontFamily: 'Outfit', fontWeight: '600' }}
                                 required
                             />
+                            <label>Amount (IDR)</label>
                         </div>
 
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', color: 'var(--text-secondary)' }}>Kategori Transaksi</label>
+                        <div className="input-group">
                             <input
                                 type="text"
-                                placeholder="Cth: Makan Malam, Gaji"
+                                placeholder=" "
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                                 className="styled-input"
                                 required
                             />
+                            <label>Category (e.g. Salary, Groceries)</label>
                         </div>
 
-                        <button type="submit" className="styled-button" style={{ marginTop: '8px' }}>
-                            Simpan Transaksi
+                        <button type="submit" className="styled-button" style={{ marginTop: '16px' }}>
+                            <PlusCircle size={20} /> Authorize Ledger
                         </button>
                     </form>
                 </div>
 
-                {/* Transaction History */}
-                <div className="glass-panel">
-                    <h2 style={{ fontSize: '22px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <Activity size={24} color="var(--accent-hover)" /> Riwayat Transaksi
-                    </h2>
+                <div className="glass-panel" style={{ padding: '0', background: 'transparent', boxShadow: 'none', border: 'none' }}>
+                    <div style={{ padding: '0 0 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--glass-border)', marginBottom: '24px' }}>
+                        <h2 style={{ fontSize: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <Activity size={24} color="var(--accent-hover)" /> Activity Ledger
+                        </h2>
+                        {transactions.length > 0 && <span style={{ background: 'rgba(139,92,246,0.1)', padding: '6px 16px', borderRadius: '20px', fontSize: '13px', color: 'var(--accent-hover)', fontWeight: '600' }}>{transactions.length} Records</span>}
+                    </div>
+
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '60px' }}>Loading transaki...</div>
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
+                            <Activity size={32} color="var(--accent-color)" className="animate-pulse" />
+                        </div>
                     ) : transactions.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
-                            <Wallet size={48} style={{ opacity: 0.2, margin: '0 auto 16px' }} />
-                            <p>Belum ada aktivitas transaksi. Jaga finansial Anda!</p>
+                        <div className="glass-panel" style={{ textAlign: 'center', padding: '80px 20px', color: 'var(--text-secondary)' }}>
+                            <PieChart size={64} style={{ opacity: 0.1, margin: '0 auto 24px' }} />
+                            <p style={{ fontSize: '18px', fontWeight: '500' }}>Zero financial records detected.</p>
+                            <p style={{ fontSize: '14px', marginTop: '8px', opacity: 0.7 }}>Initiate your first transaction to calibrate the systems.</p>
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '500px', overflowY: 'auto', paddingRight: '8px' }}>
-                            {transactions.map((tx) => (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '500px', overflowY: 'auto', paddingRight: '8px' }}>
+                            {transactions.map((tx, idx) => (
                                 <div key={tx.id} style={{
                                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                    background: 'rgba(0,0,0,0.3)', padding: '20px 24px', borderRadius: '16px',
+                                    background: 'var(--glass-bg)', padding: '24px 32px', borderRadius: '20px',
+                                    border: '1px solid var(--glass-border)',
                                     borderLeft: `4px solid ${tx.type === 'pemasukan' ? 'var(--success)' : 'var(--danger)'}`,
-                                    transition: 'transform 0.2s, background 0.2s'
-                                }} className="tx-item">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                    transition: 'transform 0.3s, background 0.3s',
+                                    animationDelay: `${idx * 0.05}s`
+                                }} className="animate-fade-in hover:transform hover:translate-y-[-2px] hover:shadow-lg">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                                         <div style={{
-                                            padding: '12px', borderRadius: '12px',
-                                            background: tx.type === 'pemasukan' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                            padding: '14px', borderRadius: '16px',
+                                            background: tx.type === 'pemasukan' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
                                             color: tx.type === 'pemasukan' ? 'var(--success)' : 'var(--danger)'
                                         }}>
-                                            {tx.type === 'pemasukan' ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
+                                            {tx.type === 'pemasukan' ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
                                         </div>
                                         <div>
-                                            <h4 style={{ fontWeight: '600', marginBottom: '4px', fontSize: '16px', letterSpacing: '0.5px' }}>{tx.category}</h4>
-                                            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{tx.date}</p>
+                                            <h4 style={{ fontWeight: '700', marginBottom: '6px', fontSize: '18px', letterSpacing: '0.5px' }}>{tx.category}</h4>
+                                            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'Outfit' }}>{tx.date}</p>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
                                         <span style={{
-                                            fontWeight: '700', fontSize: '18px', fontFamily: 'Outfit',
-                                            color: tx.type === 'pemasukan' ? 'var(--success)' : 'var(--danger)'
+                                            fontWeight: '800', fontSize: '20px', fontFamily: 'Outfit',
+                                            color: tx.type === 'pemasukan' ? 'var(--success)' : 'var(--danger)',
+                                            letterSpacing: '-0.5px'
                                         }}>
                                             {tx.type === 'pemasukan' ? '+' : '-'}{formatRupiah(tx.amount)}
                                         </span>
                                         <button
                                             onClick={() => handleDelete(tx.id)}
                                             style={{
-                                                background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: 'var(--danger)',
-                                                cursor: 'pointer', width: '36px', height: '36px',
-                                                borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                transition: 'all 0.2s'
+                                                background: 'transparent', border: '1px solid rgba(244, 63, 94, 0.2)', color: 'var(--danger)',
+                                                cursor: 'pointer', width: '40px', height: '40px',
+                                                borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                transition: 'all 0.3s'
                                             }}
-                                            title="Hapus Transaksi"
+                                            onMouseOver={e => { e.currentTarget.style.background = 'rgba(244, 63, 94, 0.1)'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+                                            onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.transform = 'scale(1)'; }}
+                                            title="Delete Entry"
                                         >
-                                            <Trash2 size={16} />
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
                                 </div>

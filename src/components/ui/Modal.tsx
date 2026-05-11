@@ -1,0 +1,68 @@
+'use client';
+
+import React, { useEffect } from 'react';
+import { X } from 'lucide-react';
+import { Button } from './Button';
+import { cn } from '@/lib/utils';
+
+interface ModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    children: React.ReactNode;
+    footer?: React.ReactNode;
+    size?: 'sm' | 'md' | 'lg' | 'xl';
+}
+
+export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }: ModalProps) => {
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
+    if (!isOpen) return null;
+
+    const sizes = {
+        sm: 'max-w-sm',
+        md: 'max-w-md',
+        lg: 'max-w-lg',
+        xl: 'max-w-xl',
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+                onClick={onClose}
+            />
+
+            <div className={cn(
+                'relative w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius)] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200',
+                sizes[size]
+            )}>
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
+                    <h3 className="text-lg font-bold text-[var(--text-primary)]">{title}</h3>
+                    <Button variant="ghost" className="p-1 px-2 h-auto" onClick={onClose}>
+                        <X size={18} />
+                    </Button>
+                </div>
+
+                <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">
+                    {children}
+                </div>
+
+                {footer && (
+                    <div className="px-6 py-4 border-t border-[var(--border)] flex justify-end gap-3 bg-[var(--bg-secondary)]/50">
+                        {footer}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};

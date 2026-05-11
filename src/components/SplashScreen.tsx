@@ -5,7 +5,6 @@ export default function SplashScreen() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Sinkronisasi dengan durasi animasi (3 detik total hidup)
         const timer = setTimeout(() => {
             setIsLoading(false);
         }, 3000);
@@ -37,7 +36,6 @@ export default function SplashScreen() {
                 HITERA
             </div>
 
-            {/* Loading Bar Simulator */}
             <div style={{
                 width: '180px', height: '3px', background: 'rgba(139, 92, 246, 0.1)',
                 marginTop: '40px', overflow: 'hidden', position: 'relative', borderRadius: '4px'

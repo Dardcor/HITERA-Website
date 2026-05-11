@@ -1,315 +1,220 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from 'react';
-import KeuanganView from '../../components/Keuangan';
-import KesehatanView from '../../components/Kesehatan';
-import KeseharianView from '../../components/Keseharian';
-import ProfilView from '../../components/Profil';
-import { HeartPulse, BookOpen, Wallet, LogOut, LayoutDashboard, UserCircle, ChevronRight, ChevronLeft, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import { useAuth } from '@/hooks/useAuth';
+import { useKeuangan } from '@/hooks/useKeuangan';
+import { useKesehatan } from '@/hooks/useKesehatan';
+import { useTugas } from '@/hooks/useTugas';
+import { hariIni, formatRupiah, formatTanggalID, cn } from '@/lib/utils';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Wallet, HeartPulse, CheckSquare, Plus, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import Link from 'next/link';
 
-export default function Dashboard() {
-    const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'beranda' | 'keuangan' | 'kesehatan' | 'keseharian' | 'profil'>('beranda');
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-    const [loading, setLoading] = useState(true);
+export default function DashboardPage() {
+    const { user } = useAuth();
+    const tgl = hariIni();
 
-    useEffect(() => {
-        const checkUser = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                router.push('/login');
-            } else {
-                setLoading(false);
-                // Update last active in database (wajib permanen tracking)
-                await supabase
-                    .from('user_persistent_sessions')
-                    .update({ last_active: new Date().toISOString() })
-                    .eq('user_id', session.user.id)
-                    .eq('session_token', session.access_token);
-            }
-        };
+    const { totalPemasukan, totalPengeluaran, saldoBersih, loading: loadK } = useKeuangan(tgl);
+    const { data: kesehatan, loading: loadKes } = useKesehatan(tgl);
+    const { tugas, tugasAktif, tugasSelesai, loading: loadT } = useTugas(tgl);
 
-        checkUser();
-
-        const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
-            if (event === 'SIGNED_OUT') {
-                router.push('/login');
-            }
-        });
-
-        return () => {
-            authListener.subscription.unsubscribe();
-        };
-    }, [router]);
-
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        router.push('/login');
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 11) return 'Selamat Pagi';
+        if (hour < 15) return 'Selamat Siang';
+        if (hour < 18) return 'Selamat Sore';
+        return 'Selamat Malam';
     };
 
-    if (loading) {
-        return (
-            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <Loader2 size={48} color="#8b5cf6" className="animate-spin" style={{ marginBottom: '16px' }} />
-                    <p style={{ color: 'var(--text-secondary)', letterSpacing: '1px' }}>MENYIAPKAN VAULT ANDA...</p>
-                </div>
-            </div>
-        );
-    }
+    const progressTugas = tugas.length > 0 ? Math.round((tugasSelesai.length / tugas.length) * 100) : 0;
 
     return (
-        <div className="app-container" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)' }}>
-            {/* Sidebar Navigation */}
-            <aside
-                className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}
-                style={{
-                    width: isSidebarCollapsed ? '100px' : '300px',
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    background: 'rgba(19, 19, 31, 0.8)',
-                    backdropFilter: 'blur(20px)',
-                    borderRight: '1px solid var(--glass-border)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: '32px 0',
-                    position: 'relative',
-                    zIndex: 100
-                }}
-            >
-                {/* Collapse Toggle Button */}
-                <button
-                    onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                    style={{
-                        position: 'absolute',
-                        right: '-16px',
-                        top: '40px',
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        background: 'var(--accent-color)',
-                        border: 'none',
-                        color: 'white',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                        zIndex: 101,
-                        transition: 'transform 0.3s'
-                    }}
-                >
-                    {isSidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-                </button>
-
-                <div style={{
-                    padding: '0 24px',
-                    marginBottom: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-                    gap: '16px'
-                }}>
-                    <Image
-                        src="/hitera.png"
-                        alt="Logo"
-                        width={42}
-                        height={42}
-                        style={{
-                            borderRadius: '12px',
-                            boxShadow: '0 0 15px rgba(139, 92, 246, 0.4)'
-                        }}
-                    />
-                    {!isSidebarCollapsed && (
-                        <span style={{
-                            fontSize: '22px',
-                            fontWeight: '800',
-                            letterSpacing: '2px',
-                            color: '#8b5cf6',
-                            fontFamily: 'Outfit'
-                        }}>HITERA</span>
-                    )}
+        <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <p className="text-[var(--accent-blue)] font-bold text-sm uppercase tracking-widest mb-1">{formatTanggalID(tgl)}</p>
+                    <h2 className="text-3xl font-bold text-[var(--text-primary)]">
+                        {getGreeting()}, {user?.user_metadata?.nama || user?.email?.split('@')[0]}
+                    </h2>
                 </div>
-
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 16px' }}>
-                    <div
-                        className={`nav-item ${activeTab === 'beranda' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('beranda')}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            padding: '14px 20px',
-                            borderRadius: '12px',
-                            cursor: 'pointer',
-                            color: activeTab === 'beranda' ? 'white' : 'var(--text-secondary)',
-                            background: activeTab === 'beranda' ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
-                            transition: 'all 0.3s',
-                            justifyContent: isSidebarCollapsed ? 'center' : 'flex-start',
-                            position: 'relative',
-                            overflow: 'hidden'
-                        }}
-                    >
-                        <LayoutDashboard size={22} color={activeTab === 'beranda' ? '#8b5cf6' : 'currentColor'} />
-                        {!isSidebarCollapsed && <span style={{ fontWeight: '500', fontSize: '15px' }}>Beranda</span>}
-                        {activeTab === 'beranda' && !isSidebarCollapsed && <div style={{ position: 'absolute', right: '0', width: '4px', height: '20px', background: '#8b5cf6', borderRadius: '4px 0 0 4px' }}></div>}
-                    </div>
-
-                    <div
-                        className={`nav-item ${activeTab === 'keuangan' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('keuangan')}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            padding: '14px 20px',
-                            borderRadius: '12px',
-                            cursor: 'pointer',
-                            color: activeTab === 'keuangan' ? 'white' : 'var(--text-secondary)',
-                            background: activeTab === 'keuangan' ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
-                            transition: 'all 0.3s',
-                            justifyContent: isSidebarCollapsed ? 'center' : 'flex-start'
-                        }}
-                    >
-                        <Wallet size={22} color={activeTab === 'keuangan' ? '#8b5cf6' : 'currentColor'} />
-                        {!isSidebarCollapsed && <span style={{ fontWeight: '500', fontSize: '15px' }}>Keuangan</span>}
-                    </div>
-
-                    <div
-                        className={`nav-item ${activeTab === 'kesehatan' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('kesehatan')}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            padding: '14px 20px',
-                            borderRadius: '12px',
-                            cursor: 'pointer',
-                            color: activeTab === 'kesehatan' ? 'white' : 'var(--text-secondary)',
-                            background: activeTab === 'kesehatan' ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
-                            transition: 'all 0.3s',
-                            justifyContent: isSidebarCollapsed ? 'center' : 'flex-start'
-                        }}
-                    >
-                        <HeartPulse size={22} color={activeTab === 'kesehatan' ? '#10b981' : 'currentColor'} />
-                        {!isSidebarCollapsed && <span style={{ fontWeight: '500', fontSize: '15px' }}>Kesehatan</span>}
-                    </div>
-
-                    <div
-                        className={`nav-item ${activeTab === 'keseharian' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('keseharian')}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            padding: '14px 20px',
-                            borderRadius: '12px',
-                            cursor: 'pointer',
-                            color: activeTab === 'keseharian' ? 'white' : 'var(--text-secondary)',
-                            background: activeTab === 'keseharian' ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
-                            transition: 'all 0.3s',
-                            justifyContent: isSidebarCollapsed ? 'center' : 'flex-start'
-                        }}
-                    >
-                        <BookOpen size={22} color={activeTab === 'keseharian' ? '#3b82f6' : 'currentColor'} />
-                        {!isSidebarCollapsed && <span style={{ fontWeight: '500', fontSize: '15px' }}>Keseharian</span>}
-                    </div>
-
-                    <div style={{ height: '1px', background: 'var(--glass-border)', margin: '16px 20px' }}></div>
-
-                    <div
-                        className={`nav-item ${activeTab === 'profil' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('profil')}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            padding: '14px 20px',
-                            borderRadius: '12px',
-                            cursor: 'pointer',
-                            color: activeTab === 'profil' ? 'white' : 'var(--text-secondary)',
-                            background: activeTab === 'profil' ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
-                            transition: 'all 0.3s',
-                            justifyContent: isSidebarCollapsed ? 'center' : 'flex-start'
-                        }}
-                    >
-                        <UserCircle size={22} />
-                        {!isSidebarCollapsed && <span style={{ fontWeight: '500', fontSize: '15px' }}>Profil Saya</span>}
-                    </div>
-                </nav>
-
-                <div style={{ marginTop: 'auto', padding: '0 16px' }}>
-                    <button
-                        onClick={handleLogout}
-                        style={{
-                            width: '100%',
-                            border: 'none',
-                            outline: 'none',
-                            color: 'var(--danger)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '16px',
-                            padding: '14px 20px',
-                            borderRadius: '12px',
-                            fontWeight: '600',
-                            transition: 'all 0.3s',
-                            background: 'rgba(239, 68, 68, 0.05)',
-                            cursor: 'pointer',
-                            justifyContent: isSidebarCollapsed ? 'center' : 'flex-start'
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.05)'}
-                    >
-                        <LogOut size={22} />
-                        {!isSidebarCollapsed && <span>Keluar</span>}
-                    </button>
+                <div className="flex gap-2">
+                    <Link href="/dashboard/keuangan">
+                        <Button variant="primary" className="flex items-center gap-2">
+                            <Plus size={18} /> Transaksi
+                        </Button>
+                    </Link>
                 </div>
-            </aside>
+            </div>
 
-            {/* Main Content Area */}
-            <main className="main-content" style={{
-                flex: 1,
-                padding: '40px',
-                overflowY: 'auto',
-                height: '100vh',
-                transition: 'all 0.4s'
-            }}>
-                {activeTab === 'beranda' && (
-                    <div className="animate-fade-in">
-                        <header style={{ marginBottom: '48px' }}>
-                            <h1 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '8px' }}>Pusat Kendali <span style={{ color: '#8b5cf6' }}>HITERA</span></h1>
-                            <p style={{ color: 'var(--text-secondary)' }}>Ringkasan aktivitas dan status ekosistem Anda hari ini.</p>
-                        </header>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-                            <div className="glass-panel" style={{ padding: '32px' }} onClick={() => setActiveTab('keuangan')}>
-                                <Wallet size={32} color="#8b5cf6" style={{ marginBottom: '24px' }} />
-                                <h3 style={{ fontSize: '20px', marginBottom: '12px' }}>Ringkasan Keuangan</h3>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>Pantau saldo dan transaksi terakhir Anda.</p>
-                                <button className="styled-button" style={{ width: 'auto', padding: '10px 24px' }}>Buka Keuangan</button>
-                            </div>
-                            <div className="glass-panel" style={{ padding: '32px' }} onClick={() => setActiveTab('kesehatan')}>
-                                <HeartPulse size={32} color="#10b981" style={{ marginBottom: '24px' }} />
-                                <h3 style={{ fontSize: '20px', marginBottom: '12px' }}>Status Kesehatan</h3>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>Cek hidrasi dan waktu istirahat Anda.</p>
-                                <button className="styled-button" style={{ width: 'auto', padding: '10px 24px' }}>Buka Kesehatan</button>
-                            </div>
-                            <div className="glass-panel" style={{ padding: '32px' }} onClick={() => setActiveTab('keseharian')}>
-                                <BookOpen size={32} color="#3b82f6" style={{ marginBottom: '24px' }} />
-                                <h3 style={{ fontSize: '20px', marginBottom: '12px' }}>Agenda & Jurnal</h3>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '24px' }}>Tinjau tugas yang harus diselesaikan.</p>
-                                <button className="styled-button" style={{ width: 'auto', padding: '10px 24px' }}>Buka Keseharian</button>
-                            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="relative overflow-hidden group">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-3 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-xl">
+                            <Wallet size={24} />
+                        </div>
+                        <Link href="/dashboard/keuangan" className="text-[var(--text-muted)] hover:text-[var(--accent-blue)] transition-colors">
+                            <ArrowUpRight size={20} />
+                        </Link>
+                    </div>
+                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1">Saldo Bersih Hari Ini</p>
+                    <h3 className={cn(
+                        "text-2xl font-bold mb-4",
+                        saldoBersih >= 0 ? "text-[var(--accent-green)]" : "text-[var(--accent-red)]"
+                    )}>
+                        {loadK ? "..." : formatRupiah(saldoBersih)}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2 pt-4 border-t border-[var(--border)]">
+                        <div>
+                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Pemasukan</p>
+                            <p className="text-sm font-bold text-[var(--accent-green)]">+{loadK ? "..." : formatRupiah(totalPemasukan)}</p>
+                        </div>
+                        <div>
+                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Pengeluaran</p>
+                            <p className="text-sm font-bold text-[var(--accent-red)]">-{loadK ? "..." : formatRupiah(totalPengeluaran)}</p>
                         </div>
                     </div>
-                )}
-                {activeTab === 'keuangan' && <KeuanganView />}
-                {activeTab === 'kesehatan' && <KesehatanView />}
-                {activeTab === 'keseharian' && <KeseharianView />}
-                {activeTab === 'profil' && <ProfilView />}
-            </main>
+                </Card>
+
+                <Card className="relative overflow-hidden group">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-3 bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-xl">
+                            <HeartPulse size={24} />
+                        </div>
+                        <Link href="/dashboard/kesehatan" className="text-[var(--text-muted)] hover:text-[var(--accent-green)] transition-colors">
+                            <ArrowUpRight size={20} />
+                        </Link>
+                    </div>
+                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1">Kesehatan Hari Ini</p>
+                    {loadKes ? (
+                        <h3 className="text-2xl font-bold mb-4 text-[var(--text-primary)]">...</h3>
+                    ) : kesehatan ? (
+                        <div className="space-y-4">
+                            <h3 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">{kesehatan.berat_badan} kg</h3>
+                            <div className="flex gap-4 text-xs font-medium text-[var(--text-secondary)]">
+                                <span className="flex items-center gap-1">💧 {kesehatan.air_minum} gelas</span>
+                                <span className="flex items-center gap-1">😴 {kesehatan.jam_tidur} jam</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="py-2">
+                            <p className="text-sm text-[var(--text-secondary)] mb-4 italic">Data belum diisi</p>
+                            <Link href="/dashboard/kesehatan">
+                                <Button variant="secondary" className="w-full py-2 text-xs">Isi Data</Button>
+                            </Link>
+                        </div>
+                    )}
+                </Card>
+
+                <Card className="relative overflow-hidden group">
+                    <div className="flex justify-between items-start mb-6">
+                        <div className="p-3 bg-[var(--accent-red-dim)] text-[var(--accent-red)] rounded-xl">
+                            <CheckSquare size={24} />
+                        </div>
+                        <Link href="/dashboard/tugas" className="text-[var(--text-muted)] hover:text-[var(--accent-red)] transition-colors">
+                            <ArrowUpRight size={20} />
+                        </Link>
+                    </div>
+                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1">Tugas Hari Ini</p>
+                    <div className="mb-4">
+                        <h3 className="text-2xl font-bold text-[var(--text-primary)]">
+                            {loadT ? "..." : `${tugasSelesai.length}/${tugas.length}`} Tugas
+                        </h3>
+                        <p className="text-[10px] text-[var(--text-muted)] uppercase mt-1">Selesai {progressTugas}%</p>
+                    </div>
+                    <div className="w-full h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-[var(--accent-red)] transition-all duration-1000 ease-out"
+                            style={{ width: `${progressTugas}%` }}
+                        />
+                    </div>
+                    <div className="mt-4">
+                        <p className="text-xs text-[var(--text-secondary)]">
+                            {tugasAktif.length > 0 ? `${tugasAktif.length} tugas masih aktif` : "Semua tugas selesai! 🙌"}
+                        </p>
+                    </div>
+                </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="p-0 overflow-hidden border-[var(--border)]">
+                    <div className="px-6 py-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-secondary)]/30">
+                        <h4 className="font-bold text-sm">Tugas Utama</h4>
+                        <Link href="/dashboard/tugas" className="text-xs text-[var(--accent-blue)] hover:underline">Lihat Semua</Link>
+                    </div>
+                    <div className="divide-y divide-[var(--border)]">
+                        {tugasAktif.length === 0 ? (
+                            <div className="p-10 text-center text-[var(--text-muted)] text-sm italic">
+                                Tidak ada tugas aktif hari ini
+                            </div>
+                        ) : (
+                            tugasAktif.slice(0, 5).map((t) => (
+                                <div key={t.id} className="px-6 py-4 flex items-center gap-3 hover:bg-[var(--bg-card-hover)] transition-colors">
+                                    <div className="w-4 h-4 rounded border border-[var(--border)]" />
+                                    <span className="text-sm font-medium text-[var(--text-primary)]">{t.judul}</span>
+                                    <span className={cn(
+                                        "ml-auto text-[10px] px-2 py-0.5 rounded-full font-bold uppercase",
+                                        t.prioritas === 'tinggi' ? "bg-[var(--accent-red-dim)] text-[var(--accent-red)]" :
+                                            t.prioritas === 'sedang' ? "bg-[var(--accent-yellow-dim)] text-[var(--accent-yellow)]" :
+                                                "bg-[var(--accent-blue-dim)] text-[var(--accent-blue)]"
+                                    )}>
+                                        {t.prioritas}
+                                    </span>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </Card>
+
+                <Card className="p-0 overflow-hidden border-[var(--border)]">
+                    <div className="px-6 py-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-secondary)]/30">
+                        <h4 className="font-bold text-sm">Aktivitas Terbaru</h4>
+                        <Link href="/dashboard/keuangan" className="text-xs text-[var(--accent-blue)] hover:underline">Lihat Detail</Link>
+                    </div>
+                    <div className="divide-y divide-[var(--border)]">
+                        {totalPemasukan === 0 && totalPengeluaran === 0 ? (
+                            <div className="p-10 text-center text-[var(--text-muted)] text-sm italic">
+                                Belum ada aktivitas hari ini
+                            </div>
+                        ) : (
+                            <div className="p-6 space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-[var(--text-muted)] mb-1">Perbandingan Arus Kas</p>
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-3 h-3 rounded-full bg-[var(--accent-green)]" />
+                                                <span className="text-xs font-bold text-[var(--accent-green)]">{formatRupiah(totalPemasukan)}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-3 h-3 rounded-full bg-[var(--accent-red)]" />
+                                                <span className="text-xs font-bold text-[var(--accent-red)]">{formatRupiah(totalPengeluaran)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-[10px] text-[var(--text-muted)] uppercase font-bold">
+                                        <span>Distribusi</span>
+                                        <span>{Math.round((totalPengeluaran / (totalPemasukan || 1)) * 100)}% Rasio</span>
+                                    </div>
+                                    <div className="w-full h-3 bg-[var(--bg-secondary)] rounded-full overflow-hidden flex">
+                                        <div
+                                            className="h-full bg-[var(--accent-green)]"
+                                            style={{ width: `${(totalPemasukan / (totalPemasukan + totalPengeluaran || 1)) * 100}%` }}
+                                        />
+                                        <div
+                                            className="h-full bg-[var(--accent-red)]"
+                                            style={{ width: `${(totalPengeluaran / (totalPemasukan + totalPengeluaran || 1)) * 100}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                        }
+                    </div>
+                </Card>
+            </div>
         </div>
     );
 }

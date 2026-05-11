@@ -55,93 +55,89 @@ export default function KesehatanView() {
     };
 
     return (
-        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+        <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
 
-            <header className="page-header">
-                <div className="page-header-icon">
-                    <HeartPulse size={32} />
+            <header className="page-header" style={{ marginBottom: '24px' }}>
+                <div className="page-header-icon" style={{ padding: '20px', borderRadius: '24px' }}>
+                    <HeartPulse size={36} color="var(--success)" />
                 </div>
                 <div>
-                    <h1 className="page-title">Manajemen Kesehatan</h1>
-                    <p className="page-subtitle">Pencatatan metrik kesehatan harian dan progres kebugaran tubuh Anda.</p>
+                    <h1 className="page-title">Metrik <span style={{ color: 'var(--success)' }}>Kesehatan</span></h1>
+                    <p className="page-subtitle">Pantau kondisi fisik dan jaga fondasi biologis Anda.</p>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={saving}
                     className="styled-button"
-                    style={{ width: 'auto', padding: '12px 24px', display: 'flex', gap: '10px', marginLeft: 'auto' }}
+                    style={{ width: 'auto', padding: '16px 32px', display: 'flex', gap: '12px', marginLeft: 'auto', background: 'linear-gradient(135deg, var(--success), #059669)' }}
                 >
-                    {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                    {saving ? 'Sinkronisasi...' : 'Simpan Progres'}
+                    {saving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
+                    {saving ? 'Menyimpan...' : 'Simpan Metrik'}
                 </button>
             </header>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px' }}>
 
-                {/* Water Tracker */}
-                <div className="glass-panel" style={{ borderTop: '4px solid var(--info)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                        <h2 style={{ fontSize: '22px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <Droplet size={24} color="var(--info)" /> Asupan Air
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--info)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                        <h2 style={{ fontSize: '24px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <Droplet size={24} color="var(--info)" /> Hidrasi
                         </h2>
-                        <span style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--info)', padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' }}>Target: 8 Gelas</span>
+                        <span style={{ background: 'rgba(59, 130, 246, 0.15)', color: 'var(--info)', padding: '8px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(59,130,246,0.3)' }}>Target: 8 Gelas</span>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '24px', justifyContent: 'center', margin: '32px 0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '32px', justifyContent: 'center', margin: '40px 0' }}>
                         <button
                             onClick={() => setWater(Math.max(0, water - 1))}
-                            className="icon-btn" style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '16px', borderRadius: '16px', color: 'var(--info)' }}>
+                            className="icon-btn hover:scale-110" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05))', padding: '20px', borderRadius: '20px', color: 'var(--info)', border: 'none', cursor: 'pointer', transition: 'transform 0.2s', borderTop: '1px solid rgba(59,130,246,0.4)' }}>
                             <Minus size={24} />
                         </button>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <span style={{ fontSize: '48px', fontWeight: '800', fontFamily: 'Outfit, sans-serif', color: 'var(--info)' }}>{water}</span>
-                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', letterSpacing: '1px' }}>GELAS</span>
+                            <span style={{ fontSize: '64px', fontWeight: '900', fontFamily: 'Outfit, sans-serif', color: 'var(--info)', lineHeight: '1.1' }}>{water}</span>
+                            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', letterSpacing: '2px', fontWeight: '600' }}>GELAS</span>
                         </div>
                         <button
                             onClick={() => setWater(Math.min(20, water + 1))}
-                            className="icon-btn" style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '16px', borderRadius: '16px', color: 'var(--info)' }}>
+                            className="icon-btn hover:scale-110" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05))', padding: '20px', borderRadius: '20px', color: 'var(--info)', border: 'none', cursor: 'pointer', transition: 'transform 0.2s', borderTop: '1px solid rgba(59,130,246,0.4)' }}>
                             <Plus size={24} />
                         </button>
                     </div>
 
-                    {/* Progress bar */}
                     {loading ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}><Loader2 size={20} className="animate-spin" /></div>
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}><Loader2 size={24} color="var(--info)" className="animate-spin" /></div>
                     ) : (
-                        <div style={{ width: '100%', height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)' }}>
-                            <div style={{ height: '100%', width: `${Math.min(100, (water / 8) * 100)}%`, background: 'var(--info)', transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)', borderRadius: '10px' }}></div>
+                        <div style={{ width: '100%', height: '16px', background: 'var(--bg-secondary)', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ height: '100%', width: `${Math.min(100, (water / 8) * 100)}%`, background: 'var(--info)', transition: 'width 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}></div>
                         </div>
                     )}
                 </div>
 
-                {/* Sleep Tracker */}
-                <div className="glass-panel" style={{ borderTop: '4px solid var(--accent-hover)' }}>
-                    <h2 style={{ fontSize: '22px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                        <Moon size={24} color="var(--accent-hover)" /> Jam Tidur
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--accent-hover)' }}>
+                    <h2 style={{ fontSize: '24px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                        <Moon size={24} color="var(--accent-hover)" /> Pemulihan Tidur
                     </h2>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '32px' }}>Catat total durasi istirahat Anda semalam</p>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '40px' }}>Catat total jam kondisi istirahat fisik Anda.</p>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', justifyContent: 'center', margin: '40px 0' }}>
                         <input
                             type="number"
                             value={sleep}
                             onChange={(e) => setSleep(e.target.value)}
                             className="styled-input"
                             placeholder="0"
-                            style={{ width: '140px', fontSize: '40px', textAlign: 'center', padding: '24px 16px', fontWeight: '700', fontFamily: 'Outfit' }}
+                            style={{ width: '160px', fontSize: '48px', height: '100px', textAlign: 'center', fontWeight: '800', fontFamily: 'Outfit', borderRadius: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}
                         />
-                        <span style={{ fontSize: '20px', color: 'var(--text-secondary)', fontWeight: '500' }}>Jam</span>
+                        <span style={{ fontSize: '24px', color: 'var(--text-secondary)', fontWeight: '600' }}>Jam</span>
                     </div>
                 </div>
 
-                {/* Weight Tracker */}
-                <div className="glass-panel" style={{ borderTop: '4px solid var(--warning)' }}>
-                    <h2 style={{ fontSize: '22px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <div className="glass-panel" style={{ borderTop: '2px solid var(--warning)' }}>
+                    <h2 style={{ fontSize: '24px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                         <Scale size={24} color="var(--warning)" /> Berat Badan
                     </h2>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '32px' }}>Pantau perkembangan massa fisik tubuh Anda</p>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '40px' }}>Pantau fluktuasi struktural tubuh Anda.</p>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', justifyContent: 'center', margin: '40px 0' }}>
                         <input
                             type="number"
                             value={weight}
@@ -149,9 +145,9 @@ export default function KesehatanView() {
                             className="styled-input"
                             placeholder="0.0"
                             step="0.1"
-                            style={{ width: '160px', fontSize: '40px', textAlign: 'center', padding: '24px 16px', fontWeight: '700', fontFamily: 'Outfit' }}
+                            style={{ width: '180px', fontSize: '48px', height: '100px', textAlign: 'center', fontWeight: '800', fontFamily: 'Outfit', borderRadius: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}
                         />
-                        <span style={{ fontSize: '20px', color: 'var(--text-secondary)', fontWeight: '500' }}>Kg</span>
+                        <span style={{ fontSize: '24px', color: 'var(--text-secondary)', fontWeight: '600' }}>Kg</span>
                     </div>
                 </div>
             </div>

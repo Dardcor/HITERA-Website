@@ -1,0 +1,68 @@
+'use client';
+
+import { Tugas } from '@/types';
+import { cn } from '@/lib/utils';
+import { Check, Trash2, Clock } from 'lucide-react';
+
+interface Props {
+    tugas: Tugas;
+    onToggle: (id: string, status: string) => void;
+    onDelete: (id: string) => void;
+}
+
+export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
+    const isSelesai = tugas.status === 'selesai';
+
+    const prioritasColor = {
+        tinggi: "bg-[var(--accent-red)]",
+        sedang: "bg-[var(--accent-yellow)]",
+        rendah: "bg-[var(--accent-blue)]",
+    };
+
+    return (
+        <div className={cn(
+            "group flex items-center gap-4 p-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl transition-all",
+            isSelesai ? "opacity-60" : "hover:border-[var(--border-focus)]"
+        )}>
+            <button
+                onClick={() => onToggle(tugas.id, tugas.status)}
+                className={cn(
+                    "w-6 h-6 rounded-md border flex items-center justify-center transition-all",
+                    isSelesai
+                        ? "bg-[var(--accent-green)] border-[var(--accent-green)] text-[#0a0a0f]"
+                        : "border-[var(--border)] hover:border-[var(--accent-blue)] text-transparent"
+                )}
+            >
+                <Check size={14} strokeWidth={3} />
+            </button>
+
+            <div className="flex-1 min-w-0">
+                <h4 className={cn(
+                    "text-sm font-bold truncate",
+                    isSelesai && "line-through text-[var(--text-muted)]"
+                )}>
+                    {tugas.judul}
+                </h4>
+                {tugas.deskripsi && (
+                    <p className="text-[10px] text-[var(--text-muted)] line-clamp-1 truncate">
+                        {tugas.deskripsi}
+                    </p>
+                )}
+            </div>
+
+            <div className="flex items-center gap-3">
+                <div className={cn(
+                    "w-2 h-2 rounded-full",
+                    prioritasColor[tugas.prioritas]
+                )} title={`Prioritas: ${tugas.prioritas}`} />
+
+                <button
+                    onClick={() => onDelete(tugas.id)}
+                    className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-red)] opacity-0 group-hover:opacity-100 transition-all"
+                >
+                    <Trash2 size={16} />
+                </button>
+            </div>
+        </div>
+    );
+}

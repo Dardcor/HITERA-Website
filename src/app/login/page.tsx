@@ -1,40 +1,25 @@
-"use client";
+'use client';
 
-import Link from 'next/link';
-import { ArrowRight, Lock, Mail, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { useToast } from '@/components/ui/Toast';
 
 export default function LoginPage() {
-    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [loading, setLoading] = useState(true); // Start with loading for session check
-    const [errorMsg, setErrorMsg] = useState('');
-
-    useEffect(() => {
-        const checkActiveSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                router.push('/dashboard');
-            } else {
-                setLoading(false);
-                // Retrieve remembered email
-                const savedEmail = localStorage.getItem('hitera-remembered-email');
-                if (savedEmail) {
-                    setEmail(savedEmail);
-                }
-            }
-        };
-        checkActiveSession();
-    }, [router]);
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const supabase = createClient();
+    const { success, error: toastError } = useToast();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        setErrorMsg('');
+        setIsLoading(true);
 
         try {
             const { error } = await supabase.auth.signInWithPassword({
@@ -44,125 +29,63 @@ export default function LoginPage() {
 
             if (error) throw error;
 
-            // Record persistent session in database (wajib permanen)
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                await supabase.from('user_persistent_sessions').insert({
-                    user_id: session.user.id,
-                    session_token: session.access_token,
-                    user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : 'Unknown'
-                });
-            }
-
-            // Remember email for easier login next time
-            localStorage.setItem('hitera-remembered-email', email);
-
+            success('Login berhasil!');
             router.push('/dashboard');
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : 'Gagal masuk. Cek kembali email & sandi Anda.';
-            setErrorMsg(message);
+            router.refresh();
+        } catch (err: any) {
+            toastError(err.message || 'Gagal login. Silakan cek email & password.');
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
+
     return (
-        <div className="auth-wrapper animate-fade-in">
-            <div className="glass-panel auth-container">
-                <h1 className="page-title" style={{ fontSize: '36px', textAlign: 'center', marginBottom: '8px', background: 'none', WebkitTextFillColor: 'initial', color: '#5b21b6' }}>HITERA</h1>
-                <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '48px' }}>Masuk dengan kredensial aman di Vault Anda</p>
+        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4">
+            <Card className="w-full max-w-md p-8">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-[var(--accent-blue)] mb-2 tracking-tight">HITERA</h1>
+                    <p className="text-[var(--text-secondary)]">Masuk ke akun Anda</p>
+                </div>
 
-                {errorMsg && (
-                    <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--danger)', color: 'var(--danger)', padding: '12px', borderRadius: '12px', marginBottom: '24px', fontSize: '14px', textAlign: 'center' }}>
-                        {errorMsg}
-                    </div>
-                )}
+                <form onSubmit={handleLogin} className="space-y-5">
+                    <Input
+                        label="Email"
+                        type="email"
+                        placeholder="nama@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <Input
+                        label="Password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
 
-                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                    <div>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                            <Mail size={16} /> Alamat Email Vault
-                        </label>
-                        <input
-                            type="email"
-                            placeholder="nama@email.com"
-                            className="styled-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoCapitalize="none"
-                            required
-                        />
-                    </div>
-
-                    <div style={{ position: 'relative' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '500' }}>
-                            <Lock size={16} /> Kata Sandi Enkripsi
-                        </label>
-                        <div style={{ position: 'relative' }}>
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
-                                className="styled-input"
-                                style={{ paddingRight: '50px' }}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                style={{
-                                    position: 'absolute',
-                                    right: '16px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    background: 'none',
-                                    border: 'none',
-                                    color: 'var(--text-secondary)',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    padding: '4px',
-                                    transition: 'color 0.2s',
-                                    outline: 'none'
-                                }}
-                                onMouseOver={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
-                                onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
-                            >
-                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                            </button>
-                        </div>
+                    <div className="flex justify-end">
+                        <Link
+                            href="/forgot-password"
+                            className="text-xs text-[var(--text-muted)] hover:text-[var(--accent-blue)] transition-colors"
+                        >
+                            Lupa password?
+                        </Link>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '-8px' }}>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'var(--accent-hover)', userSelect: 'none' }}>
-                            <input
-                                type="checkbox"
-                                checked={true}
-                                readOnly
-                                style={{ accentColor: 'var(--accent-hover)', width: '16px', height: '16px', cursor: 'default' }}
-                            />
-                            Vault Persistence Aktif (Wajib)
-                        </label>
-                        <Link href="/forgot-password" style={{ fontSize: '14px', color: 'var(--accent-hover)', textDecoration: 'none', fontWeight: '500' }}>Lupa Sandi?</Link>
-                    </div>
-
-                    <button type="submit" disabled={loading} className="styled-button" style={{ marginTop: '12px', opacity: loading ? 0.7 : 1 }}>
-                        {loading ? <Loader2 size={20} className="animate-spin" /> : <>Masuk <ArrowRight size={20} /></>}
-                    </button>
+                    <Button type="submit" className="w-full py-3" isLoading={isLoading}>
+                        Masuk
+                    </Button>
                 </form>
 
-                <p style={{ textAlign: 'center', marginTop: '40px', fontSize: '15px' }}>
-                    <span style={{ color: 'var(--text-secondary)' }}>Identitas Baru? </span>
-                    <Link href="/register" style={{ color: 'var(--accent-hover)', textDecoration: 'none', fontWeight: '700' }}>Daftarkan ke Sistem.</Link>
-                </p>
-
-                <div style={{ textAlign: 'center', marginTop: '32px' }}>
-                    <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', opacity: 0.8 }}>
-                        <ArrowLeft size={16} /> Back to Home
+                <p className="text-center text-sm text-[var(--text-secondary)] mt-8">
+                    Belum punya akun?{' '}
+                    <Link href="/register" className="text-[var(--accent-blue)] font-semibold hover:underline">
+                        Daftar Sekarang
                     </Link>
-                </div>
-            </div>
+                </p>
+            </Card>
         </div>
     );
 }
