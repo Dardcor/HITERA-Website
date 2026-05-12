@@ -19,11 +19,8 @@ export interface DataKesehatan {
   id: string;
   user_id: string;
   tanggal: string;
-  berat_badan?: number;
   air_minum?: number;
   jam_tidur?: number;
-  langkah_kaki?: number;
-  tekanan_darah?: string;
   catatan?: string;
   created_at: string;
 }
@@ -36,6 +33,7 @@ export interface Tugas {
   prioritas: 'rendah' | 'sedang' | 'tinggi';
   status: 'aktif' | 'selesai' | 'ditunda';
   tanggal_target: string;
+  deadline?: string;
   tanggal_selesai?: string;
   created_at: string;
 }

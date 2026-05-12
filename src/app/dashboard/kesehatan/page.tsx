@@ -6,7 +6,7 @@ import { hariIni, tambahHari, formatTanggalID, cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
-import { ChevronLeft, ChevronRight, Edit3, HeartPulse, Scale, Droplet, Moon, Footprints, Activity, Clipboard } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit3, HeartPulse, Droplet, Moon, Clipboard } from 'lucide-react';
 import KesehatanForm from '@/components/kesehatan/KesehatanForm';
 import Link from 'next/link';
 
@@ -62,21 +62,14 @@ export default function KesehatanPage() {
                     </div>
                     <h3 className="text-xl font-bold mb-2">Data Belum Diisi</h3>
                     <p className="text-[var(--text-secondary)] text-sm max-w-xs mb-8">
-                        Catat perkembangan kesehatan Anda hari ini untuk melihat tren jangka panjang.
+                        Catat perkembangan kesehatan Anda hari ini.
                     </p>
                     <Button onClick={() => setIsModalOpen(true)} className="px-8">
-                        📋 Isi Data Kesehatan
+                        Isi Data Kesehatan
                     </Button>
                 </Card>
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <MetrikCard
-                        icon={Scale}
-                        color="bg-blue-500/10 text-blue-500"
-                        label="Berat Badan"
-                        value={data?.berat_badan}
-                        unit="kg"
-                    />
                     <MetrikCard
                         icon={Droplet}
                         color="bg-cyan-500/10 text-cyan-500"
@@ -90,20 +83,6 @@ export default function KesehatanPage() {
                         label="Jam Tidur"
                         value={data?.jam_tidur}
                         unit="jam"
-                    />
-                    <MetrikCard
-                        icon={Footprints}
-                        color="bg-emerald-500/10 text-emerald-500"
-                        label="Langkah"
-                        value={data?.langkah_kaki?.toLocaleString('id-ID')}
-                        unit="langkah"
-                    />
-                    <MetrikCard
-                        icon={Activity}
-                        color="bg-rose-500/10 text-rose-500"
-                        label="T. Darah"
-                        value={data?.tekanan_darah}
-                        unit="mmHg"
                     />
                     <Card className="flex flex-col gap-3">
                         <div className="p-2 w-fit rounded-lg bg-amber-500/10 text-amber-500">
@@ -121,9 +100,9 @@ export default function KesehatanPage() {
 
             <div className="pt-6">
                 <div className="flex justify-between items-center mb-4 px-1">
-                    <h3 className="text-sm font-bold uppercase tracking-widest">Analisis Singkat</h3>
+                    <h3 className="text-sm font-bold uppercase tracking-widest">Riwayat 7 Hari Terakhir</h3>
                     <Link href="/dashboard/kesehatan/history" className="text-xs text-[var(--accent-blue)] font-bold hover:underline">
-                        View History
+                        Lihat Semua
                     </Link>
                 </div>
                 <Card className="p-6">

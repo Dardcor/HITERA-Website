@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import Image from 'next/image';
 import { useToast } from '@/components/ui/Toast';
 
 export default function LoginPage() {
@@ -43,7 +44,7 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4">
             <Card className="w-full max-w-md p-8">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-[var(--accent-blue)] mb-2 tracking-tight">HITERA</h1>
+                    <Image src="/logo.png" alt="HITERA" width={160} height={48} className="h-12 w-auto mx-auto mb-2" />
                     <p className="text-[var(--text-secondary)]">Masuk ke akun Anda</p>
                 </div>
 

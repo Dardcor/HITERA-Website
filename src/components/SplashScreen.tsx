@@ -23,17 +23,13 @@ export default function SplashScreen() {
             animation: 'splashFadeOut 0.5s ease-in-out 2.5s forwards'
         }}>
             <div style={{
-                fontSize: 'clamp(48px, 10vw, 72px)',
-                fontWeight: '900',
-                fontFamily: 'Outfit',
-                letterSpacing: '8px',
-                background: 'linear-gradient(135deg, #fff, var(--accent-hover))',
-                WebkitBackgroundClip: 'text',
-                color: 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 animation: 'pulseGlow 2s infinite alternate, trackingIn 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards',
                 padding: '0 20px'
             }}>
-                HITERA
+                <img src="/logo.png" alt="HITERA" style={{ height: 'clamp(64px, 12vw, 100px)' }} />
             </div>
 
             <div style={{

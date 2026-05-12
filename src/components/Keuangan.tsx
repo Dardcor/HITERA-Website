@@ -4,17 +4,17 @@ import { supabase } from '@/lib/supabase';
 
 type Transaction = {
     id: string;
-    type: 'pemasukan' | 'pengeluaran';
-    amount: number;
-    category: string;
-    date: string;
+    jenis: 'pemasukan' | 'pengeluaran';
+    jumlah: number;
+    kategori: string;
+    tanggal: string;
 };
 
 export default function KeuanganView() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
-    const [type, setType] = useState<'pemasukan' | 'pengeluaran'>('pengeluaran');
+    const [jenis, setJenis] = useState<'pemasukan' | 'pengeluaran'>('pengeluaran');
     const [loading, setLoading] = useState(true);
 
     const fetchTransactions = useCallback(async () => {
@@ -23,7 +23,7 @@ export default function KeuanganView() {
         if (!user) return;
 
         const { data } = await supabase
-            .from('keuangan')
+            .from('transaksi')
             .select('*')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false });
@@ -43,12 +43,12 @@ export default function KeuanganView() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return alert('Sesi berakhir, silakan login ulang.');
 
-        const { error } = await supabase.from('keuangan').insert({
+        const { error } = await supabase.from('transaksi').insert({
             user_id: user.id,
-            type,
-            amount: parseFloat(amount),
-            category,
-            date: new Date().toISOString().split('T')[0]
+            jenis,
+            jumlah: parseFloat(amount),
+            kategori: category,
+            tanggal: new Date().toISOString().split('T')[0]
         });
 
         if (error) {
@@ -62,7 +62,7 @@ export default function KeuanganView() {
 
     const handleDelete = async (id: string) => {
         const { error } = await supabase
-            .from('keuangan')
+            .from('transaksi')
             .delete()
             .eq('id', id);
 
@@ -70,8 +70,8 @@ export default function KeuanganView() {
         else fetchTransactions();
     };
 
-    const totalPemasukan = transactions.filter(t => t.type === 'pemasukan').reduce((acc, t) => acc + t.amount, 0);
-    const totalPengeluaran = transactions.filter(t => t.type === 'pengeluaran').reduce((acc, t) => acc + t.amount, 0);
+    const totalPemasukan = transactions.filter(t => t.jenis === 'pemasukan').reduce((acc, t) => acc + t.jumlah, 0);
+    const totalPengeluaran = transactions.filter(t => t.jenis === 'pengeluaran').reduce((acc, t) => acc + t.jumlah, 0);
     const sisaSaldo = totalPemasukan - totalPengeluaran;
 
     const totalSemua = totalPemasukan + totalPengeluaran;
@@ -95,30 +95,27 @@ export default function KeuanganView() {
                 </div>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-
-
-                <div className="glass-panel" style={{ borderTop: '2px solid var(--accent-color)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
-                        <div>
-                            <h3 style={{ color: 'var(--text-secondary)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px' }}>Total Net Flow</h3>
-                            <p style={{ fontSize: '42px', fontWeight: '900', fontFamily: 'Outfit, sans-serif', letterSpacing: '-1px' }}>{formatRupiah(sisaSaldo)}</p>
-                        </div>
-                        <div style={{ background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), transparent)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(139,92,246,0.3)' }}>
-                            <PiggyBank size={24} color="var(--accent-hover)" />
-                        </div>
+            <div className="glass-panel" style={{ borderTop: '2px solid var(--accent-color)', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                    <div>
+                        <h3 style={{ color: 'var(--text-secondary)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px' }}>Saldo Anda Sekarang</h3>
+                        <p style={{ fontSize: '42px', fontWeight: '900', fontFamily: 'Outfit, sans-serif', letterSpacing: '-1px' }}>{formatRupiah(sisaSaldo)}</p>
                     </div>
-                    <div style={{ width: '100%', height: '6px', background: 'var(--bg-secondary)', borderRadius: '10px', overflow: 'hidden', display: 'flex' }}>
-                        <div style={{ width: `${progressPemasukan}%`, background: 'var(--success)', transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
-                        <div style={{ width: `${progressPengeluaran}%`, background: 'var(--danger)', transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
+                    <div style={{ background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), transparent)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(139,92,246,0.3)' }}>
+                        <PiggyBank size={24} color="var(--accent-hover)" />
                     </div>
                 </div>
+                <div style={{ width: '100%', height: '6px', background: 'var(--bg-secondary)', borderRadius: '10px', overflow: 'hidden', display: 'flex' }}>
+                    <div style={{ width: `${progressPemasukan}%`, background: 'var(--success)', transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
+                    <div style={{ width: `${progressPengeluaran}%`, background: 'var(--danger)', transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)' }}></div>
+                </div>
+            </div>
 
-
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
                 <div className="glass-panel" style={{ borderTop: '2px solid var(--success)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                         <div>
-                            <h3 style={{ color: 'var(--success)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px', opacity: 0.8 }}>Gross Income</h3>
+                            <h3 style={{ color: 'var(--success)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px', opacity: 0.8 }}>Total Pemasukan</h3>
                             <p style={{ fontSize: '32px', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>{formatRupiah(totalPemasukan)}</p>
                         </div>
                         <div style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), transparent)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(16, 185, 129,0.3)' }}>
@@ -130,7 +127,7 @@ export default function KeuanganView() {
                 <div className="glass-panel" style={{ borderTop: '2px solid var(--danger)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                         <div>
-                            <h3 style={{ color: 'var(--danger)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px', opacity: 0.8 }}>Total Expenses</h3>
+                            <h3 style={{ color: 'var(--danger)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '600', marginBottom: '8px', opacity: 0.8 }}>Total Pengeluaran</h3>
                             <p style={{ fontSize: '32px', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>{formatRupiah(totalPengeluaran)}</p>
                         </div>
                         <div style={{ background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.15), transparent)', padding: '12px', borderRadius: '16px', border: '1px solid rgba(244, 63, 94,0.3)' }}>
@@ -149,17 +146,17 @@ export default function KeuanganView() {
                     <form onSubmit={handleAdd} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
                             <div
-                                className={`custom-radio ${type === 'pemasukan' ? 'active' : ''}`}
-                                onClick={() => setType('pemasukan')}
+                                className={`custom-radio ${jenis === 'pemasukan' ? 'active' : ''}`}
+                                onClick={() => setJenis('pemasukan')}
                             >
-                                <TrendingUp size={18} color={type === 'pemasukan' ? 'var(--success)' : 'var(--text-secondary)'} />
+                                <TrendingUp size={18} color={jenis === 'pemasukan' ? 'var(--success)' : 'var(--text-secondary)'} />
                                 Inflow
                             </div>
                             <div
-                                className={`custom-radio ${type === 'pengeluaran' ? 'active' : ''}`}
-                                onClick={() => setType('pengeluaran')}
+                                className={`custom-radio ${jenis === 'pengeluaran' ? 'active' : ''}`}
+                                onClick={() => setJenis('pengeluaran')}
                             >
-                                <TrendingDown size={18} color={type === 'pengeluaran' ? 'var(--danger)' : 'var(--text-secondary)'} />
+                                <TrendingDown size={18} color={jenis === 'pengeluaran' ? 'var(--danger)' : 'var(--text-secondary)'} />
                                 Outflow
                             </div>
                         </div>
@@ -220,30 +217,30 @@ export default function KeuanganView() {
                                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                     background: 'var(--glass-bg)', padding: '24px 32px', borderRadius: '20px',
                                     border: '1px solid var(--glass-border)',
-                                    borderLeft: `4px solid ${tx.type === 'pemasukan' ? 'var(--success)' : 'var(--danger)'}`,
+                                    borderLeft: `4px solid ${tx.jenis === 'pemasukan' ? 'var(--success)' : 'var(--danger)'}`,
                                     transition: 'transform 0.3s, background 0.3s',
                                     animationDelay: `${idx * 0.05}s`
                                 }} className="animate-fade-in hover:transform hover:translate-y-[-2px] hover:shadow-lg">
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                                         <div style={{
                                             padding: '14px', borderRadius: '16px',
-                                            background: tx.type === 'pemasukan' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
-                                            color: tx.type === 'pemasukan' ? 'var(--success)' : 'var(--danger)'
+                                            background: tx.jenis === 'pemasukan' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                                            color: tx.jenis === 'pemasukan' ? 'var(--success)' : 'var(--danger)'
                                         }}>
-                                            {tx.type === 'pemasukan' ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
+                                            {tx.jenis === 'pemasukan' ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
                                         </div>
                                         <div>
-                                            <h4 style={{ fontWeight: '700', marginBottom: '6px', fontSize: '18px', letterSpacing: '0.5px' }}>{tx.category}</h4>
-                                            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'Outfit' }}>{tx.date}</p>
+                                            <h4 style={{ fontWeight: '700', marginBottom: '6px', fontSize: '18px', letterSpacing: '0.5px' }}>{tx.kategori}</h4>
+                                            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'Outfit' }}>{tx.tanggal}</p>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
                                         <span style={{
                                             fontWeight: '800', fontSize: '20px', fontFamily: 'Outfit',
-                                            color: tx.type === 'pemasukan' ? 'var(--success)' : 'var(--danger)',
+                                            color: tx.jenis === 'pemasukan' ? 'var(--success)' : 'var(--danger)',
                                             letterSpacing: '-0.5px'
                                         }}>
-                                            {tx.type === 'pemasukan' ? '+' : '-'}{formatRupiah(tx.amount)}
+                                            {tx.jenis === 'pemasukan' ? '+' : '-'}{formatRupiah(tx.jumlah)}
                                         </span>
                                         <button
                                             onClick={() => handleDelete(tx.id)}

@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import Image from 'next/image';
 import { useToast } from '@/components/ui/Toast';
 
 export default function RegisterPage() {
@@ -45,7 +46,7 @@ export default function RegisterPage() {
 
             if (error) throw error;
 
-            success('Registrasi berhasil! Silakan cek email ATAU langsung masuk.');
+            success('Registrasi berhasil! Silakan login.');
             router.push('/login');
         } catch (err: any) {
             toastError(err.message || 'Gagal registrasi.');
@@ -58,7 +59,7 @@ export default function RegisterPage() {
         <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4">
             <Card className="w-full max-w-md p-8">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-[var(--accent-blue)] mb-2 tracking-tight">Daftar HITERA</h1>
+                    <Image src="/logo.png" alt="Daftar HITERA" width={160} height={48} className="h-12 w-auto mx-auto mb-2" />
                     <p className="text-[var(--text-secondary)]">Mulai manajemen hidup yang lebih baik</p>
                 </div>
 

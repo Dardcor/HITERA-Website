@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { TugasForm as TForm } from '@/types';
 import { useTugas } from '@/hooks/useTugas';
-import { cn } from '@/lib/utils';
+import { cn, formatTanggalID } from '@/lib/utils';
+import { X, Calendar } from 'lucide-react';
 
 interface Props {
     tanggal: string;
@@ -17,6 +18,7 @@ export default function TugasForm({ tanggal, onSuccess, onCancel }: Props) {
     const [judul, setJudul] = useState('');
     const [deskripsi, setDeskripsi] = useState('');
     const [prioritas, setPrioritas] = useState<'rendah' | 'sedang' | 'tinggi'>('sedang');
+    const [deadline, setDeadline] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { addTugas } = useTugas(tanggal);
@@ -32,6 +34,7 @@ export default function TugasForm({ tanggal, onSuccess, onCancel }: Props) {
             prioritas,
             status: 'aktif',
             tanggal_target: tanggal,
+            deadline: deadline || undefined,
         });
 
         setIsSubmitting(false);
@@ -54,6 +57,28 @@ export default function TugasForm({ tanggal, onSuccess, onCancel }: Props) {
                 value={deskripsi}
                 onChange={(e) => setDeskripsi(e.target.value)}
             />
+
+            <div className="space-y-2">
+                <label className="text-xs font-medium text-[var(--text-muted)] ml-1">Deadline (Opsional)</label>
+                <div className="relative">
+                    <input
+                        type="date"
+                        value={deadline}
+                        onChange={(e) => setDeadline(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:outline-none transition-colors [color-scheme:dark]"
+                    />
+                    {deadline && (
+                        <button
+                            type="button"
+                            onClick={() => setDeadline('')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            <X size={16} />
+                        </button>
+                    )}
+                </div>
+            </div>
 
             <div className="space-y-2">
                 <label className="text-xs font-medium text-[var(--text-muted)] ml-1">Prioritas</label>

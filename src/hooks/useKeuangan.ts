@@ -8,15 +8,30 @@ import { useToast } from '@/components/ui/Toast';
 
 export function useKeuangan(tanggal: string) {
     const [transaksi, setTransaksi] = useState<Transaksi[]>([]);
+    const [totalSaldo, setTotalSaldo] = useState(0);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
     const { success, error: toastError } = useToast();
     const supabase = createClient();
 
-    const fetchTransaksi = useCallback(async () => {
+    const fetchStats = useCallback(async () => {
         if (!user) return;
         setLoading(true);
         try {
+            // Fetch total saldo (all time)
+            const { data: allData, error: totalError } = await supabase
+                .from('transaksi')
+                .select('jenis, jumlah')
+                .eq('user_id', user.id);
+
+            if (totalError) throw totalError;
+
+            const total = (allData || []).reduce((acc, t) => {
+                return t.jenis === 'pemasukan' ? acc + Number(t.jumlah) : acc - Number(t.jumlah);
+            }, 0);
+            setTotalSaldo(total);
+
+            // Fetch daily transactions
             const { data, error } = await supabase
                 .from('transaksi')
                 .select('*')
@@ -34,8 +49,8 @@ export function useKeuangan(tanggal: string) {
     }, [user, tanggal, supabase, toastError]);
 
     useEffect(() => {
-        fetchTransaksi();
-    }, [fetchTransaksi]);
+        fetchStats();
+    }, [fetchStats]);
 
     const totalPemasukan = transaksi
         .filter(t => t.jenis === 'pemasukan')
@@ -55,7 +70,7 @@ export function useKeuangan(tanggal: string) {
             ]);
             if (error) throw error;
             success('Transaksi berhasil ditambahkan.');
-            fetchTransaksi();
+            fetchStats();
         } catch (err: any) {
             toastError(err.message || 'Gagal menambahkan transaksi.');
         }
@@ -66,7 +81,7 @@ export function useKeuangan(tanggal: string) {
             const { error } = await supabase.from('transaksi').delete().eq('id', id);
             if (error) throw error;
             success('Transaksi berhasil dihapus.');
-            fetchTransaksi();
+            fetchStats();
         } catch (err: any) {
             toastError('Gagal menghapus transaksi.');
         }
@@ -77,9 +92,10 @@ export function useKeuangan(tanggal: string) {
         loading,
         totalPemasukan,
         totalPengeluaran,
-        saldoBersih,
+        saldoBersih: totalPemasukan - totalPengeluaran,
+        totalSaldo,
         tambahTransaksi,
         hapusTransaksi,
-        refresh: fetchTransaksi
+        refresh: fetchStats
     };
 }

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { HeartPulse, Droplet, Moon, Scale, Plus, Minus, Loader2, Save } from 'lucide-react';
+import { HeartPulse, Droplet, Moon, Plus, Minus, Loader2, Save, StickyNote } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function KesehatanView() {
     const [water, setWater] = useState(0);
     const [sleep, setSleep] = useState('');
-    const [weight, setWeight] = useState('');
+    const [catatan, setCatatan] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -20,13 +20,13 @@ export default function KesehatanView() {
             .from('kesehatan')
             .select('*')
             .eq('user_id', user.id)
-            .eq('date', today)
+            .eq('tanggal', today)
             .single();
 
         if (data) {
-            setWater(data.water_glasses || 0);
-            setSleep(data.sleep_hours?.toString() || '');
-            setWeight(data.weight_kg?.toString() || '');
+            setWater(data.air_minum || 0);
+            setSleep(data.jam_tidur?.toString() || '');
+            setCatatan(data.catatan || '');
         }
         setLoading(false);
     }, [today]);
@@ -44,11 +44,11 @@ export default function KesehatanView() {
             .from('kesehatan')
             .upsert({
                 user_id: user.id,
-                date: today,
-                water_glasses: water,
-                sleep_hours: parseFloat(sleep) || 0,
-                weight_kg: parseFloat(weight) || 0
-            }, { onConflict: 'user_id, date' });
+                tanggal: today,
+                air_minum: water,
+                jam_tidur: parseFloat(sleep) || 0,
+                catatan: catatan || null,
+            }, { onConflict: 'user_id,tanggal' });
 
         if (error) alert('Gagal sinkronisasi: ' + error.message);
         setSaving(false);
@@ -133,22 +133,18 @@ export default function KesehatanView() {
 
                 <div className="glass-panel" style={{ borderTop: '2px solid var(--warning)' }}>
                     <h2 style={{ fontSize: '24px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                        <Scale size={24} color="var(--warning)" /> Berat Badan
+                        <StickyNote size={24} color="var(--warning)" /> Catatan Harian
                     </h2>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '40px' }}>Pantau fluktuasi struktural tubuh Anda.</p>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '24px' }}>Catat perasaan dan aktivitas penting hari ini.</p>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', justifyContent: 'center', margin: '40px 0' }}>
-                        <input
-                            type="number"
-                            value={weight}
-                            onChange={(e) => setWeight(e.target.value)}
-                            className="styled-input"
-                            placeholder="0.0"
-                            step="0.1"
-                            style={{ width: '180px', fontSize: '48px', height: '100px', textAlign: 'center', fontWeight: '800', fontFamily: 'Outfit', borderRadius: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}
-                        />
-                        <span style={{ fontSize: '24px', color: 'var(--text-secondary)', fontWeight: '600' }}>Kg</span>
-                    </div>
+                    <textarea
+                        value={catatan}
+                        onChange={(e) => setCatatan(e.target.value)}
+                        className="styled-input"
+                        placeholder="Bagaimana perasaanmu hari ini?"
+                        rows={4}
+                        style={{ width: '100%', resize: 'vertical', fontSize: '15px', fontFamily: 'inherit', borderRadius: '16px', padding: '20px', borderTop: '1px solid rgba(255,255,255,0.1)' }}
+                    />
                 </div>
             </div>
         </div>

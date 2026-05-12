@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -36,7 +37,8 @@ export default function Sidebar() {
             )}
         >
             <div className="p-6 flex items-center justify-between">
-                {!isCollapsed && <span className="text-xl font-bold text-[var(--accent-blue)] tracking-tighter">HITERA</span>}
+                {!isCollapsed && <Image src="/logo.png" alt="HITERA" width={100} height={32} className="h-8 w-auto" />}
+                {isCollapsed && <Image src="/logo.png" alt="HITERA" width={32} height={32} className="h-8 w-8 object-contain" />}
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
                     className="p-1.5 rounded-lg hover:bg-[var(--bg-card-hover)] text-[var(--text-muted)] hover:text-[var(--text-primary)]"

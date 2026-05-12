@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Wallet, HeartPulse, CheckSquare } from 'lucide-react';
+import { LayoutDashboard, Wallet, HeartPulse, CheckSquare, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
     { name: 'Finance', icon: Wallet, href: '/dashboard/keuangan' },
     { name: 'Health', icon: HeartPulse, href: '/dashboard/kesehatan' },
     { name: 'Tasks', icon: CheckSquare, href: '/dashboard/tugas' },
+    { name: 'Setting', icon: Settings, href: '/dashboard/pengaturan' },
 ];
 
 export default function MobileNav() {

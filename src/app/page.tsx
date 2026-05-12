@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Wallet, HeartPulse, CheckSquare, Zap, Shield, Smartphone, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { Wallet, HeartPulse, CheckSquare, Shield, Zap, Smartphone, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 
@@ -7,7 +8,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] overflow-x-hidden">
       <nav className="container mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="text-2xl font-bold text-[var(--accent-blue)] tracking-tighter">HITERA</div>
+        <Image src="/logo.png" alt="HITERA" width={120} height={40} className="h-10 w-auto" />
         <div className="flex items-center gap-4">
           <Link href="/login">
             <Button variant="ghost" className="hidden sm:flex">Masuk</Button>
@@ -19,10 +20,6 @@ export default function LandingPage() {
       </nav>
 
       <section className="container mx-auto px-6 pt-20 pb-32 flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-full text-xs font-bold mb-6 border border-[var(--accent-blue)]/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <Zap size={14} />
-          <span>VERSI 2.0 SUDAH TERSEDIA</span>
-        </div>
         <h1 className="text-5xl md:text-7xl font-bold text-[var(--text-primary)] mb-6 tracking-tight leading-tight max-w-4xl animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
           Atur Hidup Jadi <span className="text-[var(--accent-blue)]">Lebih Mudah</span> & Presisi
         </h1>

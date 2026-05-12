@@ -70,7 +70,7 @@ export default function KesehatanHistoryPage() {
                         onChange={(e) => setToDate(e.target.value)}
                     />
                     <Button onClick={fetchHistory} className="flex items-center gap-2">
-                        <Search size={18} /> Tampilkan
+                        <Search size={18} /> Cari
                     </Button>
                 </div>
             </Card>
@@ -92,11 +92,7 @@ export default function KesehatanHistoryPage() {
                                 <h4 className="text-sm font-bold text-[var(--accent-blue)]">{formatTanggalID(h.tanggal)}</h4>
                             </div>
 
-                            <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-4">
-                                <div className="text-center">
-                                    <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">Berat</p>
-                                    <p className="text-sm font-bold text-[var(--text-primary)]">{h.berat_badan || '-'} kg</p>
-                                </div>
+                            <div className="flex-1 grid grid-cols-2 gap-4">
                                 <div className="text-center">
                                     <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">Air</p>
                                     <p className="text-sm font-bold text-[var(--text-primary)]">{h.air_minum || '-'} gls</p>
@@ -104,14 +100,6 @@ export default function KesehatanHistoryPage() {
                                 <div className="text-center">
                                     <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">Tidur</p>
                                     <p className="text-sm font-bold text-[var(--text-primary)]">{h.jam_tidur || '-'} jam</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">Langkah</p>
-                                    <p className="text-sm font-bold text-[var(--text-primary)]">{h.langkah_kaki || '-'}</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">T. Darah</p>
-                                    <p className="text-sm font-bold text-[var(--text-primary)]">{h.tekanan_darah || '-'}</p>
                                 </div>
                             </div>
 

@@ -21,6 +21,7 @@ export default function KeuanganPage() {
         totalPemasukan,
         totalPengeluaran,
         saldoBersih,
+        totalSaldo,
         hapusTransaksi
     } = useKeuangan(tanggal);
 
@@ -53,7 +54,17 @@ export default function KeuanganPage() {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-blue)]">
+                <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold mb-1">SALDO ANDA SEKARANG</p>
+                <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-bold text-[var(--text-primary)]">{loading ? "..." : formatRupiah(totalSaldo)}</h3>
+                    <div className="p-2 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-lg">
+                        <Wallet size={20} />
+                    </div>
+                </div>
+            </Card>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-green)]">
                     <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold mb-1">Total Pemasukan</p>
                     <div className="flex items-center justify-between">
@@ -70,16 +81,6 @@ export default function KeuanganPage() {
                         <h3 className="text-xl font-bold text-[var(--accent-red)]">{loading ? "..." : `- ${formatRupiah(totalPengeluaran)}`}</h3>
                         <div className="p-2 bg-[var(--accent-red-dim)] text-[var(--accent-red)] rounded-lg">
                             <TrendingDown size={20} />
-                        </div>
-                    </div>
-                </Card>
-
-                <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-blue)]">
-                    <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold mb-1">Saldo Bersih</p>
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-[var(--text-primary)]">{loading ? "..." : formatRupiah(saldoBersih)}</h3>
-                        <div className="p-2 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-lg">
-                            <Wallet size={20} />
                         </div>
                     </div>
                 </Card>

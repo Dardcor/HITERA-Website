@@ -14,7 +14,7 @@ export default function DashboardPage() {
     const { user } = useAuth();
     const tgl = hariIni();
 
-    const { totalPemasukan, totalPengeluaran, saldoBersih, loading: loadK } = useKeuangan(tgl);
+    const { totalPemasukan, totalPengeluaran, saldoBersih, totalSaldo, loading: loadK } = useKeuangan(tgl);
     const { data: kesehatan, loading: loadKes } = useKesehatan(tgl);
     const { tugas, tugasAktif, tugasSelesai, loading: loadT } = useTugas(tgl);
 
@@ -56,20 +56,20 @@ export default function DashboardPage() {
                             <ArrowUpRight size={20} />
                         </Link>
                     </div>
-                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1">Saldo Bersih Hari Ini</p>
+                    <p className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1">Saldo Anda Sekarang</p>
                     <h3 className={cn(
                         "text-2xl font-bold mb-4",
-                        saldoBersih >= 0 ? "text-[var(--accent-green)]" : "text-[var(--accent-red)]"
+                        totalSaldo >= 0 ? "text-[var(--accent-green)]" : "text-[var(--accent-red)]"
                     )}>
-                        {loadK ? "..." : formatRupiah(saldoBersih)}
+                        {loadK ? "..." : formatRupiah(totalSaldo)}
                     </h3>
                     <div className="grid grid-cols-2 gap-2 pt-4 border-t border-[var(--border)]">
                         <div>
-                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Pemasukan</p>
+                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Total Pemasukan</p>
                             <p className="text-sm font-bold text-[var(--accent-green)]">+{loadK ? "..." : formatRupiah(totalPemasukan)}</p>
                         </div>
                         <div>
-                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Pengeluaran</p>
+                            <p className="text-[10px] text-[var(--text-muted)] uppercase">Total Pengeluaran</p>
                             <p className="text-sm font-bold text-[var(--accent-red)]">-{loadK ? "..." : formatRupiah(totalPengeluaran)}</p>
                         </div>
                     </div>
@@ -88,12 +88,14 @@ export default function DashboardPage() {
                     {loadKes ? (
                         <h3 className="text-2xl font-bold mb-4 text-[var(--text-primary)]">...</h3>
                     ) : kesehatan ? (
-                        <div className="space-y-4">
-                            <h3 className="text-2xl font-bold mb-1 text-[var(--text-primary)]">{kesehatan.berat_badan} kg</h3>
-                            <div className="flex gap-4 text-xs font-medium text-[var(--text-secondary)]">
-                                <span className="flex items-center gap-1">💧 {kesehatan.air_minum} gelas</span>
-                                <span className="flex items-center gap-1">😴 {kesehatan.jam_tidur} jam</span>
+                        <div className="space-y-3">
+                            <div className="flex gap-4 text-sm font-bold text-[var(--text-primary)]">
+                                <span className="flex items-center gap-1">💧 {kesehatan.air_minum ?? '-'} gelas</span>
+                                <span className="flex items-center gap-1">😴 {kesehatan.jam_tidur ?? '-'} jam</span>
                             </div>
+                            {kesehatan.catatan && (
+                                <p className="text-xs text-[var(--text-secondary)] italic truncate">{kesehatan.catatan}</p>
+                            )}
                         </div>
                     ) : (
                         <div className="py-2">
@@ -119,7 +121,7 @@ export default function DashboardPage() {
                         <h3 className="text-2xl font-bold text-[var(--text-primary)]">
                             {loadT ? "..." : `${tugasSelesai.length}/${tugas.length}`} Tugas
                         </h3>
-                        <p className="text-[10px] text-[var(--text-muted)] uppercase mt-1">Selesai {progressTugas}%</p>
+                        <p className="text-[10px] text-[var(--text-muted)] mt-1">Selesai {progressTugas}%</p>
                     </div>
                     <div className="w-full h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
                         <div
