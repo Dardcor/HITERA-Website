@@ -9,7 +9,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "HITERA - Personal Life Management",
   description: "Manajemen keuangan, kesehatan, dan tugas dalam satu aplikasi.",
-  manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",
