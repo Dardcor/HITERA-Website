@@ -7,14 +7,14 @@ import { useTugas } from '@/hooks/useTugas';
 import { hariIni, formatRupiah, formatTanggalID, cn } from '@/lib/utils';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Wallet, HeartPulse, CheckSquare, Plus, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Wallet, HeartPulse, CheckSquare, Plus, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function DashboardPage() {
     const { user } = useAuth();
     const tgl = hariIni();
 
-    const { totalPemasukan, totalPengeluaran, saldoBersih, totalSaldo, loading: loadK } = useKeuangan(tgl);
+    const { totalPemasukan, totalPengeluaran, totalSaldo, loading: loadK } = useKeuangan(tgl);
     const { data: kesehatan, loading: loadKes } = useKesehatan(tgl);
     const { tugas, tugasAktif, tugasSelesai, loading: loadT } = useTugas(tgl);
 

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useKeuangan } from '@/hooks/useKeuangan';
-import { hariIni, tambahHari, formatTanggalID, formatRupiah, cn } from '@/lib/utils';
+import { hariIni, tambahHari, formatTanggalID, formatRupiah } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
@@ -20,7 +20,6 @@ export default function KeuanganPage() {
         loading,
         totalPemasukan,
         totalPengeluaran,
-        saldoBersih,
         totalSaldo,
         hapusTransaksi
     } = useKeuangan(tanggal);

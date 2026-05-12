@@ -60,7 +60,6 @@ export function useKeuangan(tanggal: string) {
         .filter(t => t.jenis === 'pengeluaran')
         .reduce((sum, t) => sum + Number(t.jumlah), 0);
 
-    const saldoBersih = totalPemasukan - totalPengeluaran;
 
     const tambahTransaksi = async (data: TransaksiForm) => {
         if (!user) return;
