@@ -104,9 +104,9 @@ export default function TransaksiForm({ onSuccess, onCancel }: Props) {
                 placeholder="Contoh: Makan siang di kantor"
             />
 
-            <div className="flex justify-end gap-3 pt-2">
-                <Button variant="secondary" type="button" onClick={onCancel}>Batal</Button>
-                <Button type="submit" isLoading={isSubmitting}>Simpan</Button>
+            <div className="flex flex-col md:flex-row justify-end gap-3 pt-2">
+                <Button variant="secondary" type="button" onClick={onCancel} className="w-full md:w-auto order-2 md:order-1">Batal</Button>
+                <Button type="submit" isLoading={isSubmitting} className="w-full md:w-auto order-1 md:order-2">Simpan Transaksi</Button>
             </div>
         </form>
     );

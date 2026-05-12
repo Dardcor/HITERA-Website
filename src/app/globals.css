@@ -13,13 +13,13 @@
   --text-secondary: #8888aa;
   --text-muted: #555570;
   --accent-blue: #00c2ff;
-  --accent-blue-dim: rgba(0, 194, 255, 0.15);
+  --accent-blue-dim: rgba(0, 194, 255, 0.11);
   --accent-green: #00e676;
-  --accent-green-dim: rgba(0, 230, 118, 0.12);
+  --accent-green-dim: rgba(0, 230, 118, 0.11);
   --accent-red: #ff4d6d;
-  --accent-red-dim: rgba(255, 77, 109, 0.12);
+  --accent-red-dim: rgba(255, 77, 109, 0.11);
   --accent-yellow: #ffd60a;
-  --accent-yellow-dim: rgba(255, 214, 10, 0.12);
+  --accent-yellow-dim: rgba(255, 214, 10, 0.11);
   --radius: 12px;
   --radius-sm: 8px;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
@@ -29,6 +29,7 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -37,29 +38,52 @@ body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 @layer base {
-  h1 {
-    @apply text-2xl font-bold text-[var(--text-primary)];
-  }
-
-  h2 {
-    @apply text-lg font-semibold text-[var(--text-primary)];
-  }
-
-  p {
-    @apply text-sm text-[var(--text-secondary)];
-  }
-
-  label {
-    @apply text-xs text-[var(--text-muted)];
+  input[type="date"] {
+    color-scheme: dark;
   }
 }
 
+/* Custom Animations to replace tailwind-animate plugin */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromBottom {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-in {
+  animation-duration: 300ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+.fade-in { animation-name: fadeIn; }
+.slide-in-from-bottom-4 { animation-name: slideInFromBottom; }
+.zoom-in-95 { animation-name: zoomIn; }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -68,7 +92,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

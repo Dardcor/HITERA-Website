@@ -29,16 +29,19 @@ export default function KeuanganPage() {
     const resetToToday = () => setTanggal(hariIni());
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500 pb-20">
+        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+            {/* Header - matches Flutter AppBar layout on mobile */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold">Keuangan Harian</h2>
-                    <div className="flex items-center gap-2 mt-1">
+                    {/* Mobile: hidden since Topbar already shows title */}
+                    <h2 className="hidden md:block text-2xl font-bold">Keuangan Harian</h2>
+                    {/* Date navigation - matches Flutter nav buttons */}
+                    <div className="flex items-center gap-2 mt-0 md:mt-1">
                         <button onClick={prevDay} className="p-1 hover:bg-[var(--bg-card-hover)] rounded border border-[var(--border)]">
                             <ChevronLeft size={16} />
                         </button>
                         <span
-                            className="text-sm font-bold text-[var(--accent-blue)] cursor-pointer hover:underline"
+                            className="text-xs font-bold text-[var(--accent-blue)] cursor-pointer hover:underline"
                             onClick={resetToToday}
                         >
                             {formatTanggalID(tanggal)}
@@ -53,62 +56,74 @@ export default function KeuanganPage() {
                 </Button>
             </div>
 
-            <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-blue)]">
-                <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold mb-1">SALDO ANDA SEKARANG</p>
+            {/* Summary tiles - matching Flutter _summaryTile with left border accent */}
+            <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-blue)] p-4">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold text-[var(--text-primary)]">{loading ? "..." : formatRupiah(totalSaldo)}</h3>
+                    <div>
+                        <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">SALDO ANDA SEKARANG</p>
+                        <h3 className="text-base md:text-xl font-extrabold text-[var(--text-primary)]">{loading ? "..." : formatRupiah(totalSaldo)}</h3>
+                    </div>
                     <div className="p-2 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-lg">
                         <Wallet size={20} />
                     </div>
                 </div>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-green)]">
-                    <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold mb-1">Total Pemasukan</p>
+            {/* Pemasukan & Pengeluaran - side by side on mobile too (matching Flutter Row) */}
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
+                <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-green)] p-4">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-[var(--accent-green)]">{loading ? "..." : `+ ${formatRupiah(totalPemasukan)}`}</h3>
-                        <div className="p-2 bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-lg">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">TOTAL PEMASUKAN</p>
+                            <h3 className="text-sm md:text-xl font-extrabold text-[var(--accent-green)] truncate">{loading ? "..." : formatRupiah(totalPemasukan)}</h3>
+                        </div>
+                        <div className="p-2 bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-lg ml-2 shrink-0">
                             <TrendingUp size={20} />
                         </div>
                     </div>
                 </Card>
 
-                <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-red)]">
-                    <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold mb-1">Total Pengeluaran</p>
+                <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-red)] p-4">
                     <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-bold text-[var(--accent-red)]">{loading ? "..." : `- ${formatRupiah(totalPengeluaran)}`}</h3>
-                        <div className="p-2 bg-[var(--accent-red-dim)] text-[var(--accent-red)] rounded-lg">
+                        <div className="min-w-0 flex-1">
+                            <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">TOTAL PENGELUARAN</p>
+                            <h3 className="text-sm md:text-xl font-extrabold text-[var(--accent-red)] truncate">{loading ? "..." : formatRupiah(totalPengeluaran)}</h3>
+                        </div>
+                        <div className="p-2 bg-[var(--accent-red-dim)] text-[var(--accent-red)] rounded-lg ml-2 shrink-0">
                             <TrendingDown size={20} />
                         </div>
                     </div>
                 </Card>
             </div>
 
-            <div className="space-y-4">
+            {/* Transaksi list - matches Flutter layout */}
+            <div className="space-y-3 md:space-y-4">
                 <div className="flex justify-between items-center px-1">
-                    <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-widest">Transaksi Hari Ini</h3>
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-[1.5px]">Transaksi Hari Ini</h3>
                     <Link href="/dashboard/keuangan/history" className="text-xs text-[var(--accent-blue)] font-bold hover:underline">
                         Lihat Semua History
                     </Link>
                 </div>
 
                 {loading ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                         {[1, 2, 3].map(i => <div key={i} className="h-16 w-full bg-[var(--bg-card-hover)] animate-pulse rounded-xl" />)}
                     </div>
                 ) : transaksi.length === 0 ? (
-                    <Card className="flex flex-col items-center justify-center py-16 text-center">
+                    <Card className="flex flex-col items-center justify-center py-12 md:py-16 text-center">
                         <div className="w-16 h-16 bg-[var(--bg-secondary)] rounded-full flex items-center justify-center text-[var(--text-muted)] mb-4">
                             <Wallet size={32} />
                         </div>
                         <p className="text-[var(--text-muted)] italic">Tidak ada transaksi pada tanggal ini.</p>
-                        <Button variant="ghost" className="mt-4" onClick={() => setIsModalOpen(true)}>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="mt-3 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
                             Tambah sekarang
-                        </Button>
+                        </button>
                     </Card>
                 ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                         {transaksi.map((t) => (
                             <TransaksiCard
                                 key={t.id}

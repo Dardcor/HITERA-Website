@@ -6,18 +6,20 @@ import { LayoutDashboard, Wallet, HeartPulse, CheckSquare, Settings } from 'luci
 import { cn } from '@/lib/utils';
 
 const navItems = [
-    { name: 'Home', icon: LayoutDashboard, href: '/dashboard' },
-    { name: 'Finance', icon: Wallet, href: '/dashboard/keuangan' },
-    { name: 'Health', icon: HeartPulse, href: '/dashboard/kesehatan' },
-    { name: 'Tasks', icon: CheckSquare, href: '/dashboard/tugas' },
-    { name: 'Setting', icon: Settings, href: '/dashboard/pengaturan' },
+    { name: 'HOME', icon: LayoutDashboard, href: '/dashboard' },
+    { name: 'FINANCE', icon: Wallet, href: '/dashboard/keuangan' },
+    { name: 'HEALTH', icon: HeartPulse, href: '/dashboard/kesehatan' },
+    { name: 'TASKS', icon: CheckSquare, href: '/dashboard/tugas' },
+    { name: 'SETTING', icon: Settings, href: '/dashboard/pengaturan' },
 ];
 
 export default function MobileNav() {
     const pathname = usePathname();
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[var(--bg-card)] border-t border-[var(--border)] flex items-center justify-around px-2 z-[40] pb-safe">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--bg-card)] border-t border-[var(--border)] flex items-center justify-around z-[40]"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
             {navItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                 return (
@@ -25,13 +27,12 @@ export default function MobileNav() {
                         key={item.href}
                         href={item.href}
                         className={cn(
-                            "flex flex-col items-center gap-1 p-2 min-w-[64px] transition-all",
+                            "flex flex-col items-center justify-center gap-0.5 py-2.5 min-w-[60px] transition-all",
                             isActive ? "text-[var(--accent-blue)]" : "text-[var(--text-muted)]"
                         )}
                     >
-                        <item.icon size={20} className={isActive ? "animate-in zoom-in duration-300" : ""} />
-                        <span className="text-[10px] font-bold uppercase tracking-tighter">{item.name}</span>
-                        {isActive && <div className="absolute bottom-1 w-1 h-1 rounded-full bg-[var(--accent-blue)]" />}
+                        <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                        <span className="text-[10px] font-bold tracking-[-0.5px]">{item.name}</span>
                     </Link>
                 );
             })}

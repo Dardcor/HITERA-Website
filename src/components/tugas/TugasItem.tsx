@@ -13,7 +13,7 @@ interface Props {
 export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
     const isSelesai = tugas.status === 'selesai';
 
-    const prioritasColor = {
+    const prioritasColor: Record<string, string> = {
         tinggi: "bg-[var(--accent-red)]",
         sedang: "bg-[var(--accent-yellow)]",
         rendah: "bg-[var(--accent-blue)]",
@@ -23,10 +23,12 @@ export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
 
     return (
         <div className={cn(
-            "group flex flex-col gap-2 p-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl transition-all",
+            "group p-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl transition-all",
             isSelesai ? "opacity-60" : "hover:border-[var(--border-focus)]"
         )}>
-            <div className="flex items-center gap-4">
+            {/* Main row - matches Flutter Row with checkbox, title, priority dot, delete */}
+            <div className="flex items-center gap-3.5">
+                {/* Checkbox - 24x24 rounded-md matching Flutter */}
                 <button
                     onClick={() => onToggle(tugas.id, tugas.status)}
                     className={cn(
@@ -39,10 +41,11 @@ export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
                     <Check size={14} strokeWidth={3} />
                 </button>
 
+                {/* Title + description */}
                 <div className="flex-1 min-w-0">
                     <h4 className={cn(
                         "text-sm font-bold truncate",
-                        isSelesai && "line-through text-[var(--text-muted)]"
+                        isSelesai && "line-through text-[var(--text-muted)] decoration-[var(--text-muted)]"
                     )}>
                         {tugas.judul}
                     </h4>
@@ -53,23 +56,24 @@ export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
                     )}
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className={cn(
-                        "w-2 h-2 rounded-full",
-                        prioritasColor[tugas.prioritas]
-                    )} title={`Prioritas: ${tugas.prioritas}`} />
+                {/* Priority dot - 8x8 circle matching Flutter */}
+                <div className={cn(
+                    "w-2 h-2 rounded-full shrink-0",
+                    prioritasColor[tugas.prioritas]
+                )} title={`Prioritas: ${tugas.prioritas}`} />
 
-                    <button
-                        onClick={() => onDelete(tugas.id)}
-                        className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-red)] opacity-0 group-hover:opacity-100 transition-all"
-                    >
-                        <Trash2 size={16} />
-                    </button>
-                </div>
+                {/* Delete button - always visible on mobile */}
+                <button
+                    onClick={() => onDelete(tugas.id)}
+                    className="p-1.5 text-[var(--text-muted)] hover:text-[var(--accent-red)] md:opacity-0 md:group-hover:opacity-100 transition-all shrink-0"
+                >
+                    <Trash2 size={16} />
+                </button>
             </div>
 
+            {/* Deadline row - below main row, matching Flutter conditionals */}
             {tugas.deadline && (
-                <div className="flex items-center gap-1.5 ml-10">
+                <div className="flex items-center gap-1.5 mt-2 ml-10">
                     <Clock size={11} className={isOverdue ? "text-[var(--accent-red)]" : "text-[var(--text-muted)]"} />
                     <span className={cn(
                         "text-[10px]",

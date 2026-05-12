@@ -1,26 +1,59 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { formatTanggalID, hariIni, cn } from '@/lib/utils';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { ChevronLeft, Search, Scale, Droplet, Moon, Footprints, Activity } from 'lucide-react';
+import { ChevronLeft, Search, Droplet, Moon, Clipboard } from 'lucide-react';
 import { DataKesehatan } from '@/types';
 import Link from 'next/link';
 
 export default function KesehatanHistoryPage() {
     const [history, setHistory] = useState<DataKesehatan[]>([]);
     const [loading, setLoading] = useState(true);
-    const [fromDate, setFromDate] = useState(hariIni());
+    const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState(hariIni());
+    const [preset, setPreset] = useState('Minggu');
     const { user } = useAuth();
     const supabase = createClient();
 
+    const applyPreset = useCallback((p: string) => {
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+        let from = '';
+
+        const d = new Date();
+        switch (p) {
+            case 'Minggu':
+                d.setDate(d.getDate() - 7);
+                from = d.toISOString().split('T')[0];
+                break;
+            case 'Bulan':
+                d.setMonth(d.getMonth() - 1);
+                from = d.toISOString().split('T')[0];
+                break;
+            case 'Tahun':
+                d.setFullYear(d.getFullYear() - 1);
+                from = d.toISOString().split('T')[0];
+                break;
+            default: // Semua
+                from = '2020-01-01';
+        }
+
+        setPreset(p);
+        setFromDate(from);
+        setToDate(today);
+    }, []);
+
+    useEffect(() => {
+        applyPreset('Minggu');
+    }, [applyPreset]);
+
     const fetchHistory = async () => {
-        if (!user) return;
+        if (!user || !fromDate) return;
         setLoading(true);
         try {
             const { data, error } = await supabase
@@ -41,44 +74,74 @@ export default function KesehatanHistoryPage() {
     };
 
     useEffect(() => {
-        fetchHistory();
-    }, [user]);
+        if (user && fromDate) {
+            fetchHistory();
+        }
+    }, [user, fromDate, toDate]);
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500 pb-20">
-            <div className="flex items-center gap-4">
-                <Link href="/dashboard/kesehatan">
-                    <Button variant="ghost" className="p-2 h-auto">
-                        <ChevronLeft size={20} />
-                    </Button>
+        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+            {/* Header */}
+            <div className="flex items-center gap-3 md:gap-4 -ml-2 md:ml-0">
+                <Link href="/dashboard/kesehatan" className="p-2 hover:bg-[var(--bg-card-hover)] rounded-full transition-colors">
+                    <ChevronLeft size={24} className="text-[var(--text-primary)]" />
                 </Link>
-                <h2 className="text-2xl font-bold">Riwayat Kesehatan</h2>
+                <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">Riwayat Kesehatan</h2>
             </div>
 
-            <Card className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            {/* Filter Chips */}
+            <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+                {['Semua', 'Minggu', 'Bulan', 'Tahun'].map((p) => {
+                    const isSelected = preset === p;
+                    return (
+                        <button
+                            key={p}
+                            onClick={() => applyPreset(p)}
+                            className={cn(
+                                "px-4 py-2 text-xs font-bold rounded-full border transition-all whitespace-nowrap",
+                                isSelected
+                                    ? "bg-[var(--accent-blue)] text-[var(--bg-primary)] border-[var(--accent-blue)]"
+                                    : "bg-[var(--bg-card)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--text-muted)]"
+                            )}
+                        >
+                            {p}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Filter Card */}
+            <Card className="p-4 md:p-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 items-end">
                     <Input
-                        label="Dari Tanggal"
+                        label="Dari"
                         type="date"
                         value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
+                        onChange={(e) => {
+                            setFromDate(e.target.value);
+                            setPreset('');
+                        }}
                     />
                     <Input
-                        label="Sampai Tanggal"
+                        label="Sampai"
                         type="date"
                         value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
+                        onChange={(e) => {
+                            setToDate(e.target.value);
+                            setPreset('');
+                        }}
                     />
-                    <Button onClick={fetchHistory} className="flex items-center gap-2">
+                    <Button onClick={fetchHistory} className="flex items-center justify-center gap-2 py-3 md:py-2 col-span-2 md:col-span-1">
                         <Search size={18} /> Cari
                     </Button>
                 </div>
             </Card>
 
-            <div className="space-y-4">
+            {/* History List */}
+            <div className="space-y-3.5 mt-2">
                 {loading ? (
-                    <div className="space-y-4">
-                        {[1, 2, 3].map(i => <div key={i} className="h-32 w-full bg-[var(--bg-card-hover)] animate-pulse rounded-xl" />)}
+                    <div className="space-y-3">
+                        {[1, 2, 3].map(i => <div key={i} className="h-28 w-full bg-[var(--bg-card-hover)] animate-pulse rounded-xl" />)}
                     </div>
                 ) : history.length === 0 ? (
                     <div className="py-20 text-center text-[var(--text-muted)] italic">
@@ -86,27 +149,41 @@ export default function KesehatanHistoryPage() {
                     </div>
                 ) : (
                     history.map((h) => (
-                        <Card key={h.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                            <div className="min-w-[140px]">
-                                <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-1">Tanggal</p>
-                                <h4 className="text-sm font-bold text-[var(--accent-blue)]">{formatTanggalID(h.tanggal)}</h4>
+                        <Card key={h.id} className="p-4 md:p-5 flex flex-col gap-4">
+                            <div className="flex justify-between items-center px-1">
+                                <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(h.tanggal)}</h4>
                             </div>
 
-                            <div className="flex-1 grid grid-cols-2 gap-4">
-                                <div className="text-center">
-                                    <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">Air</p>
-                                    <p className="text-sm font-bold text-[var(--text-primary)]">{h.air_minum || '-'} gls</p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="flex items-center gap-3 p-3 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border)]">
+                                    <div className="p-1.5 bg-cyan-500/10 rounded-lg">
+                                        <Droplet size={14} className="text-cyan-500" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">Air Minum</p>
+                                        <p className="text-sm font-bold">{h.air_minum || '0'} <span className="text-[10px] font-normal opacity-70">gls</span></p>
+                                    </div>
                                 </div>
-                                <div className="text-center">
-                                    <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">Tidur</p>
-                                    <p className="text-sm font-bold text-[var(--text-primary)]">{h.jam_tidur || '-'} jam</p>
+                                <div className="flex items-center gap-3 p-3 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border)]">
+                                    <div className="p-1.5 bg-indigo-500/10 rounded-lg">
+                                        <Moon size={14} className="text-indigo-500" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">Jam Tidur</p>
+                                        <p className="text-sm font-bold">{h.jam_tidur || '0'} <span className="text-[10px] font-normal opacity-70">jam</span></p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="md:max-w-[200px] border-t md:border-t-0 md:border-l border-[var(--border)] pt-3 md:pt-0 md:pl-6">
-                                <p className="text-[9px] text-[var(--text-muted)] uppercase mb-1">Catatan</p>
-                                <p className="text-[11px] text-[var(--text-secondary)] italic line-clamp-2">{h.catatan || 'Tidak ada catatan.'}</p>
-                            </div>
+                            {h.catatan && (
+                                <div className="p-3 bg-[var(--bg-secondary)]/50 rounded-lg border border-[var(--border)] border-dashed">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <Clipboard size={12} className="text-amber-500" />
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">Catatan</p>
+                                    </div>
+                                    <p className="text-[11px] text-[var(--text-secondary)] italic leading-relaxed">{h.catatan}</p>
+                                </div>
+                            )}
                         </Card>
                     ))
                 )}

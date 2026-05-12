@@ -103,9 +103,9 @@ export default function TugasForm({ tanggal, onSuccess, onCancel }: Props) {
                 </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-                <Button variant="secondary" type="button" onClick={onCancel}>Batal</Button>
-                <Button type="submit" isLoading={isSubmitting}>Tambah Tugas</Button>
+            <div className="flex flex-col md:flex-row justify-end gap-3 pt-2">
+                <Button variant="secondary" type="button" onClick={onCancel} className="w-full md:w-auto order-2 md:order-1">Batal</Button>
+                <Button type="submit" isLoading={isSubmitting} className="w-full md:w-auto order-1 md:order-2">Tambah Tugas</Button>
             </div>
         </form>
     );

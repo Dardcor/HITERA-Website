@@ -79,9 +79,9 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
                 placeholder="Bagaimana perasaanmu hari ini?"
             />
 
-            <div className="flex justify-end gap-3 pt-2">
-                <Button variant="secondary" type="button" onClick={onCancel}>Batal</Button>
-                <Button type="submit" isLoading={isSubmitting}>Simpan Data</Button>
+            <div className="flex flex-col md:flex-row justify-end gap-3 pt-2">
+                <Button variant="secondary" type="button" onClick={onCancel} className="w-full md:w-auto order-2 md:order-1">Batal</Button>
+                <Button type="submit" isLoading={isSubmitting} className="w-full md:w-auto order-1 md:order-2">Simpan Data Kesehatan</Button>
             </div>
         </form>
     );

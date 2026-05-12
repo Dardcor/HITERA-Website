@@ -36,7 +36,7 @@ export default function PengaturanPage() {
                 setUsername(data.username || '');
                 setFullName(data.full_name || '');
             }
-        } catch (_) {}
+        } catch (_) { }
         setLoadingProfile(false);
     }, [user, supabase]);
 
@@ -88,34 +88,35 @@ export default function PengaturanPage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-500">
-            <h2 className="text-2xl font-bold">Pengaturan</h2>
+        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+            {/* Hidden title on mobile since Topbar shows it */}
+            <h2 className="hidden md:block text-2xl font-bold">Pengaturan</h2>
 
-            {/* Profile info card */}
-            <Card className="p-6 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center text-[var(--accent-blue)] border border-[var(--border)]">
+            {/* Profile info card - matches Flutter: 56px avatar, name, email */}
+            <Card className="p-5 flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center text-[var(--accent-blue)] border border-[var(--border)] shrink-0">
                     <User size={28} />
                 </div>
-                <div>
-                    <h3 className="text-lg font-bold">{user?.user_metadata?.nama || 'User'}</h3>
-                    <p className="text-sm text-[var(--text-muted)]">{user?.email}</p>
+                <div className="min-w-0">
+                    <h3 className="text-lg font-bold truncate">{user?.user_metadata?.nama || 'User'}</h3>
+                    <p className="text-[13px] text-[var(--text-muted)] truncate">{user?.email}</p>
                 </div>
             </Card>
 
-            {/* Edit Profile */}
+            {/* Edit Profile - matches Flutter Konfigurasi Identitas section */}
             <Card className="p-0 overflow-hidden">
-                <div className="px-6 py-4 border-b border-[var(--border)] flex items-center gap-3">
+                <div className="px-4 md:px-6 py-4 border-b border-[var(--border)] flex items-center gap-3">
                     <div className="p-2 bg-[var(--bg-secondary)] rounded-lg">
                         <User size={20} className="text-[var(--text-primary)]" />
                     </div>
-                    <h4 className="font-bold text-sm">Konfigurasi Identitas</h4>
+                    <h4 className="font-bold text-sm md:text-base">Konfigurasi Identitas</h4>
                 </div>
                 {loadingProfile ? (
                     <div className="flex justify-center py-10">
                         <Loader2 size={24} className="animate-spin text-[var(--accent-blue)]" />
                     </div>
                 ) : (
-                    <form onSubmit={handleUpdateProfile} className="p-6 space-y-4">
+                    <form onSubmit={handleUpdateProfile} className="p-4 md:p-6 space-y-4">
                         <Input
                             label="Alias Unik (@)"
                             type="text"
@@ -142,15 +143,15 @@ export default function PengaturanPage() {
                 )}
             </Card>
 
-            {/* Change Password */}
+            {/* Change Password - matches Flutter Pembaruan Sandi section */}
             <Card className="p-0 overflow-hidden">
-                <div className="px-6 py-4 border-b border-[var(--border)] flex items-center gap-3">
+                <div className="px-4 md:px-6 py-4 border-b border-[var(--border)] flex items-center gap-3">
                     <div className="p-2 bg-[var(--accent-red-dim)] rounded-lg">
                         <Lock size={20} className="text-[var(--accent-red)]" />
                     </div>
-                    <h4 className="font-bold text-sm">Pembaruan Sandi</h4>
+                    <h4 className="font-bold text-sm md:text-base">Pembaruan Sandi</h4>
                 </div>
-                <form onSubmit={handleChangePassword} className="p-6 space-y-4">
+                <form onSubmit={handleChangePassword} className="p-4 md:p-6 space-y-4">
                     <Input
                         label="Kata Sandi Baru"
                         type="password"
@@ -178,7 +179,7 @@ export default function PengaturanPage() {
                 </form>
             </Card>
 
-            {/* Logout */}
+            {/* Logout - matches Flutter logout card */}
             <Card className="p-0 overflow-hidden">
                 <button
                     onClick={signOut}
@@ -191,9 +192,10 @@ export default function PengaturanPage() {
                 </button>
             </Card>
 
-            <div className="text-center pt-10">
-                <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">HITERA Version 2.0.0</p>
-                <p className="text-[10px] text-[var(--text-muted)] mt-1 tracking-tight">&copy; 2026 Dardcor Hitera</p>
+            {/* Footer - matches Flutter exactly */}
+            <div className="text-center pt-6 md:pt-10">
+                <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-[2px] font-bold">HITERA Version 2.0.0</p>
+                <p className="text-[10px] text-[var(--text-muted)] mt-1 tracking-[-0.3px]">&copy; 2026 Dardcor Hitera</p>
             </div>
         </div>
     );

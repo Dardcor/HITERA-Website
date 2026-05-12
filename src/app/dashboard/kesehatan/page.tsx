@@ -19,30 +19,33 @@ export default function KesehatanPage() {
     const prevDay = () => setTanggal(tambahHari(tanggal, -1));
     const nextDay = () => setTanggal(tambahHari(tanggal, 1));
 
-    const MetrikCard = ({ icon: Icon, color, label, value, unit }: any) => (
-        <Card className="flex flex-col gap-3">
-            <div className={cn("p-2 w-fit rounded-lg", color)}>
-                <Icon size={20} />
+    /* Metric card matching Flutter _metrikCard: icon top-left, value bottom-left */
+    const MetrikCard = ({ icon: Icon, color, bgColor, label, value, unit }: any) => (
+        <Card className="flex flex-col justify-between gap-3 p-3.5 md:p-5 min-h-[100px]">
+            <div className={cn("p-1.5 w-fit rounded-lg", bgColor)}>
+                <Icon size={18} className={color} />
             </div>
             <div>
-                <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider">{label}</p>
-                <p className="text-xl font-bold flex items-baseline gap-1">
-                    {value || '-'} <span className="text-[10px] text-[var(--text-muted)] font-medium lowercase">{unit}</span>
-                </p>
+                <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wider">{label}</p>
+                <div className="flex items-baseline gap-1">
+                    <span className="text-lg font-extrabold text-[var(--text-primary)]">{value || '-'}</span>
+                    <span className="text-[9px] text-[var(--text-muted)]">{unit}</span>
+                </div>
             </div>
         </Card>
     );
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500 pb-20">
+        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+            {/* Header - matches Flutter AppBar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold">Kesehatan Harian</h2>
-                    <div className="flex items-center gap-2 mt-1">
+                    <h2 className="hidden md:block text-2xl font-bold">Kesehatan Harian</h2>
+                    <div className="flex items-center gap-2 mt-0 md:mt-1">
                         <button onClick={prevDay} className="p-1 hover:bg-[var(--bg-card-hover)] rounded border border-[var(--border)]">
                             <ChevronLeft size={16} />
                         </button>
-                        <span className="text-sm font-bold text-[var(--accent-blue)]">
+                        <span className="text-xs font-bold text-[var(--accent-blue)]">
                             {formatTanggalID(tanggal)}
                         </span>
                         <button onClick={nextDay} className="p-1 hover:bg-[var(--bg-card-hover)] rounded border border-[var(--border)]">
@@ -55,41 +58,46 @@ export default function KesehatanPage() {
                 </Button>
             </div>
 
+            {/* Content - matches Flutter empty state or metrics grid */}
             {!loading && !data ? (
-                <Card className="flex flex-col items-center justify-center py-20 text-center">
-                    <div className="w-20 h-20 bg-[var(--bg-secondary)] rounded-full flex items-center justify-center text-[var(--accent-blue)] mb-6 animate-pulse">
-                        <HeartPulse size={40} />
+                <Card className="flex flex-col items-center justify-center py-16 md:py-20 text-center">
+                    <div className="w-[72px] h-[72px] bg-[var(--bg-secondary)] rounded-full flex items-center justify-center text-[var(--accent-blue)] mb-5 md:mb-6">
+                        <HeartPulse size={36} />
                     </div>
                     <h3 className="text-xl font-bold mb-2">Data Belum Diisi</h3>
-                    <p className="text-[var(--text-secondary)] text-sm max-w-xs mb-8">
+                    <p className="text-sm text-[var(--text-secondary)] max-w-xs mb-6">
                         Catat perkembangan kesehatan Anda hari ini.
                     </p>
-                    <Button onClick={() => setIsModalOpen(true)} className="px-8">
+                    <Button onClick={() => setIsModalOpen(true)} className="px-7 py-3">
                         Isi Data Kesehatan
                     </Button>
                 </Card>
             ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                /* 2x2 grid on mobile matching Flutter GridView.count(crossAxisCount: 2) with childAspectRatio: 1.6 */
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-4">
                     <MetrikCard
                         icon={Droplet}
-                        color="bg-cyan-500/10 text-cyan-500"
+                        color="text-cyan-500"
+                        bgColor="bg-cyan-500/10"
                         label="Air Minum"
                         value={data?.air_minum}
                         unit="gelas"
                     />
                     <MetrikCard
                         icon={Moon}
-                        color="bg-indigo-500/10 text-indigo-500"
+                        color="text-indigo-500"
+                        bgColor="bg-indigo-500/10"
                         label="Jam Tidur"
                         value={data?.jam_tidur}
                         unit="jam"
                     />
-                    <Card className="flex flex-col gap-3">
-                        <div className="p-2 w-fit rounded-lg bg-amber-500/10 text-amber-500">
-                            <Clipboard size={20} />
+                    {/* Catatan card - matches Flutter _catatanCard */}
+                    <Card className="flex flex-col justify-between gap-3 p-3.5 md:p-5 col-span-2 md:col-span-1 min-h-[100px]">
+                        <div className="p-1.5 w-fit rounded-lg bg-amber-500/10">
+                            <Clipboard size={18} className="text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wider">Catatan</p>
+                            <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wider">Catatan</p>
                             <p className="text-xs text-[var(--text-secondary)] line-clamp-2 italic">
                                 {data?.catatan || '-'}
                             </p>
@@ -98,14 +106,15 @@ export default function KesehatanPage() {
                 </div>
             )}
 
-            <div className="pt-6">
-                <div className="flex justify-between items-center mb-4 px-1">
-                    <h3 className="text-sm font-bold uppercase tracking-widest">Riwayat 7 Hari Terakhir</h3>
+            {/* History section - matches Flutter */}
+            <div className="pt-2 md:pt-6">
+                <div className="flex justify-between items-center mb-3 md:mb-4 px-1">
+                    <h3 className="text-xs font-bold uppercase tracking-[1.5px]">Riwayat 7 Hari Terakhir</h3>
                     <Link href="/dashboard/kesehatan/history" className="text-xs text-[var(--accent-blue)] font-bold hover:underline">
                         Lihat Semua
                     </Link>
                 </div>
-                <Card className="p-6">
+                <Card className="p-5 md:p-6">
                     <p className="text-sm text-[var(--text-muted)] italic">
                         Fitur analisis tren 7 hari akan muncul di sini setelah Anda mengisi data minimal selama 3 hari berturut-turut.
                     </p>
