@@ -10,8 +10,8 @@ import {
     CheckSquare,
     Settings,
     LogOut,
-    ChevronLeft,
-    ChevronRight
+    Menu,
+    X
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -36,14 +36,17 @@ export default function Sidebar() {
                 isCollapsed ? "w-20" : "w-64"
             )}
         >
-            <div className="p-6 flex items-center justify-between">
+            <div className={cn(
+                "p-4 flex items-center transition-all",
+                isCollapsed ? "justify-center" : "justify-between px-6 py-6"
+            )}>
                 {!isCollapsed && <Image src="/logo.png" alt="HITERA" width={100} height={32} className="h-8 w-auto" />}
-                {isCollapsed && <Image src="/logo.png" alt="HITERA" width={32} height={32} className="h-8 w-8 object-contain" />}
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="p-1.5 rounded-lg hover:bg-[var(--bg-card-hover)] text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                    className="p-2 rounded-lg hover:bg-[var(--bg-card-hover)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all"
+                    title={isCollapsed ? "Buka Sidebar" : "Tutup Sidebar"}
                 >
-                    {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+                    {isCollapsed ? <Menu size={24} /> : <X size={20} />}
                 </button>
             </div>
 
@@ -55,14 +58,17 @@ export default function Sidebar() {
                             key={item.href}
                             href={item.href}
                             className={cn(
-                                "flex items-center gap-3 px-3 py-3 rounded-lg transition-all group",
+                                "flex items-center gap-3 px-3 py-3 rounded-lg transition-all group relative",
                                 isActive
-                                    ? "bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] border-l-2 border-[var(--accent-blue)]"
+                                    ? "bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] border-l-4 border-[var(--accent-blue)]"
                                     : "text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)]"
                             )}
                         >
-                            <item.icon size={20} className={cn(isActive ? "text-[var(--accent-blue)]" : "text-[var(--text-muted)] group-hover:text-[var(--text-primary)]")} />
-                            {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
+                            <item.icon size={20} className={cn(
+                                "transition-colors",
+                                isActive ? "text-[var(--accent-blue)]" : "text-[var(--text-muted)] group-hover:text-[var(--text-primary)]"
+                            )} />
+                            {!isCollapsed && <span className="text-sm font-bold tracking-tight">{item.name}</span>}
                         </Link>
                     );
                 })}

@@ -46,8 +46,8 @@ export default function RegisterPage() {
 
             if (error) throw error;
 
-            success('Registrasi berhasil! Silakan login.');
-            router.push('/login');
+            success('Registrasi berhasil! Menyiapkan dashboard...');
+            router.push('/dashboard');
         } catch (err: any) {
             toastError(err.message || 'Gagal registrasi.');
         } finally {
