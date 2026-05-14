@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { HeartPulse, Droplet, Moon, Plus, Minus, Loader2, Save, StickyNote } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { nowWIB } from '@/lib/utils';
 
 export default function KesehatanView() {
     const [water, setWater] = useState(0);
@@ -9,7 +10,7 @@ export default function KesehatanView() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = nowWIB().toISOString().split('T')[0];
 
     const fetchHealthData = useCallback(async () => {
         setLoading(true);

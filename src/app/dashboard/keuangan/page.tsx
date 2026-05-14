@@ -7,6 +7,7 @@ import { hariIni, tambahHari, formatTanggalID, formatRupiah } from '@/lib/utils'
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
+import { useTranslation } from '@/contexts/LanguageContext';
 import { Plus, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
 import TransaksiForm from '@/components/keuangan/TransaksiForm';
 import TransaksiCard from '@/components/keuangan/TransaksiCard';
@@ -14,6 +15,8 @@ import TransaksiCard from '@/components/keuangan/TransaksiCard';
 export default function KeuanganPage() {
     const [tanggal, setTanggal] = useState(hariIni());
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const { t } = useTranslation();
 
     const {
         transaksi,
@@ -52,7 +55,7 @@ export default function KeuanganPage() {
                     </div>
                 </div>
                 <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
-                    <Plus size={18} /> Tambah Transaksi
+                    <Plus size={18} /> {t('add_transaction')}
                 </Button>
             </div>
 
@@ -60,7 +63,7 @@ export default function KeuanganPage() {
             <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-blue)] p-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">SALDO ANDA SEKARANG</p>
+                        <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">{t('balance_now')}</p>
                         <h3 className="text-base md:text-xl font-extrabold text-[var(--text-primary)]">{loading ? "..." : formatRupiah(totalSaldo)}</h3>
                     </div>
                     <div className="p-2 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-lg">
@@ -74,7 +77,7 @@ export default function KeuanganPage() {
                 <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-green)] p-4">
                     <div className="flex items-center justify-between">
                         <div className="min-w-0 flex-1">
-                            <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">TOTAL PEMASUKAN</p>
+                            <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">{t('income')}</p>
                             <h3 className="text-sm md:text-xl font-extrabold text-[var(--accent-green)] truncate">{loading ? "..." : formatRupiah(totalPemasukan)}</h3>
                         </div>
                         <div className="p-2 bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-lg ml-2 shrink-0">
@@ -86,7 +89,7 @@ export default function KeuanganPage() {
                 <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-red)] p-4">
                     <div className="flex items-center justify-between">
                         <div className="min-w-0 flex-1">
-                            <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">TOTAL PENGELUARAN</p>
+                            <p className="text-[9px] text-[var(--text-muted)] uppercase font-bold tracking-wider mb-1">{t('expense')}</p>
                             <h3 className="text-sm md:text-xl font-extrabold text-[var(--accent-red)] truncate">{loading ? "..." : formatRupiah(totalPengeluaran)}</h3>
                         </div>
                         <div className="p-2 bg-[var(--accent-red-dim)] text-[var(--accent-red)] rounded-lg ml-2 shrink-0">
@@ -99,7 +102,7 @@ export default function KeuanganPage() {
             {/* Transaksi list - matches Flutter layout */}
             <div className="space-y-3 md:space-y-4">
                 <div className="flex justify-between items-center px-1">
-                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-[1.5px]">Transaksi Hari Ini</h3>
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-[1.5px]">Transaksi</h3>
                     <Link href="/dashboard/keuangan/history" className="text-xs text-[var(--accent-blue)] font-bold hover:underline">
                         Lihat Semua History
                     </Link>
@@ -114,7 +117,7 @@ export default function KeuanganPage() {
                         <div className="w-16 h-16 bg-[var(--bg-secondary)] rounded-full flex items-center justify-center text-[var(--text-muted)] mb-4">
                             <Wallet size={32} />
                         </div>
-                        <p className="text-[var(--text-muted)] italic">Tidak ada transaksi pada tanggal ini.</p>
+                        <p className="text-[var(--text-muted)] italic">Belum ada transaksi.</p>
                         <button
                             onClick={() => setIsModalOpen(true)}
                             className="mt-3 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
@@ -140,7 +143,7 @@ export default function KeuanganPage() {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title="Tambah Transaksi"
+                title={t('add_transaction')}
             >
                 <TransaksiForm
                     onSuccess={() => setIsModalOpen(false)}

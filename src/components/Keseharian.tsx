@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BookOpen, ListTodo, NotebookPen, Check, X, Plus, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { nowWIB } from '@/lib/utils';
 
 type Todo = {
     id: string;
@@ -15,7 +16,7 @@ export default function KeseharianView() {
     const [loading, setLoading] = useState(true);
     const [savingNotes, setSavingNotes] = useState(false);
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = nowWIB().toISOString().split('T')[0];
 
     const fetchAllData = useCallback(async () => {
         setLoading(true);

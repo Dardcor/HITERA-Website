@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { formatRupiah, formatTanggalID, hariIni, cn, formatTanggalSingkat } from '@/lib/utils';
+import { formatRupiah, formatTanggalID, hariIni, nowWIB, cn, formatTanggalSingkat } from '@/lib/utils';
 import { Card } from '@/components/ui/Card';
 import { Input, Select } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -22,23 +22,25 @@ export default function KeuanganHistoryPage() {
     const supabase = createClient();
 
     const applyPreset = useCallback((p: string) => {
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
+        const now = nowWIB();
+        const today = hariIni();
         let from = '';
 
-        const d = new Date();
         switch (p) {
             case 'Minggu':
-                d.setDate(d.getDate() - 7);
-                from = d.toISOString().split('T')[0];
+                const d7 = new Date(now);
+                d7.setDate(d7.getDate() - 7);
+                from = d7.toISOString().split('T')[0];
                 break;
             case 'Bulan':
-                d.setMonth(d.getMonth() - 1);
-                from = d.toISOString().split('T')[0];
+                const d30 = new Date(now);
+                d30.setMonth(d30.getMonth() - 1);
+                from = d30.toISOString().split('T')[0];
                 break;
             case 'Tahun':
-                d.setFullYear(d.getFullYear() - 1);
-                from = d.toISOString().split('T')[0];
+                const d365 = new Date(now);
+                d365.setFullYear(d365.getFullYear() - 1);
+                from = d365.toISOString().split('T')[0];
                 break;
             default: // Semua
                 from = '2020-01-01';

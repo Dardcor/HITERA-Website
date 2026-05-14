@@ -9,7 +9,10 @@ import { useToast } from '@/components/ui/Toast';
 export function useKeuangan(tanggal: string) {
     const [transaksi, setTransaksi] = useState<Transaksi[]>([]);
     const [totalSaldo, setTotalSaldo] = useState(0);
+    const [totalPemasukan, setTotalPemasukan] = useState(0);
+    const [totalPengeluaran, setTotalPengeluaran] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [trendSaldo, setTrendSaldo] = useState<{tanggal: string, saldo: number}[]>([]);
     const { user } = useAuth();
     const { success, error: toastError } = useToast();
     const supabase = createClient();
@@ -21,22 +24,60 @@ export function useKeuangan(tanggal: string) {
             // Fetch total saldo (all time)
             const { data: allData, error: totalError } = await supabase
                 .from('transaksi')
-                .select('jenis, jumlah')
+                .select('jenis, jumlah, tanggal')
                 .eq('user_id', user.id);
 
             if (totalError) throw totalError;
 
-            const total = (allData || []).reduce((acc, t) => {
-                return t.jenis === 'pemasukan' ? acc + Number(t.jumlah) : acc - Number(t.jumlah);
-            }, 0);
-            setTotalSaldo(total);
+            let inTotal = 0;
+            let outTotal = 0;
+            const dailyChange: Record<string, number> = {};
 
-            // Fetch daily transactions
+            (allData || []).forEach(t => {
+                const amt = Number(t.jumlah);
+                const date = t.tanggal as string;
+                if (t.jenis === 'pemasukan') {
+                    inTotal += amt;
+                    dailyChange[date] = (dailyChange[date] || 0) + amt;
+                } else {
+                    outTotal += amt;
+                    dailyChange[date] = (dailyChange[date] || 0) - amt;
+                }
+            });
+            setTotalPemasukan(inTotal);
+            setTotalPengeluaran(outTotal);
+            const currentTotalBalance = inTotal - outTotal;
+            setTotalSaldo(currentTotalBalance);
+
+            // Calculate last 7 days trend
+            const trend = [];
+            const todayDate = new Date();
+            let runningBalance = currentTotalBalance;
+
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(todayDate);
+                d.setDate(d.getDate() - i);
+                // Format YYYY-MM-DD
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}-${mm}-${dd}`;
+
+                trend.unshift({
+                    tanggal: dateStr,
+                    saldo: runningBalance,
+                });
+
+                const changeData = dailyChange[dateStr] || 0;
+                runningBalance -= changeData;
+            }
+            setTrendSaldo(trend);
+
+            // Fetch all transactions
             const { data, error } = await supabase
                 .from('transaksi')
                 .select('*')
                 .eq('user_id', user.id)
-                .eq('tanggal', tanggal)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -52,14 +93,7 @@ export function useKeuangan(tanggal: string) {
         fetchStats();
     }, [fetchStats]);
 
-    const totalPemasukan = transaksi
-        .filter(t => t.jenis === 'pemasukan')
-        .reduce((sum, t) => sum + Number(t.jumlah), 0);
-
-    const totalPengeluaran = transaksi
-        .filter(t => t.jenis === 'pengeluaran')
-        .reduce((sum, t) => sum + Number(t.jumlah), 0);
-
+    // Variables removed in favor of cumulative states
 
     const tambahTransaksi = async (data: TransaksiForm) => {
         if (!user) return;
@@ -93,6 +127,7 @@ export function useKeuangan(tanggal: string) {
         totalPengeluaran,
         saldoBersih: totalPemasukan - totalPengeluaran,
         totalSaldo,
+        trendSaldo,
         tambahTransaksi,
         hapusTransaksi,
         refresh: fetchStats

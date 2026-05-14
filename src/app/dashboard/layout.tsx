@@ -1,3 +1,4 @@
+import { LanguageProvider } from '@/contexts/LanguageContext';
 import { createServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
@@ -26,7 +27,9 @@ export default async function DashboardLayout({
                 {/* Main content area - 16px padding on mobile matching Flutter EdgeInsets.all(16) */}
                 <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
                     <div className="max-w-7xl mx-auto">
-                        {children}
+                        <LanguageProvider>
+                            {children}
+                        </LanguageProvider>
                     </div>
                 </main>
 

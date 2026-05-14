@@ -53,7 +53,7 @@ export default function TransaksiCard({ transaksi, onDelete }: Props) {
                     {formatRupiah(transaksi.jumlah)}
                 </p>
                 <p className="text-[10px] text-[var(--text-muted)]">
-                    {new Date(transaksi.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(transaksi.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </p>
             </div>
 

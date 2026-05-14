@@ -1,7 +1,7 @@
 'use client';
 
 import { Tugas } from '@/types';
-import { cn, formatTanggalSingkat } from '@/lib/utils';
+import { cn, formatTanggalSingkat, nowWIB } from '@/lib/utils';
 import { Check, Trash2, Clock } from 'lucide-react';
 
 interface Props {
@@ -19,7 +19,7 @@ export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
         rendah: "bg-[var(--accent-blue)]",
     };
 
-    const isOverdue = tugas.deadline && tugas.status !== 'selesai' && new Date(tugas.deadline) < new Date();
+    const isOverdue = tugas.deadline && tugas.status !== 'selesai' && new Date(tugas.deadline) < nowWIB();
 
     return (
         <div className={cn(

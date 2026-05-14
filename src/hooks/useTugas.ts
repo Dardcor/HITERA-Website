@@ -5,8 +5,9 @@ import { createClient } from '@/lib/supabase/client';
 import { Tugas, TugasForm } from '@/types';
 import { useAuth } from './useAuth';
 import { useToast } from '@/components/ui/Toast';
+import { hariIni } from '@/lib/utils';
 
-export function useTugas(tanggal: string) {
+export function useTugas() {
     const [tugas, setTugas] = useState<Tugas[]>([]);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
@@ -21,7 +22,6 @@ export function useTugas(tanggal: string) {
                 .from('tugas')
                 .select('*')
                 .eq('user_id', user.id)
-                .eq('tanggal_target', tanggal)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
@@ -31,7 +31,7 @@ export function useTugas(tanggal: string) {
         } finally {
             setLoading(false);
         }
-    }, [user, tanggal, supabase, toastError]);
+    }, [user, supabase, toastError]);
 
     useEffect(() => {
         fetchTugas();

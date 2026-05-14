@@ -22,6 +22,8 @@ export interface DataKesehatan {
   air_minum?: number;
   jam_tidur?: number;
   catatan?: string;
+  olahraga_jam?: number;
+  olahraga_menit?: number;
   created_at: string;
 }
 

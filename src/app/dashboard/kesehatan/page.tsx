@@ -6,13 +6,16 @@ import { hariIni, tambahHari, formatTanggalID, cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
-import { ChevronLeft, ChevronRight, Edit3, HeartPulse, Droplet, Moon, Clipboard } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
+import { ChevronLeft, ChevronRight, Edit3, HeartPulse, Droplet, Moon, Clipboard, Dumbbell } from 'lucide-react';
 import KesehatanForm from '@/components/kesehatan/KesehatanForm';
 import Link from 'next/link';
 
 export default function KesehatanPage() {
     const [tanggal, setTanggal] = useState(hariIni());
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const { t } = useTranslation();
 
     const { data, loading } = useKesehatan(tanggal);
 
@@ -54,7 +57,7 @@ export default function KesehatanPage() {
                     </div>
                 </div>
                 <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
-                    <Edit3 size={18} /> {data ? 'Edit Data' : 'Isi Data Hari Ini'}
+                    <Edit3 size={18} /> {data ? t('edit') : t('save_data')}
                 </Button>
             </div>
 
@@ -69,27 +72,35 @@ export default function KesehatanPage() {
                         Catat perkembangan kesehatan Anda hari ini.
                     </p>
                     <Button onClick={() => setIsModalOpen(true)} className="px-7 py-3">
-                        Isi Data Kesehatan
+                        {t('save_data')}
                     </Button>
                 </Card>
             ) : (
                 /* 2x2 grid on mobile matching Flutter GridView.count(crossAxisCount: 2) with childAspectRatio: 1.6 */
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 md:gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
                     <MetrikCard
                         icon={Droplet}
                         color="text-cyan-500"
                         bgColor="bg-cyan-500/10"
-                        label="Air Minum"
+                        label={t('water_intake')}
                         value={data?.air_minum}
-                        unit="gelas"
+                        unit={t('glasses').toLowerCase()}
                     />
                     <MetrikCard
                         icon={Moon}
                         color="text-indigo-500"
                         bgColor="bg-indigo-500/10"
-                        label="Jam Tidur"
+                        label={t('sleep_hours')}
                         value={data?.jam_tidur}
-                        unit="jam"
+                        unit={t('hours').toLowerCase()}
+                    />
+                    <MetrikCard
+                        icon={Dumbbell}
+                        color="text-orange-500"
+                        bgColor="bg-orange-500/10"
+                        label={t('exercise_duration')}
+                        value={`${data?.olahraga_jam ?? 0}${t('hour_short')} ${data?.olahraga_menit ?? 0}${t('minute_short')}`}
+                        unit=""
                     />
                     {/* Catatan card - matches Flutter _catatanCard */}
                     <Card className="flex flex-col justify-between gap-3 p-3.5 md:p-5 col-span-2 md:col-span-1 min-h-[100px]">
@@ -97,7 +108,7 @@ export default function KesehatanPage() {
                             <Clipboard size={18} className="text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wider">Catatan</p>
+                            <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wider">{t('notes')}</p>
                             <p className="text-xs text-[var(--text-secondary)] line-clamp-2 italic">
                                 {data?.catatan || '-'}
                             </p>
@@ -124,7 +135,7 @@ export default function KesehatanPage() {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={data ? "Edit Data Kesehatan" : "Isi Data Kesehatan"}
+                title={data ? t('edit') : t('save_data')}
             >
                 <KesehatanForm
                     initialData={data}

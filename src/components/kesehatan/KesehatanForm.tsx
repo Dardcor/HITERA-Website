@@ -17,6 +17,8 @@ interface Props {
 export default function KesehatanForm({ initialData, tanggal, onSuccess, onCancel }: Props) {
     const [airMinum, setAirMinum] = useState(initialData?.air_minum || 0);
     const [jamTidur, setJamTidur] = useState(initialData?.jam_tidur || '');
+    const [olahragaJam, setOlahragaJam] = useState(initialData?.olahraga_jam || 0);
+    const [olahragaMenit, setOlahragaMenit] = useState(initialData?.olahraga_menit || 0);
     const [catatan, setCatatan] = useState(initialData?.catatan || '');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,6 +33,8 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
             air_minum: Number(airMinum),
             jam_tidur: Number(jamTidur),
             catatan,
+            olahraga_jam: Number(olahragaJam),
+            olahraga_menit: Number(olahragaMenit),
         };
 
         await simpanData(data);
@@ -71,6 +75,50 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
                 onChange={(e) => setJamTidur(e.target.value)}
                 placeholder="7.5"
             />
+
+            <div className="space-y-2">
+                <label className="text-xs font-medium text-[var(--text-muted)] ml-1">Durasi Olahraga</label>
+                <div className="flex gap-2.5">
+                    <div className="flex-1 flex items-center gap-2 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-2.5">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="p-1.5 h-auto"
+                            onClick={() => setOlahragaJam(Math.max(0, olahragaJam - 1))}
+                        >
+                            <Minus size={16} />
+                        </Button>
+                        <div className="flex-1 text-center font-bold text-base">{olahragaJam} <span className="text-[10px] text-[var(--text-muted)]">Jam</span></div>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="p-1.5 h-auto"
+                            onClick={() => setOlahragaJam(Math.min(24, olahragaJam + 1))}
+                        >
+                            <Plus size={16} />
+                        </Button>
+                    </div>
+                    <div className="flex-1 flex items-center gap-2 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-2.5">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="p-1.5 h-auto"
+                            onClick={() => setOlahragaMenit(Math.max(0, olahragaMenit - 5))}
+                        >
+                            <Minus size={16} />
+                        </Button>
+                        <div className="flex-1 text-center font-bold text-base">{olahragaMenit} <span className="text-[10px] text-[var(--text-muted)]">Mnt</span></div>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="p-1.5 h-auto"
+                            onClick={() => setOlahragaMenit(Math.min(55, olahragaMenit + 5))}
+                        >
+                            <Plus size={16} />
+                        </Button>
+                    </div>
+                </div>
+            </div>
 
             <Textarea
                 label="Catatan Hari Ini"

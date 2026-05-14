@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from '@/contexts/LanguageContext';
 import {
     LayoutDashboard,
     Wallet,
@@ -17,17 +18,18 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 
-const menuItems = [
-    { name: 'Ringkasan', icon: LayoutDashboard, href: '/dashboard' },
-    { name: 'Keuangan', icon: Wallet, href: '/dashboard/keuangan' },
-    { name: 'Kesehatan', icon: HeartPulse, href: '/dashboard/kesehatan' },
-    { name: 'Tugas', icon: CheckSquare, href: '/dashboard/tugas' },
-];
-
 export default function Sidebar() {
     const pathname = usePathname();
+    const { t } = useTranslation();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { signOut } = useAuth();
+
+    const menuItems = [
+        { name: t('home'), icon: LayoutDashboard, href: '/dashboard' },
+        { name: t('finance'), icon: Wallet, href: '/dashboard/keuangan' },
+        { name: t('health'), icon: HeartPulse, href: '/dashboard/kesehatan' },
+        { name: t('tasks'), icon: CheckSquare, href: '/dashboard/tugas' },
+    ];
 
     return (
         <aside
@@ -80,14 +82,14 @@ export default function Sidebar() {
                     className="flex items-center gap-3 px-3 py-3 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)] transition-all group"
                 >
                     <Settings size={20} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" />
-                    {!isCollapsed && <span className="text-sm font-medium">Pengaturan</span>}
+                    {!isCollapsed && <span className="text-sm font-medium">{t('settings')}</span>}
                 </Link>
                 <button
                     onClick={signOut}
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-[var(--accent-red)] hover:bg-[var(--accent-red-dim)] transition-all group"
                 >
                     <LogOut size={20} />
-                    {!isCollapsed && <span className="text-sm font-medium">Keluar</span>}
+                    {!isCollapsed && <span className="text-sm font-medium">{t('logout')}</span>}
                 </button>
             </div>
         </aside>

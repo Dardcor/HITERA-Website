@@ -2,19 +2,21 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from '@/contexts/LanguageContext';
 import { LayoutDashboard, Wallet, HeartPulse, CheckSquare, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const navItems = [
-    { name: 'HOME', icon: LayoutDashboard, href: '/dashboard' },
-    { name: 'FINANCE', icon: Wallet, href: '/dashboard/keuangan' },
-    { name: 'HEALTH', icon: HeartPulse, href: '/dashboard/kesehatan' },
-    { name: 'TASKS', icon: CheckSquare, href: '/dashboard/tugas' },
-    { name: 'SETTING', icon: Settings, href: '/dashboard/pengaturan' },
-];
-
 export default function MobileNav() {
     const pathname = usePathname();
+    const { t } = useTranslation();
+
+    const navItems = [
+        { name: t('home').toUpperCase(), icon: LayoutDashboard, href: '/dashboard' },
+        { name: t('finance').toUpperCase(), icon: Wallet, href: '/dashboard/keuangan' },
+        { name: t('health').toUpperCase(), icon: HeartPulse, href: '/dashboard/kesehatan' },
+        { name: t('tasks').toUpperCase(), icon: CheckSquare, href: '/dashboard/tugas' },
+        { name: t('settings').toUpperCase(), icon: Settings, href: '/dashboard/pengaturan' },
+    ];
 
     return (
         <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--bg-card)] border-t border-[var(--border)] flex items-center justify-around z-[40]"

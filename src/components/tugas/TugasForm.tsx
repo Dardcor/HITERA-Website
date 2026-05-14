@@ -5,23 +5,22 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { TugasForm as TForm } from '@/types';
 import { useTugas } from '@/hooks/useTugas';
-import { cn, formatTanggalID } from '@/lib/utils';
-import { X, Calendar } from 'lucide-react';
+import { cn, hariIni, nowWIB } from '@/lib/utils';
+import { X } from 'lucide-react';
 
 interface Props {
-    tanggal: string;
     onSuccess: () => void;
     onCancel: () => void;
 }
 
-export default function TugasForm({ tanggal, onSuccess, onCancel }: Props) {
+export default function TugasForm({ onSuccess, onCancel }: Props) {
     const [judul, setJudul] = useState('');
     const [deskripsi, setDeskripsi] = useState('');
     const [prioritas, setPrioritas] = useState<'rendah' | 'sedang' | 'tinggi'>('sedang');
     const [deadline, setDeadline] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { addTugas } = useTugas(tanggal);
+    const { addTugas } = useTugas();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,7 +32,7 @@ export default function TugasForm({ tanggal, onSuccess, onCancel }: Props) {
             deskripsi,
             prioritas,
             status: 'aktif',
-            tanggal_target: tanggal,
+            tanggal_target: hariIni(),
             deadline: deadline || undefined,
         });
 
@@ -65,7 +64,7 @@ export default function TugasForm({ tanggal, onSuccess, onCancel }: Props) {
                         type="date"
                         value={deadline}
                         onChange={(e) => setDeadline(e.target.value)}
-                        min={new Date().toISOString().split('T')[0]}
+                        min={nowWIB().toISOString().split('T')[0]}
                         className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:outline-none transition-colors [color-scheme:dark]"
                     />
                     {deadline && (
