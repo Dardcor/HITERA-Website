@@ -27,12 +27,12 @@ export async function middleware(request: NextRequest) {
         }
     )
 
-    // Penting: Memanggil getUser() akan memperbarui session dan refresh token secara otomatis
-    // jika session sudah expired namun refresh token masih valid.
-    // Ini membuat sesi login menjadi "permanen" selama refresh token belum expired atau di-revoke.
+    
+    
+    
     const { data: { user } } = await supabase.auth.getUser()
 
-    // Redirect logic
+    
     const isAuthPage = request.nextUrl.pathname.startsWith('/login') ||
         request.nextUrl.pathname.startsWith('/register') ||
         request.nextUrl.pathname === '/';
@@ -52,13 +52,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * Feel free to modify this pattern to include more paths.
-         */
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+                '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }

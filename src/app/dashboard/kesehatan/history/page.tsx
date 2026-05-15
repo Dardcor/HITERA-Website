@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ChevronLeft, Search, Droplet, Moon, Clipboard } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
 import { DataKesehatan } from '@/types';
 import Link from 'next/link';
 
@@ -19,6 +20,14 @@ export default function KesehatanHistoryPage() {
     const [preset, setPreset] = useState('Minggu');
     const { user } = useAuth();
     const supabase = createClient();
+    const { t } = useTranslation();
+
+    const presetMap: Record<string, string> = {
+        'Semua': t('filter_all'),
+        'Minggu': t('week'),
+        'Bulan': t('month'),
+        'Tahun': t('year'),
+    };
 
     const applyPreset = useCallback((p: string) => {
         const now = nowWIB();
@@ -41,7 +50,7 @@ export default function KesehatanHistoryPage() {
                 d365.setFullYear(d365.getFullYear() - 1);
                 from = d365.toISOString().split('T')[0];
                 break;
-            default: // Semua
+            default: 
                 from = '2020-01-01';
         }
 
@@ -82,16 +91,16 @@ export default function KesehatanHistoryPage() {
     }, [user, fromDate, toDate]);
 
     return (
-        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
-            {/* Header */}
+        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
+            {}
             <div className="flex items-center gap-3 md:gap-4 -ml-2 md:ml-0">
                 <Link href="/dashboard/kesehatan" className="p-2 hover:bg-[var(--bg-card-hover)] rounded-full transition-colors">
                     <ChevronLeft size={24} className="text-[var(--text-primary)]" />
                 </Link>
-                <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">Riwayat Kesehatan</h2>
+                <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">{t('health_history')}</h2>
             </div>
 
-            {/* Filter Chips */}
+            {}
             <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
                 {['Semua', 'Minggu', 'Bulan', 'Tahun'].map((p) => {
                     const isSelected = preset === p;
@@ -106,17 +115,17 @@ export default function KesehatanHistoryPage() {
                                     : "bg-[var(--bg-card)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--text-muted)]"
                             )}
                         >
-                            {p}
+                            {presetMap[p] || p}
                         </button>
                     );
                 })}
             </div>
 
-            {/* Filter Card */}
+            {}
             <Card className="p-4 md:p-6">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 items-end">
                     <Input
-                        label="Dari"
+                        label={t('from_date')}
                         type="date"
                         value={fromDate}
                         onChange={(e) => {
@@ -125,7 +134,7 @@ export default function KesehatanHistoryPage() {
                         }}
                     />
                     <Input
-                        label="Sampai"
+                        label={t('to_date')}
                         type="date"
                         value={toDate}
                         onChange={(e) => {
@@ -134,7 +143,7 @@ export default function KesehatanHistoryPage() {
                         }}
                     />
                     <Button onClick={fetchHistory} className="flex items-center justify-center gap-2 py-3 md:py-2 col-span-2 md:col-span-1">
-                        <Search size={18} /> Cari
+                        <Search size={18} /> {t('search')}
                     </Button>
                 </div>
             </Card>
@@ -147,7 +156,7 @@ export default function KesehatanHistoryPage() {
                     </div>
                 ) : history.length === 0 ? (
                     <div className="py-20 text-center text-[var(--text-muted)] italic">
-                        Tidak ada riwayat kesehatan untuk periode ini.
+                        {t('no_health_history_period')}
                     </div>
                 ) : (
                     history.map((h) => (

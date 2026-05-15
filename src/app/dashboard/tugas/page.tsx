@@ -28,7 +28,7 @@ export default function TugasPage() {
 
     const displayTugas = filter === 'semua' ? tugas : filter === 'aktif' ? tugasAktif : tugasSelesai;
 
-    // Group tugas by tanggal_target
+    
     const grouped: Record<string, typeof tugas> = {};
     displayTugas.forEach(t => {
         const key = t.tanggal_target;
@@ -38,8 +38,8 @@ export default function TugasPage() {
     const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
 
     return (
-        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
-            {/* Header */}
+        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
+            {}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="hidden md:block text-2xl font-bold">{t('tasks')}</h2>
@@ -49,7 +49,7 @@ export default function TugasPage() {
                 </Button>
             </div>
 
-            {/* Filter tabs */}
+            {}
             <div className="space-y-4">
                 <div className="flex items-center justify-between gap-4 px-1">
                     <div className="flex bg-[var(--bg-secondary)] p-1 rounded-lg border border-[var(--border)] overflow-x-auto flex-1">
@@ -70,7 +70,7 @@ export default function TugasPage() {
                     </div>
                 </div>
 
-                {/* Task list grouped by date */}
+                {}
                 {loading ? (
                     <div className="space-y-2">
                         {[1, 2, 3].map(i => <div key={i} className="h-[72px] w-full bg-[var(--bg-card-hover)] animate-pulse rounded-xl" />)}

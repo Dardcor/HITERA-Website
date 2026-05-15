@@ -33,7 +33,7 @@ export function useSettings() {
           bahasa: data.bahasa ?? 'id',
         });
       } else {
-        // Create default settings
+        
         await supabase.from('user_settings').upsert({
           user_id: user.id,
           notifikasi_enabled: false,
@@ -55,7 +55,7 @@ export function useSettings() {
     const oldSettings = { ...settings };
     const newSettings = { ...settings, ...updates };
     
-    // Optimistic update
+    
     setSettings(newSettings);
     
     try {
@@ -68,7 +68,7 @@ export function useSettings() {
       if (error) throw error;
     } catch (err) {
       console.error('Failed to update settings:', err);
-      // Revert on failure
+      
       setSettings(oldSettings);
       throw err;
     }
@@ -78,13 +78,12 @@ export function useSettings() {
     if (!user) return;
     
     try {
-      // Execute all deletes in parallel
+      
       await Promise.all([
         supabase.from('transaksi').delete().eq('user_id', user.id),
         supabase.from('kesehatan').delete().eq('user_id', user.id),
         supabase.from('tugas').delete().eq('user_id', user.id),
         supabase.from('keseharian_todos').delete().eq('user_id', user.id),
-        supabase.from('keseharian_jurnal').delete().eq('user_id', user.id),
       ]);
     } catch (err) {
       console.error('Failed to delete user data:', err);

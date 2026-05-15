@@ -4,27 +4,29 @@ import { useSettings } from '@/hooks/useSettings';
 import { Card } from '@/components/ui/Card';
 import { useToast } from '@/components/ui/Toast';
 import { ChevronLeft, Loader2 } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 
 export default function NotifikasiPage() {
     const { settings, loading, updateSettings } = useSettings();
     const { error: toastError } = useToast();
+    const { t } = useTranslation();
 
     const handleToggle = async (enabled: boolean) => {
         try {
             await updateSettings({ notifikasi_enabled: enabled });
         } catch (err) {
-            toastError('Gagal memperbarui notifikasi');
+            toastError(t('notification_update_failed'));
         }
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard/pengaturan" className="p-2 hover:bg-[var(--bg-card)] rounded-lg transition-colors">
                     <ChevronLeft size={24} />
                 </Link>
-                <h2 className="text-2xl font-bold">Notifikasi</h2>
+                <h2 className="text-2xl font-bold">{t('notifications')}</h2>
             </div>
 
             {loading ? (
@@ -34,8 +36,8 @@ export default function NotifikasiPage() {
             ) : (
                 <Card className="p-4 md:p-6 flex items-center justify-between">
                     <div>
-                        <h3 className="font-bold text-lg">Notifikasi Pengingat</h3>
-                        <p className="text-sm text-[var(--text-muted)] mt-1">Aktifkan untuk menerima notifikasi pengingat</p>
+                        <h3 className="font-bold text-lg">{t('notification_reminder')}</h3>
+                        <p className="text-sm text-[var(--text-muted)] mt-1">{t('notification_reminder_desc')}</p>
                     </div>
                     
                     <label className="relative inline-flex items-center cursor-pointer">

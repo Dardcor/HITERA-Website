@@ -1,6 +1,6 @@
 export const translations: Record<string, Record<string, string>> = {
   id: {
-    // Navigation
+    
     home: 'Beranda',
     finance: 'Keuangan',
     health: 'Kesehatan',
@@ -8,7 +8,7 @@ export const translations: Record<string, Record<string, string>> = {
     daily: 'Keseharian',
     settings: 'Pengaturan',
 
-    // Home/Dashboard  
+    
     greeting_morning: 'Selamat Pagi',
     greeting_afternoon: 'Selamat Siang',
     greeting_evening: 'Selamat Sore',
@@ -24,7 +24,7 @@ export const translations: Record<string, Record<string, string>> = {
     all_tasks_done: 'Semua tugas selesai',
     exercise: 'Olahraga',
 
-    // Finance
+    
     add_transaction: 'Tambah Transaksi',
     type_income: 'Pemasukan',
     type_expense: 'Pengeluaran',
@@ -37,7 +37,7 @@ export const translations: Record<string, Record<string, string>> = {
     transaction_deleted: 'Transaksi berhasil dihapus',
     failed_load: 'Gagal memuat data',
 
-    // Health  
+    
     water_intake: 'Minum Air',
     sleep_hours: 'Waktu Tidur',
     exercise_duration: 'Olahraga',
@@ -49,7 +49,7 @@ export const translations: Record<string, Record<string, string>> = {
     hour_short: 'j',
     minute_short: 'm',
 
-    // Tasks
+    
     add_task: 'Tambah Tugas',
     task_title: 'Judul Tugas',
     description_optional: 'Deskripsi (Opsional)',
@@ -66,7 +66,7 @@ export const translations: Record<string, Record<string, string>> = {
     no_tasks: 'Belum ada tugas',
     delete_task_confirm: 'Hapus tugas ini?',
 
-    // Settings
+    
     profile: 'Profil',
     notifications: 'Notifikasi',
     data_control: 'Kontrol Data',
@@ -82,15 +82,92 @@ export const translations: Record<string, Record<string, string>> = {
     logout_confirm: 'Apakah Anda yakin ingin keluar?',
     exit: 'Keluar',
 
-    // Common
+    
     delete: 'Hapus',
     edit: 'Edit',
     loading: 'Memuat...',
     error: 'Terjadi kesalahan',
     success: 'Berhasil',
+
+    // Hardcoded strings
+    data_not_filled: 'Data Belum Diisi',
+    record_health_today: 'Catat perkembangan kesehatan Anda hari ini.',
+    fill_health_data: 'Isi Data Kesehatan',
+    latest_activity: 'Aktivitas Terbaru',
+    see_details: 'Lihat Detail',
+    no_activity_today: 'Belum ada aktivitas hari ini',
+    cashflow_comparison: 'Perbandingan Arus Kas',
+    distribution: 'Distribusi',
+    ratio: 'Rasio',
+    daily_finance: 'Keuangan Harian',
+    daily_health: 'Kesehatan Harian',
+    transactions: 'Transaksi',
+    see_all_history: 'Lihat Semua History',
+    no_transactions: 'Belum ada transaksi.',
+    add_now: 'Tambah sekarang',
+    done_progress: 'Selesai',
+    delete_transaction_confirm: 'Hapus transaksi ini?',
+    transaction_history: 'Riwayat Transaksi',
+    health_history: 'Riwayat Kesehatan',
+    task_history: 'Riwayat Tugas',
+    last_7_days: 'Riwayat 7 Hari Terakhir',
+    trend_analysis_hint: 'Fitur analisis tren 7 hari akan muncul di sini setelah Anda mengisi data minimal selama 3 hari berturut-turut.',
+    no_data_period: 'Tidak ada data untuk periode ini.',
+    no_health_history_period: 'Tidak ada riwayat kesehatan untuk periode ini.',
+    no_task_history_period: 'Tidak ada riwayat tugas untuk periode ini.',
+    no_health_history: 'Belum ada riwayat kesehatan.',
+    danger_zone: 'Zona Berbahaya',
+    danger_zone_desc: 'Tindakan ini akan menghapus semua data Anda secara permanen dari server kami, termasuk data transaksi, kesehatan, tugas, dan keseharian. Profil dan pengaturan tidak akan dihapus.',
+    data_deleted_success: 'Semua data berhasil dihapus.',
+    data_delete_failed: 'Gagal menghapus data.',
+    identity_config: 'Konfigurasi Identitas',
+    unique_alias: 'Alias Unik (@)',
+    full_name: 'Nama Lengkap Asli',
+    sync_profile_btn: 'Sinkronisasi Profil',
+    profile_synced: 'Profil berhasil disinkronisasi.',
+    profile_sync_failed: 'Gagal memperbarui profil.',
+    password_update: 'Pembaruan Sandi',
+    new_password: 'Kata Sandi Baru',
+    confirm_new_password: 'Konfirmasi Kata Sandi Baru',
+    apply_new_password: 'Terapkan Sandi Baru',
+    password_applied: 'Kata sandi berhasil diterapkan.',
+    password_apply_failed: 'Gagal memperbarui kata sandi.',
+    password_confirm_mismatch: 'Konfirmasi kata sandi tidak sesuai.',
+    password_min_8: 'Password minimal 8 karakter.',
+    notification_reminder: 'Notifikasi Pengingat',
+    notification_reminder_desc: 'Aktifkan untuk menerima notifikasi pengingat',
+    notification_update_failed: 'Gagal memperbarui notifikasi',
+    language_update_failed: 'Gagal memperbarui bahasa',
+    from_date: 'Dari',
+    to_date: 'Sampai',
+    type_filter: 'Jenis',
+    status_filter: 'Status',
+    search: 'Cari',
+    filter_btn: 'Filter',
+    week: 'Minggu',
+    month: 'Bulan',
+    year: 'Tahun',
+    no_desc: 'Tidak ada deskripsi',
+    postponed: 'Ditunda',
+    done_count: 'Selesai',
+    water: 'Air Minum',
+    sleep: 'Jam Tidur',
+    ex_hint: 'Contoh: Makan siang di kantor',
+    how_feeling: 'Bagaimana perasaanmu hari ini?',
+    add_detail: 'Tambahkan detail...',
+    add_new_task: 'Tambahkan tugas baru...',
+    no_account: 'Belum punya akun? ',
+    no_tasks_queue: 'Tidak ada tugas dalam antrean.',
+    enjoy_free_time: 'Nikmati waktu luang Anda atau tambahkan tugas.',
+    delete_all_data: 'Hapus Semua Data',
+    delete_confirm_message: 'Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan.',
+    cancel: 'Batal',
+    delete_all: 'Hapus Semua',
+    filter_all: 'Semua',
+    data_control: 'Kontrol Data',
   },
   en: {
-    // Navigation
+    
     home: 'Home',
     finance: 'Finance',
     health: 'Health',
@@ -98,7 +175,7 @@ export const translations: Record<string, Record<string, string>> = {
     daily: 'Daily',
     settings: 'Settings',
 
-    // Home/Dashboard  
+    
     greeting_morning: 'Good Morning',
     greeting_afternoon: 'Good Afternoon',
     greeting_evening: 'Good Evening',
@@ -114,7 +191,7 @@ export const translations: Record<string, Record<string, string>> = {
     all_tasks_done: 'All tasks done',
     exercise: 'Exercise',
 
-    // Finance
+    
     add_transaction: 'Add Transaction',
     type_income: 'Income',
     type_expense: 'Expense',
@@ -127,7 +204,7 @@ export const translations: Record<string, Record<string, string>> = {
     transaction_deleted: 'Transaction deleted successfully',
     failed_load: 'Failed to load data',
 
-    // Health  
+    
     water_intake: 'Water Intake',
     sleep_hours: 'Sleep Hours',
     exercise_duration: 'Exercise Duration',
@@ -139,7 +216,7 @@ export const translations: Record<string, Record<string, string>> = {
     hour_short: 'h',
     minute_short: 'm',
 
-    // Tasks
+    
     add_task: 'Add Task',
     task_title: 'Task Title',
     description_optional: 'Description (Optional)',
@@ -156,7 +233,7 @@ export const translations: Record<string, Record<string, string>> = {
     no_tasks: 'No tasks yet',
     delete_task_confirm: 'Delete this task?',
 
-    // Settings
+    
     profile: 'Profile',
     notifications: 'Notifications',
     data_control: 'Data Control',
@@ -172,15 +249,91 @@ export const translations: Record<string, Record<string, string>> = {
     logout_confirm: 'Are you sure you want to logout?',
     exit: 'Exit',
 
-    // Common
+    
     delete: 'Delete',
     edit: 'Edit',
     loading: 'Loading...',
     error: 'An error occurred',
     success: 'Success',
+
+    data_not_filled: 'Data Not Filled',
+    record_health_today: 'Record your health progress today.',
+    fill_health_data: 'Fill Health Data',
+    latest_activity: 'Latest Activity',
+    see_details: 'See Details',
+    no_activity_today: 'No activity today',
+    cashflow_comparison: 'Cash Flow Comparison',
+    distribution: 'Distribution',
+    ratio: 'Ratio',
+    daily_finance: 'Daily Finance',
+    daily_health: 'Daily Health',
+    transactions: 'Transactions',
+    see_all_history: 'See All History',
+    no_transactions: 'No transactions yet.',
+    add_now: 'Add now',
+    done_progress: 'Done',
+    delete_transaction_confirm: 'Delete this transaction?',
+    transaction_history: 'Transaction History',
+    health_history: 'Health History',
+    task_history: 'Task History',
+    last_7_days: 'Last 7 Days History',
+    trend_analysis_hint: 'The 7-day trend analysis will appear here after you fill in data for at least 3 consecutive days.',
+    no_data_period: 'No data for this period.',
+    no_health_history_period: 'No health history for this period.',
+    no_task_history_period: 'No task history for this period.',
+    no_health_history: 'No health history yet.',
+    danger_zone: 'Danger Zone',
+    danger_zone_desc: 'This action will permanently delete all your data from our servers, including transactions, health, tasks, and daily data. Profile and settings will not be deleted.',
+    data_deleted_success: 'All data deleted successfully.',
+    data_delete_failed: 'Failed to delete data.',
+    identity_config: 'Identity Configuration',
+    unique_alias: 'Unique Alias (@)',
+    full_name: 'Full Name',
+    sync_profile_btn: 'Sync Profile',
+    profile_synced: 'Profile synced successfully.',
+    profile_sync_failed: 'Failed to update profile.',
+    password_update: 'Password Update',
+    new_password: 'New Password',
+    confirm_new_password: 'Confirm New Password',
+    apply_new_password: 'Apply New Password',
+    password_applied: 'Password applied successfully.',
+    password_apply_failed: 'Failed to update password.',
+    password_confirm_mismatch: 'Password confirmation does not match.',
+    password_min_8: 'Password must be at least 8 characters.',
+    notification_reminder: 'Notification Reminder',
+    notification_reminder_desc: 'Enable to receive reminder notifications',
+    notification_update_failed: 'Failed to update notification',
+    language_update_failed: 'Failed to update language',
+    from_date: 'From',
+    to_date: 'To',
+    type_filter: 'Type',
+    status_filter: 'Status',
+    search: 'Search',
+    filter_btn: 'Filter',
+    week: 'Week',
+    month: 'Month',
+    year: 'Year',
+    no_desc: 'No description',
+    postponed: 'Postponed',
+    done_count: 'Done',
+    water: 'Water Intake',
+    sleep: 'Sleep Hours',
+    ex_hint: 'Example: Lunch at office',
+    how_feeling: 'How are you feeling today?',
+    add_detail: 'Add details...',
+    add_new_task: 'Add new task...',
+    no_account: "Don't have an account? ",
+    no_tasks_queue: 'No tasks in queue.',
+    enjoy_free_time: 'Enjoy your free time or add a task.',
+    delete_all_data: 'Delete All Data',
+    delete_confirm_message: 'Are you sure you want to delete all data? This action cannot be undone.',
+    cancel: 'Cancel',
+    delete_all: 'Delete All',
+    filter_all: 'All',
+    data_control: 'Data Control',
   },
   ms: {
-    // Navigation
+    
     home: 'Laman Utama',
     finance: 'Kewangan',
     health: 'Kesihatan',
@@ -188,7 +341,7 @@ export const translations: Record<string, Record<string, string>> = {
     daily: 'Harian',
     settings: 'Tetapan',
 
-    // Home/Dashboard  
+    
     greeting_morning: 'Selamat Pagi',
     greeting_afternoon: 'Selamat Tengah Hari',
     greeting_evening: 'Selamat Petang',
@@ -204,7 +357,7 @@ export const translations: Record<string, Record<string, string>> = {
     all_tasks_done: 'Semua tugas selesai',
     exercise: 'Senaman',
 
-    // Finance
+    
     add_transaction: 'Tambah Transaksi',
     type_income: 'Pendapatan',
     type_expense: 'Perbelanjaan',
@@ -217,7 +370,7 @@ export const translations: Record<string, Record<string, string>> = {
     transaction_deleted: 'Transaksi berjaya dipadam',
     failed_load: 'Gagal memuatkan data',
 
-    // Health  
+    
     water_intake: 'Pengambilan Air',
     sleep_hours: 'Jam Tidur',
     exercise_duration: 'Tempoh Senaman',
@@ -229,7 +382,7 @@ export const translations: Record<string, Record<string, string>> = {
     hour_short: 'j',
     minute_short: 'm',
 
-    // Tasks
+    
     add_task: 'Tambah Tugas',
     task_title: 'Tajuk Tugas',
     description_optional: 'Penerangan (Pilihan)',
@@ -246,7 +399,7 @@ export const translations: Record<string, Record<string, string>> = {
     no_tasks: 'Tiada tugas lagi',
     delete_task_confirm: 'Padam tugas ini?',
 
-    // Settings
+    
     profile: 'Profil',
     notifications: 'Pemberitahuan',
     data_control: 'Kawalan Data',
@@ -262,15 +415,91 @@ export const translations: Record<string, Record<string, string>> = {
     logout_confirm: 'Adakah anda pasti ingin log keluar?',
     exit: 'Keluar',
 
-    // Common
+    
     delete: 'Padam',
     edit: 'Sunting',
     loading: 'Memuatkan...',
     error: 'Ralat berlaku',
     success: 'Berjaya',
+
+    data_not_filled: 'Data Belum Diisi',
+    record_health_today: 'Catat perkembangan kesihatan anda hari ini.',
+    fill_health_data: 'Isi Data Kesihatan',
+    latest_activity: 'Aktiviti Terkini',
+    see_details: 'Lihat Butiran',
+    no_activity_today: 'Tiada aktiviti hari ini',
+    cashflow_comparison: 'Perbandingan Aliran Tunai',
+    distribution: 'Pengedaran',
+    ratio: 'Nisbah',
+    daily_finance: 'Kewangan Harian',
+    daily_health: 'Kesihatan Harian',
+    transactions: 'Transaksi',
+    see_all_history: 'Lihat Semua Sejarah',
+    no_transactions: 'Tiada transaksi lagi.',
+    add_now: 'Tambah sekarang',
+    done_progress: 'Selesai',
+    delete_transaction_confirm: 'Padam transaksi ini?',
+    transaction_history: 'Sejarah Transaksi',
+    health_history: 'Sejarah Kesihatan',
+    task_history: 'Sejarah Tugas',
+    last_7_days: 'Sejarah 7 Hari Lepas',
+    trend_analysis_hint: 'Analisis trend 7 hari akan muncul di sini selepas anda mengisi data sekurang-kurangnya 3 hari berturut-turut.',
+    no_data_period: 'Tiada data untuk tempoh ini.',
+    no_health_history_period: 'Tiada sejarah kesihatan untuk tempoh ini.',
+    no_task_history_period: 'Tiada sejarah tugas untuk tempoh ini.',
+    no_health_history: 'Tiada sejarah kesihatan lagi.',
+    danger_zone: 'Zon Berbahaya',
+    danger_zone_desc: 'Tindakan ini akan memadam semua data anda secara kekal dari pelayan kami, termasuk data transaksi, kesihatan, tugas, dan harian. Profil dan tetapan tidak akan dipadam.',
+    data_deleted_success: 'Semua data berjaya dipadam.',
+    data_delete_failed: 'Gagal memadam data.',
+    identity_config: 'Konfigurasi Identiti',
+    unique_alias: 'Alias Unik (@)',
+    full_name: 'Nama Penuh',
+    sync_profile_btn: 'Segerakkan Profil',
+    profile_synced: 'Profil berjaya disegerakkan.',
+    profile_sync_failed: 'Gagal mengemaskini profil.',
+    password_update: 'Pengemaskinian Kata Laluan',
+    new_password: 'Kata Laluan Baru',
+    confirm_new_password: 'Sahkan Kata Laluan Baru',
+    apply_new_password: 'Guna Kata Laluan Baru',
+    password_applied: 'Kata laluan berjaya digunakan.',
+    password_apply_failed: 'Gagal mengemaskini kata laluan.',
+    password_confirm_mismatch: 'Pengesahan kata laluan tidak sepadan.',
+    password_min_8: 'Kata laluan mestilah sekurang-kurangnya 8 aksara.',
+    notification_reminder: 'Peringatan Pemberitahuan',
+    notification_reminder_desc: 'Aktifkan untuk menerima peringatan',
+    notification_update_failed: 'Gagal mengemaskini pemberitahuan',
+    language_update_failed: 'Gagal mengemaskini bahasa',
+    from_date: 'Dari',
+    to_date: 'Hingga',
+    type_filter: 'Jenis',
+    status_filter: 'Status',
+    search: 'Cari',
+    filter_btn: 'Tapis',
+    week: 'Minggu',
+    month: 'Bulan',
+    year: 'Tahun',
+    no_desc: 'Tiada penerangan',
+    postponed: 'Ditangguh',
+    done_count: 'Selesai',
+    water: 'Pengambilan Air',
+    sleep: 'Jam Tidur',
+    ex_hint: 'Contoh: Makan tengah hari di pejabat',
+    how_feeling: 'Bagaimana perasaan anda hari ini?',
+    add_detail: 'Tambah butiran...',
+    add_new_task: 'Tambah tugas baru...',
+    no_account: 'Belum ada akaun? ',
+    no_tasks_queue: 'Tiada tugas dalam barisan.',
+    enjoy_free_time: 'Nikmati masa lapang anda atau tambah tugas.',
+    delete_all_data: 'Padam Semua Data',
+    delete_confirm_message: 'Adakah anda pasti ingin memadam semua data? Tindakan ini tidak boleh dibatalkan.',
+    cancel: 'Batal',
+    delete_all: 'Padam Semua',
+    filter_all: 'Semua',
+    data_control: 'Kawalan Data',
   },
   ja: {
-    // Navigation
+    
     home: 'ホーム',
     finance: '財務',
     health: '健康',
@@ -278,7 +507,7 @@ export const translations: Record<string, Record<string, string>> = {
     daily: '毎日',
     settings: '設定',
 
-    // Home/Dashboard  
+    
     greeting_morning: 'おはようございます',
     greeting_afternoon: 'こんにちは',
     greeting_evening: 'こんばんは',
@@ -294,7 +523,7 @@ export const translations: Record<string, Record<string, string>> = {
     all_tasks_done: 'すべてのタスクが完了しました',
     exercise: '運動',
 
-    // Finance
+    
     add_transaction: '取引を追加',
     type_income: '収入',
     type_expense: '支出',
@@ -307,7 +536,7 @@ export const translations: Record<string, Record<string, string>> = {
     transaction_deleted: '取引が正常に削除されました',
     failed_load: 'データの読み込みに失敗しました',
 
-    // Health  
+    
     water_intake: '水分摂取量',
     sleep_hours: '睡眠時間',
     exercise_duration: '運動時間',
@@ -319,7 +548,7 @@ export const translations: Record<string, Record<string, string>> = {
     hour_short: '時',
     minute_short: '分',
 
-    // Tasks
+    
     add_task: 'タスクを追加',
     task_title: 'タスクのタイトル',
     description_optional: '説明（任意）',
@@ -336,7 +565,7 @@ export const translations: Record<string, Record<string, string>> = {
     no_tasks: 'タスクはまだありません',
     delete_task_confirm: 'このタスクを削除しますか？',
 
-    // Settings
+    
     profile: 'プロフィール',
     notifications: '通知',
     data_control: 'データ管理',
@@ -352,15 +581,91 @@ export const translations: Record<string, Record<string, string>> = {
     logout_confirm: 'ログアウトしますか？',
     exit: '終了',
 
-    // Common
+    
     delete: '削除',
     edit: '編集',
     loading: '読み込み中...',
     error: 'エラーが発生しました',
     success: '成功',
+
+    data_not_filled: 'データ未入力',
+    record_health_today: '今日の健康状態を記録しましょう。',
+    fill_health_data: '健康データを入力',
+    latest_activity: '最新のアクティビティ',
+    see_details: '詳細を見る',
+    no_activity_today: '今日のアクティビティはありません',
+    cashflow_comparison: 'キャッシュフロー比較',
+    distribution: '分布',
+    ratio: '比率',
+    daily_finance: '毎日の財務',
+    daily_health: '毎日の健康',
+    transactions: '取引',
+    see_all_history: 'すべての履歴を見る',
+    no_transactions: '取引はまだありません。',
+    add_now: '今すぐ追加',
+    done_progress: '完了',
+    delete_transaction_confirm: 'この取引を削除しますか？',
+    transaction_history: '取引履歴',
+    health_history: '健康履歴',
+    task_history: 'タスク履歴',
+    last_7_days: '過去7日間の履歴',
+    trend_analysis_hint: '3日間連続でデータを入力すると、7日間のトレンド分析がここに表示されます。',
+    no_data_period: 'この期間のデータはありません。',
+    no_health_history_period: 'この期間の健康履歴はありません。',
+    no_task_history_period: 'この期間のタスク履歴はありません。',
+    no_health_history: '健康履歴はまだありません。',
+    danger_zone: '危険ゾーン',
+    danger_zone_desc: 'この操作は、取引、健康、タスク、日常のデータを含むすべてのデータをサーバーから完全に削除します。プロフィールと設定は削除されません。',
+    data_deleted_success: 'すべてのデータが正常に削除されました。',
+    data_delete_failed: 'データの削除に失敗しました。',
+    identity_config: 'ID設定',
+    unique_alias: 'ユニークエイリアス (@)',
+    full_name: '氏名',
+    sync_profile_btn: 'プロフィールを同期',
+    profile_synced: 'プロフィールが正常に同期されました。',
+    profile_sync_failed: 'プロフィールの更新に失敗しました。',
+    password_update: 'パスワード更新',
+    new_password: '新しいパスワード',
+    confirm_new_password: '新しいパスワードの確認',
+    apply_new_password: '新しいパスワードを適用',
+    password_applied: 'パスワードが正常に適用されました。',
+    password_apply_failed: 'パスワードの更新に失敗しました。',
+    password_confirm_mismatch: 'パスワード確認が一致しません。',
+    password_min_8: 'パスワードは8文字以上にしてください。',
+    notification_reminder: '通知リマインダー',
+    notification_reminder_desc: 'リマインダー通知を受け取るには有効にしてください',
+    notification_update_failed: '通知の更新に失敗しました',
+    language_update_failed: '言語の更新に失敗しました',
+    from_date: 'から',
+    to_date: 'まで',
+    type_filter: '種類',
+    status_filter: 'ステータス',
+    search: '検索',
+    filter_btn: 'フィルター',
+    week: '週',
+    month: '月',
+    year: '年',
+    no_desc: '説明なし',
+    postponed: '保留',
+    done_count: '完了',
+    water: '水分摂取',
+    sleep: '睡眠時間',
+    ex_hint: '例: オフィスでの昼食',
+    how_feeling: '今日の気分はどうですか？',
+    add_detail: '詳細を追加...',
+    add_new_task: '新しいタスクを追加...',
+    no_account: 'アカウントをお持ちでないですか？ ',
+    no_tasks_queue: 'キューにタスクがありません。',
+    enjoy_free_time: '自由な時間を楽しむか、タスクを追加してください。',
+    delete_all_data: 'すべてのデータを削除',
+    delete_confirm_message: 'すべてのデータを削除してもよろしいですか？この操作は元に戻せません。',
+    cancel: 'キャンセル',
+    delete_all: 'すべて削除',
+    filter_all: 'すべて',
+    data_control: 'データ管理',
   },
   zh: {
-    // Navigation
+    
     home: '首页',
     finance: '财务',
     health: '健康',
@@ -368,7 +673,7 @@ export const translations: Record<string, Record<string, string>> = {
     daily: '日常',
     settings: '设置',
 
-    // Home/Dashboard  
+    
     greeting_morning: '早上好',
     greeting_afternoon: '下午好',
     greeting_evening: '晚上好',
@@ -384,7 +689,7 @@ export const translations: Record<string, Record<string, string>> = {
     all_tasks_done: '所有任务已完成',
     exercise: '运动',
 
-    // Finance
+    
     add_transaction: '添加交易',
     type_income: '收入',
     type_expense: '支出',
@@ -397,7 +702,7 @@ export const translations: Record<string, Record<string, string>> = {
     transaction_deleted: '交易删除成功',
     failed_load: '加载数据失败',
 
-    // Health  
+    
     water_intake: '饮水量',
     sleep_hours: '睡眠时间',
     exercise_duration: '运动时长',
@@ -409,7 +714,7 @@ export const translations: Record<string, Record<string, string>> = {
     hour_short: '时',
     minute_short: '分',
 
-    // Tasks
+    
     add_task: '添加任务',
     task_title: '任务标题',
     description_optional: '描述（可选）',
@@ -426,7 +731,7 @@ export const translations: Record<string, Record<string, string>> = {
     no_tasks: '暂无任务',
     delete_task_confirm: '删除此任务？',
 
-    // Settings
+    
     profile: '个人资料',
     notifications: '通知',
     data_control: '数据控制',
@@ -442,12 +747,88 @@ export const translations: Record<string, Record<string, string>> = {
     logout_confirm: '您确定要注销吗？',
     exit: '退出',
 
-    // Common
+    
     delete: '删除',
     edit: '编辑',
     loading: '加载中...',
     error: '发生错误',
     success: '成功',
+
+    data_not_filled: '数据未填写',
+    record_health_today: '记录您今天的健康状况。',
+    fill_health_data: '填写健康数据',
+    latest_activity: '最新活动',
+    see_details: '查看详情',
+    no_activity_today: '今天没有活动',
+    cashflow_comparison: '现金流对比',
+    distribution: '分布',
+    ratio: '比率',
+    daily_finance: '日常财务',
+    daily_health: '日常健康',
+    transactions: '交易',
+    see_all_history: '查看所有历史记录',
+    no_transactions: '暂无交易。',
+    add_now: '立即添加',
+    done_progress: '已完成',
+    delete_transaction_confirm: '删除此交易？',
+    transaction_history: '交易历史',
+    health_history: '健康历史',
+    task_history: '任务历史',
+    last_7_days: '最近7天记录',
+    trend_analysis_hint: '连续填写3天数据后，7天趋势分析将在此显示。',
+    no_data_period: '该时间段没有数据。',
+    no_health_history_period: '该时间段没有健康记录。',
+    no_task_history_period: '该时间段没有任务记录。',
+    no_health_history: '暂无健康记录。',
+    danger_zone: '危险区域',
+    danger_zone_desc: '此操作将永久删除您服务器上的所有数据，包括交易、健康、任务和日常数据。个人资料和设置不会被删除。',
+    data_deleted_success: '所有数据已成功删除。',
+    data_delete_failed: '删除数据失败。',
+    identity_config: '身份配置',
+    unique_alias: '唯一别名 (@)',
+    full_name: '真实全名',
+    sync_profile_btn: '同步个人资料',
+    profile_synced: '个人资料同步成功。',
+    profile_sync_failed: '更新个人资料失败。',
+    password_update: '密码更新',
+    new_password: '新密码',
+    confirm_new_password: '确认新密码',
+    apply_new_password: '应用新密码',
+    password_applied: '密码已成功应用。',
+    password_apply_failed: '更新密码失败。',
+    password_confirm_mismatch: '密码确认不匹配。',
+    password_min_8: '密码至少需要8个字符。',
+    notification_reminder: '通知提醒',
+    notification_reminder_desc: '启用以接收提醒通知',
+    notification_update_failed: '更新通知失败',
+    language_update_failed: '更新语言失败',
+    from_date: '从',
+    to_date: '到',
+    type_filter: '类型',
+    status_filter: '状态',
+    search: '搜索',
+    filter_btn: '筛选',
+    week: '周',
+    month: '月',
+    year: '年',
+    no_desc: '无描述',
+    postponed: '已推迟',
+    done_count: '已完成',
+    water: '饮水量',
+    sleep: '睡眠时间',
+    ex_hint: '例如：在办公室吃午餐',
+    how_feeling: '你今天感觉怎么样？',
+    add_detail: '添加详情...',
+    add_new_task: '添加新任务...',
+    no_account: '还没有账号？ ',
+    no_tasks_queue: '队列中没有任务。',
+    enjoy_free_time: '享受您的空闲时间或添加任务。',
+    delete_all_data: '删除所有数据',
+    delete_confirm_message: '您确定要删除所有数据吗？此操作无法撤销。',
+    cancel: '取消',
+    delete_all: '全部删除',
+    filter_all: '全部',
+    data_control: '数据控制',
   },
 };
 

@@ -3,6 +3,7 @@
 import { useSettings } from '@/hooks/useSettings';
 import { useToast } from '@/components/ui/Toast';
 import { ChevronLeft, Check, Loader2 } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 
 const BAHASA_OPTIONS = [
@@ -16,6 +17,7 @@ const BAHASA_OPTIONS = [
 export default function BahasaPage() {
     const { settings, loading, updateSettings } = useSettings();
     const { error: toastError } = useToast();
+    const { t } = useTranslation();
 
     const handleSelect = async (value: string) => {
         if (settings.bahasa === value) return;
@@ -23,17 +25,17 @@ export default function BahasaPage() {
         try {
             await updateSettings({ bahasa: value });
         } catch (err) {
-            toastError('Gagal memperbarui bahasa');
+            toastError(t('language_update_failed'));
         }
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard/pengaturan" className="p-2 hover:bg-[var(--bg-card)] rounded-lg transition-colors">
                     <ChevronLeft size={24} />
                 </Link>
-                <h2 className="text-2xl font-bold">Bahasa</h2>
+                <h2 className="text-2xl font-bold">{t('language')}</h2>
             </div>
 
             {loading ? (

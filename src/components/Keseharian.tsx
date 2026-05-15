@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { BookOpen, ListTodo, NotebookPen, Check, X, Plus, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { nowWIB } from '@/lib/utils';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 type Todo = {
     id: string;
@@ -12,9 +13,8 @@ type Todo = {
 export default function KeseharianView() {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [newTodo, setNewTodo] = useState('');
-    const [notes, setNotes] = useState('');
     const [loading, setLoading] = useState(true);
-    const [savingNotes, setSavingNotes] = useState(false);
+    const { t } = useTranslation();
 
     const today = nowWIB().toISOString().split('T')[0];
 
@@ -38,14 +38,6 @@ export default function KeseharianView() {
             })));
         }
 
-        const { data: journalData } = await supabase
-            .from('keseharian_jurnal')
-            .select('content')
-            .eq('user_id', user.id)
-            .eq('date', today)
-            .single();
-
-        if (journalData) setNotes(journalData.content);
         setLoading(false);
     }, [today]);
 
@@ -93,30 +85,7 @@ export default function KeseharianView() {
         else fetchAllData();
     };
 
-    const saveJournal = async (content: string) => {
-        setSavingNotes(true);
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
 
-        const { error } = await supabase
-            .from('keseharian_jurnal')
-            .upsert({
-                user_id: user.id,
-                date: today,
-                content: content
-            }, { onConflict: 'user_id, date' });
-
-        if (error) console.error('Gagal simpan jurnal:', error.message);
-        setSavingNotes(false);
-    };
-
-    useEffect(() => {
-        if (loading) return;
-        const timer = setTimeout(() => {
-            saveJournal(notes);
-        }, 1500);
-        return () => clearTimeout(timer);
-    }, [notes, loading, today]);
 
     return (
         <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '48px', height: '100%' }}>
@@ -159,8 +128,8 @@ export default function KeseharianView() {
                         {todos.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-secondary)' }}>
                                 <Check size={56} style={{ opacity: 0.1, margin: '0 auto 16px' }} />
-                                <p style={{ fontSize: '18px', fontWeight: '500' }}>Tidak ada tugas dalam antrean.</p>
-                                <p style={{ fontSize: '14px', marginTop: '8px', opacity: 0.7 }}>Nikmati waktu luang Anda atau tambahkan tugas.</p>
+                                <p style={{ fontSize: '18px', fontWeight: '500' }}>{t('no_tasks_queue')}</p>
+                                <p style={{ fontSize: '14px', marginTop: '8px', opacity: 0.7 }}>{t('enjoy_free_time')}</p>
                             </div>
                         ) : (
                             todos.map((todo, idx) => (
@@ -194,40 +163,6 @@ export default function KeseharianView() {
                         )}
                     </div>
                 </div>
-
-                <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', height: '100%', borderTop: '2px solid var(--accent-hover)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
-                        <div>
-                            <h2 style={{ fontSize: '24px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                                <NotebookPen size={24} color="var(--accent-hover)" /> Catatan & Jurnal
-                            </h2>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
-                                Kebebasan untuk menuangkan isi pikiran Anda.
-                            </p>
-                        </div>
-                        {savingNotes && (
-                            <div style={{ background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.3)', padding: '6px 16px', borderRadius: '20px', color: 'var(--accent-hover)', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', fontWeight: '600' }}>
-                                <Loader2 size={14} className="animate-spin" /> Menyimpan...
-                            </div>
-                        )}
-                    </div>
-
-                    <textarea
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        className="styled-input"
-                        placeholder="Mulai mengetik pemikiran Anda di sini..."
-                        style={{
-                            flex: 1, minHeight: '400px', resize: 'none',
-                            fontFamily: 'Outfit, inherit', fontSize: '18px', lineHeight: '1.8',
-                            padding: '32px', background: 'rgba(0,0,0,0.4)',
-                            border: savingNotes ? '1px solid var(--accent-hover)' : '1px solid var(--glass-border)',
-                            borderRadius: '24px', boxShadow: 'inset 0 4px 20px rgba(0,0,0,0.5)',
-                            transition: 'border 0.3s'
-                        }}
-                    />
-                </div>
-
             </div>
         </div>
     );

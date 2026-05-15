@@ -25,7 +25,7 @@ export default function PengaturanMenuPage() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
             <h2 className="text-2xl font-bold mb-6">{t('settings')}</h2>
 
             <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">

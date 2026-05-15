@@ -21,7 +21,7 @@ export function useKeuangan(tanggal: string) {
         if (!user) return;
         setLoading(true);
         try {
-            // Fetch total saldo (all time)
+            
             const { data: allData, error: totalError } = await supabase
                 .from('transaksi')
                 .select('jenis, jumlah, tanggal')
@@ -49,7 +49,7 @@ export function useKeuangan(tanggal: string) {
             const currentTotalBalance = inTotal - outTotal;
             setTotalSaldo(currentTotalBalance);
 
-            // Calculate last 7 days trend
+            
             const trend = [];
             const todayDate = new Date();
             let runningBalance = currentTotalBalance;
@@ -57,7 +57,7 @@ export function useKeuangan(tanggal: string) {
             for (let i = 0; i < 7; i++) {
                 const d = new Date(todayDate);
                 d.setDate(d.getDate() - i);
-                // Format YYYY-MM-DD
+                
                 const yyyy = d.getFullYear();
                 const mm = String(d.getMonth() + 1).padStart(2, '0');
                 const dd = String(d.getDate()).padStart(2, '0');
@@ -73,7 +73,7 @@ export function useKeuangan(tanggal: string) {
             }
             setTrendSaldo(trend);
 
-            // Fetch all transactions
+            
             const { data, error } = await supabase
                 .from('transaksi')
                 .select('*')
@@ -93,7 +93,7 @@ export function useKeuangan(tanggal: string) {
         fetchStats();
     }, [fetchStats]);
 
-    // Variables removed in favor of cumulative states
+    
 
     const tambahTransaksi = async (data: TransaksiForm) => {
         if (!user) return;

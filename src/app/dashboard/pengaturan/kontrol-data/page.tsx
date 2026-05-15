@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
 import { ChevronLeft, AlertTriangle } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 
 export default function KontrolDataPage() {
@@ -14,26 +15,27 @@ export default function KontrolDataPage() {
     const { success, error: toastError } = useToast();
     const [isDeleting, setIsDeleting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const { t } = useTranslation();
 
     const handleDeleteAll = async () => {
         setIsDeleting(true);
         try {
             await deleteAllData();
-            success('Semua data berhasil dihapus.');
+            success(t('data_deleted_success'));
             setShowConfirm(false);
         } catch (err) {
-            toastError('Gagal menghapus data.');
+            toastError(t('data_delete_failed'));
         }
         setIsDeleting(false);
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard/pengaturan" className="p-2 hover:bg-[var(--bg-card)] rounded-lg transition-colors">
                     <ChevronLeft size={24} />
                 </Link>
-                <h2 className="text-2xl font-bold">Kontrol Data</h2>
+                <h2 className="text-2xl font-bold">{t('data_control')}</h2>
             </div>
 
             <div className="border border-[var(--accent-red-dim)] rounded-xl bg-[var(--bg-card)] p-4 md:p-6">
@@ -41,12 +43,11 @@ export default function KontrolDataPage() {
                     <div className="p-2 bg-[var(--accent-red-dim)] rounded-lg text-[var(--accent-red)]">
                         <AlertTriangle size={24} />
                     </div>
-                    <h3 className="text-lg font-bold text-[var(--accent-red)]">Zona Berbahaya</h3>
+                    <h3 className="text-lg font-bold text-[var(--accent-red)]">{t('danger_zone')}</h3>
                 </div>
                 
                 <p className="text-[var(--text-secondary)] mb-6 leading-relaxed">
-                    Tindakan ini akan menghapus semua data Anda secara permanen dari server kami, 
-                    termasuk data transaksi, kesehatan, tugas, dan keseharian. Profil dan pengaturan tidak akan dihapus.
+                    {t('danger_zone_desc')}
                 </p>
 
                 <Button 
@@ -54,18 +55,18 @@ export default function KontrolDataPage() {
                     className="w-full font-bold"
                     onClick={() => setShowConfirm(true)}
                 >
-                    Hapus Semua Data
+                    {t('delete_all_data')}
                 </Button>
             </div>
 
             <Modal 
                 isOpen={showConfirm} 
                 onClose={() => setShowConfirm(false)}
-                title="Hapus Semua Data"
+                title={t('delete_all_data')}
             >
                 <div className="p-6">
                     <p className="text-[var(--text-secondary)] mb-6">
-                        Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan.
+                        {t('delete_confirm_message')}
                     </p>
                     <div className="flex justify-end gap-3">
                         <Button 
@@ -73,14 +74,14 @@ export default function KontrolDataPage() {
                             onClick={() => setShowConfirm(false)}
                             disabled={isDeleting}
                         >
-                            Batal
+                            {t('cancel')}
                         </Button>
                         <Button 
                             variant="danger" 
                             onClick={handleDeleteAll}
                             isLoading={isDeleting}
                         >
-                            Hapus Semua
+                            {t('delete_all')}
                         </Button>
                     </div>
                 </div>

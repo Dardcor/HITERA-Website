@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/Card';
 import { Input, Select } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ChevronLeft, Search, Wallet } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
 import { Transaksi } from '@/types';
 
 export default function KeuanganHistoryPage() {
@@ -20,6 +21,14 @@ export default function KeuanganHistoryPage() {
     const [preset, setPreset] = useState('Minggu');
     const { user } = useAuth();
     const supabase = createClient();
+    const { t } = useTranslation();
+
+    const presetMap: Record<string, string> = {
+        'Semua': t('filter_all'),
+        'Minggu': t('week'),
+        'Bulan': t('month'),
+        'Tahun': t('year'),
+    };
 
     const applyPreset = useCallback((p: string) => {
         const now = nowWIB();
@@ -42,7 +51,7 @@ export default function KeuanganHistoryPage() {
                 d365.setFullYear(d365.getFullYear() - 1);
                 from = d365.toISOString().split('T')[0];
                 break;
-            default: // Semua
+            default: 
                 from = '2020-01-01';
         }
 
@@ -98,16 +107,16 @@ export default function KeuanganHistoryPage() {
     const dates = Object.keys(groupedTransaksi).sort((a, b) => b.localeCompare(a));
 
     return (
-        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
-            {/* Mobile Header - matches Flutter AppBar */}
+        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
+            {}
             <div className="flex items-center gap-3 md:gap-4 -ml-2 md:ml-0">
                 <Link href="/dashboard/keuangan" className="p-2 hover:bg-[var(--bg-card-hover)] rounded-full transition-colors">
                     <ChevronLeft size={24} className="text-[var(--text-primary)]" />
                 </Link>
-                <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">Riwayat Transaksi</h2>
+                <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">{t('transaction_history')}</h2>
             </div>
 
-            {/* Filter Chips - matches Flutter Row/List scrollable */}
+            {}
             <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
                 {['Semua', 'Minggu', 'Bulan', 'Tahun'].map((p) => {
                     const isSelected = preset === p;
@@ -122,17 +131,17 @@ export default function KeuanganHistoryPage() {
                                     : "bg-[var(--bg-card)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--text-muted)]"
                             )}
                         >
-                            {p}
+                            {presetMap[p] || p}
                         </button>
                     );
                 })}
             </div>
 
-            {/* Advanced Filter Card */}
+            {}
             <Card className="p-4 md:p-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 items-end">
                     <Input
-                        label="Dari"
+                        label={t('from_date')}
                         type="date"
                         value={fromDate}
                         onChange={(e) => {
@@ -142,7 +151,7 @@ export default function KeuanganHistoryPage() {
                         className="text-xs sm:text-sm"
                     />
                     <Input
-                        label="Sampai"
+                        label={t('to_date')}
                         type="date"
                         value={toDate}
                         onChange={(e) => {
@@ -152,7 +161,7 @@ export default function KeuanganHistoryPage() {
                         className="text-xs sm:text-sm"
                     />
                     <Select
-                        label="Jenis"
+                        label={t('type_filter')}
                         value={filterJenis}
                         onChange={(e) => setFilterJenis(e.target.value)}
                         className="text-xs sm:text-sm"
@@ -162,7 +171,7 @@ export default function KeuanganHistoryPage() {
                         <option>Pengeluaran</option>
                     </Select>
                     <Button onClick={fetchHistory} className="flex items-center justify-center gap-2 py-3 md:py-2 col-span-2 md:col-span-1">
-                        <Search size={18} /> Cari
+                        <Search size={18} /> {t('search')}
                     </Button>
                 </div>
             </Card>
@@ -175,7 +184,7 @@ export default function KeuanganHistoryPage() {
                     </div>
                 ) : dates.length === 0 ? (
                     <div className="py-20 text-center text-[var(--text-muted)] italic">
-                        Tidak ada data untuk periode ini.
+                        {t('no_data_period')}
                     </div>
                 ) : (
                     dates.map((date) => {

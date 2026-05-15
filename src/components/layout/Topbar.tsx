@@ -4,22 +4,24 @@ import { usePathname } from 'next/navigation';
 import { User as UserIcon, Bell, Settings } from 'lucide-react';
 import { formatTanggalID, hariIni } from '@/lib/utils';
 import { User } from '@supabase/supabase-js';
+import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 
 export default function Topbar({ user }: { user: User }) {
     const pathname = usePathname();
+    const { t } = useTranslation();
 
     const getPageTitle = () => {
-        if (pathname.includes('/keuangan')) return 'Keuangan';
-        if (pathname.includes('/kesehatan')) return 'Kesehatan';
-        if (pathname.includes('/tugas')) return 'Daftar Tugas';
-        if (pathname.includes('/pengaturan')) return 'Pengaturan';
-        return 'Ringkasan';
+        if (pathname.includes('/keuangan')) return t('finance');
+        if (pathname.includes('/kesehatan')) return t('health');
+        if (pathname.includes('/tugas')) return t('tasks');
+        if (pathname.includes('/pengaturan')) return t('settings');
+        return t('home');
     };
 
     return (
         <>
-            {/* Desktop Topbar */}
+            {}
             <header className="hidden md:flex h-16 border-b border-[var(--border)] bg-[var(--bg-primary)] px-4 md:px-8 items-center justify-between sticky top-0 z-30">
                 <div className="flex items-center gap-4">
                     <h1 className="text-lg font-bold text-[var(--text-primary)]">{getPageTitle()}</h1>
@@ -48,9 +50,9 @@ export default function Topbar({ user }: { user: User }) {
                 </div>
             </header>
 
-            {/* Mobile: No topbar - Flutter uses AppBar integrated in each screen */}
-            {/* On mobile, the dashboard page shows greeting directly, and sub-pages show their own title */}
-            {/* We show a minimal top bar only for non-dashboard pages on mobile */}
+            {}
+            {}
+            {}
             {pathname !== '/dashboard' && (
                 <header className="md:hidden h-14 bg-[var(--bg-primary)] px-4 flex items-center justify-between sticky top-0 z-30">
                     <h1 className="text-[20px] font-bold text-[var(--text-primary)]">{getPageTitle()}</h1>

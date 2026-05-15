@@ -8,11 +8,13 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useToast } from '@/components/ui/Toast';
 import { User, Lock, Save, Loader2, Shield, ChevronLeft } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 
 export default function ProfilPage() {
     const { user } = useAuth();
     const { success, error: toastError } = useToast();
+    const { t } = useTranslation();
     const supabase = createClient();
 
     const [username, setUsername] = useState('');
@@ -60,9 +62,9 @@ export default function ProfilPage() {
                 });
 
             if (error) throw error;
-            success('Profil berhasil disinkronisasi.');
+            success(t('profile_synced'));
         } catch (err: any) {
-            toastError('Gagal memperbarui profil.');
+            toastError(t('profile_sync_failed'));
         }
         setSavingProfile(false);
     };
@@ -70,31 +72,31 @@ export default function ProfilPage() {
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
-            return toastError('Konfirmasi kata sandi tidak sesuai.');
+            return toastError(t('password_confirm_mismatch'));
         }
         if (newPassword.length < 8) {
-            return toastError('Password minimal 8 karakter.');
+            return toastError(t('password_min_8'));
         }
         setSavingPassword(true);
         try {
             const { error } = await supabase.auth.updateUser({ password: newPassword });
             if (error) throw error;
-            success('Kata sandi berhasil diterapkan.');
+            success(t('password_applied'));
             setNewPassword('');
             setConfirmPassword('');
         } catch (err: any) {
-            toastError('Gagal memperbarui kata sandi.');
+            toastError(t('password_apply_failed'));
         }
         setSavingPassword(false);
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
+        <div className="max-w-2xl mx-auto space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
             <div className="flex items-center gap-4">
                 <Link href="/dashboard/pengaturan" className="p-2 hover:bg-[var(--bg-card)] rounded-lg transition-colors">
                     <ChevronLeft size={24} />
                 </Link>
-                <h2 className="text-2xl font-bold">Profil</h2>
+                <h2 className="text-2xl font-bold">{t('profile')}</h2>
             </div>
 
             <Card className="p-5 flex items-center gap-4">
@@ -112,7 +114,7 @@ export default function ProfilPage() {
                     <div className="p-2 bg-[var(--bg-secondary)] rounded-lg">
                         <User size={20} className="text-[var(--text-primary)]" />
                     </div>
-                    <h4 className="font-bold text-sm md:text-base">Konfigurasi Identitas</h4>
+                    <h4 className="font-bold text-sm md:text-base">{t('identity_config')}</h4>
                 </div>
                 {loadingProfile ? (
                     <div className="flex justify-center py-10">
@@ -121,18 +123,18 @@ export default function ProfilPage() {
                 ) : (
                     <form onSubmit={handleUpdateProfile} className="p-4 md:p-6 space-y-4">
                         <Input
-                            label="Alias Unik (@)"
+                            label={t('unique_alias')}
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="username"
                         />
                         <Input
-                            label="Nama Lengkap Asli"
+                            label={t('full_name')}
                             type="text"
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
-                            placeholder="Nama Lengkap"
+                            placeholder={t('full_name')}
                         />
                         <Button
                             type="submit"
@@ -140,7 +142,7 @@ export default function ProfilPage() {
                             className="w-full py-3 mt-2"
                             isLoading={savingProfile}
                         >
-                            <Save size={18} className="mr-2" /> Sinkronisasi Profil
+                            <Save size={18} className="mr-2" /> {t('sync_profile_btn')}
                         </Button>
                     </form>
                 )}
@@ -151,11 +153,11 @@ export default function ProfilPage() {
                     <div className="p-2 bg-[var(--accent-red-dim)] rounded-lg">
                         <Lock size={20} className="text-[var(--accent-red)]" />
                     </div>
-                    <h4 className="font-bold text-sm md:text-base">Pembaruan Sandi</h4>
+                    <h4 className="font-bold text-sm md:text-base">{t('password_update')}</h4>
                 </div>
                 <form onSubmit={handleChangePassword} className="p-4 md:p-6 space-y-4">
                     <Input
-                        label="Kata Sandi Baru"
+                        label={t('new_password')}
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
@@ -163,7 +165,7 @@ export default function ProfilPage() {
                         required
                     />
                     <Input
-                        label="Konfirmasi Kata Sandi Baru"
+                        label={t('confirm_new_password')}
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -176,7 +178,7 @@ export default function ProfilPage() {
                         className="w-full py-3 mt-2"
                         isLoading={savingPassword}
                     >
-                        <Shield size={18} className="mr-2" /> Terapkan Sandi Baru
+                        <Shield size={18} className="mr-2" /> {t('apply_new_password')}
                     </Button>
                 </form>
             </Card>

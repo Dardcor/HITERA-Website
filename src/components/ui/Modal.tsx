@@ -42,18 +42,15 @@ export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }:
                 onClick={onClose}
             />
 
-            {/* Bottom sheet on mobile (matching Flutter showModalBottomSheet), centered dialog on desktop */}
+            {}
             <div className={cn(
                 'relative w-full bg-[var(--bg-card)] border border-[var(--border)] shadow-2xl overflow-hidden',
-                /* Mobile: bottom sheet with top rounded corners (matching Flutter BorderRadius.vertical(top: 16)) */
-                'rounded-t-2xl md:rounded-[var(--radius)]',
-                /* Mobile: slide up animation, Desktop: zoom in */
-                'animate-in md:zoom-in-95 slide-in-from-bottom-4 duration-200',
-                /* Mobile: max height 90vh, Desktop: use size prop */
-                'max-h-[90vh] md:max-h-none',
+                                'rounded-t-2xl md:rounded-[var(--radius)]',
+                                'animate-in md:zoom-in-95 slide-in-from-bottom-4 duration-200',
+                                'max-h-[90vh] md:max-h-none',
                 sizes[size]
             )}>
-                {/* Header - matches Flutter modal header */}
+                {}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border)]">
                     <h3 className="text-lg font-bold text-[var(--text-primary)]">{title}</h3>
                     <button
@@ -64,7 +61,7 @@ export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }:
                     </button>
                 </div>
 
-                {/* Content - scrollable */}
+                {}
                 <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">
                     {children}
                 </div>

@@ -1,7 +1,6 @@
 import { format, addDays, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
 
-/** Mengembalikan waktu sekarang dalam zona WIB (Asia/Jakarta, UTC+7) */
 export function nowWIB(): Date {
   const now = new Date();
   const utc = now.getTime() + (now.getTimezoneOffset() * 60000);

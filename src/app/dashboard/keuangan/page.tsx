@@ -32,13 +32,13 @@ export default function KeuanganPage() {
     const resetToToday = () => setTanggal(hariIni());
 
     return (
-        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500 pb-20">
-            {/* Header - matches Flutter AppBar layout on mobile */}
+        <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
+            {}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    {/* Mobile: hidden since Topbar already shows title */}
-                    <h2 className="hidden md:block text-2xl font-bold">Keuangan Harian</h2>
-                    {/* Date navigation - matches Flutter nav buttons */}
+                    {}
+                    <h2 className="hidden md:block text-2xl font-bold">{t('daily_finance')}</h2>
+                    {}
                     <div className="flex items-center gap-2 mt-0 md:mt-1">
                         <button onClick={prevDay} className="p-1 hover:bg-[var(--bg-card-hover)] rounded border border-[var(--border)]">
                             <ChevronLeft size={16} />
@@ -59,7 +59,7 @@ export default function KeuanganPage() {
                 </Button>
             </div>
 
-            {/* Summary tiles - matching Flutter _summaryTile with left border accent */}
+            {}
             <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-blue)] p-4">
                 <div className="flex items-center justify-between">
                     <div>
@@ -72,7 +72,7 @@ export default function KeuanganPage() {
                 </div>
             </Card>
 
-            {/* Pemasukan & Pengeluaran - side by side on mobile too (matching Flutter Row) */}
+            {}
             <div className="grid grid-cols-2 gap-2 md:gap-4">
                 <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-green)] p-4">
                     <div className="flex items-center justify-between">
@@ -99,12 +99,12 @@ export default function KeuanganPage() {
                 </Card>
             </div>
 
-            {/* Transaksi list - matches Flutter layout */}
+            {}
             <div className="space-y-3 md:space-y-4">
                 <div className="flex justify-between items-center px-1">
-                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-[1.5px]">Transaksi</h3>
+                    <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-[1.5px]">{t('transactions')}</h3>
                     <Link href="/dashboard/keuangan/history" className="text-xs text-[var(--accent-blue)] font-bold hover:underline">
-                        Lihat Semua History
+                        {t('see_all_history')}
                     </Link>
                 </div>
 
@@ -117,12 +117,12 @@ export default function KeuanganPage() {
                         <div className="w-16 h-16 bg-[var(--bg-secondary)] rounded-full flex items-center justify-center text-[var(--text-muted)] mb-4">
                             <Wallet size={32} />
                         </div>
-                        <p className="text-[var(--text-muted)] italic">Belum ada transaksi.</p>
+                        <p className="text-[var(--text-muted)] italic">{t('no_transactions')}</p>
                         <button
                             onClick={() => setIsModalOpen(true)}
                             className="mt-3 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                         >
-                            Tambah sekarang
+                            {t('add_now')}
                         </button>
                     </Card>
                 ) : (
@@ -132,7 +132,7 @@ export default function KeuanganPage() {
                                 key={t.id}
                                 transaksi={t}
                                 onDelete={(id) => {
-                                    if (confirm('Hapus transaksi ini?')) hapusTransaksi(id);
+                                    if (confirm(t('delete_transaction_confirm'))) hapusTransaksi(id);
                                 }}
                             />
                         ))}

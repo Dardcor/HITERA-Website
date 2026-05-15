@@ -32,18 +32,18 @@ export default function DashboardPage() {
     const progressTugas = tugas.length > 0 ? Math.round((tugasSelesai.length / tugas.length) * 100) : 0;
 
     return (
-        <div className="space-y-8 md:space-y-8 animate-in fade-in duration-500">
-            {/* Header - matches Flutter AppBar style on mobile */}
+        <div className="space-y-8 md:space-y-8 animate-in fade-in duration-150">
+            {}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    {/* Mobile: small date like Flutter (11px, blue, bold, tracking) */}
+                    {}
                     <p className="text-[11px] md:text-sm text-[var(--accent-blue)] font-bold uppercase tracking-[1.5px] md:tracking-widest mb-1">{formatTanggalID(tgl)}</p>
-                    {/* Mobile: 20px greeting like Flutter */}
+                    {}
                     <h2 className="text-xl md:text-3xl font-bold text-[var(--text-primary)]">
                         {getGreeting()}, {user?.user_metadata?.nama || user?.email?.split('@')[0]}
                     </h2>
                 </div>
-                {/* Hide Transaksi button on mobile - Flutter doesn't have this */}
+                {}
                 <div className="hidden md:flex gap-2">
                     <Link href="/dashboard/keuangan">
                         <Button variant="primary" className="flex items-center gap-2">
@@ -53,9 +53,9 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* Summary Cards - Single column on mobile (matching Flutter ListView), 3-col on desktop */}
+            {}
             <div className="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-6">
-                {/* === KEUANGAN CARD === */}
+                {}
                 <Card className="relative overflow-hidden group p-5">
                     <div className="flex justify-between items-start mb-4 md:mb-6">
                         <div className="p-2.5 md:p-3 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-xl">
@@ -118,7 +118,7 @@ export default function DashboardPage() {
                     )}
                 </Card>
 
-                {/* === KESEHATAN CARD === */}
+                {}
                 <Card className="relative overflow-hidden group p-5">
                     <div className="flex justify-between items-start mb-4 md:mb-6">
                         <div className="p-2.5 md:p-3 bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-xl">
@@ -146,11 +146,11 @@ export default function DashboardPage() {
                             )}
                         </div>
                     ) : (
-                        <p className="text-sm text-[var(--text-secondary)] italic">Data belum diisi</p>
+                        <p className="text-sm text-[var(--text-secondary)] italic">{t('data_not_filled')}</p>
                     )}
                 </Card>
 
-                {/* === TUGAS CARD === */}
+                {}
                 <Card className="relative overflow-hidden group p-5">
                     <div className="flex justify-between items-start mb-4 md:mb-6">
                         <div className="p-2.5 md:p-3 bg-[var(--accent-red-dim)] text-[var(--accent-red)] rounded-xl">
@@ -168,7 +168,7 @@ export default function DashboardPage() {
                         </h3>
                         <p className="text-[9px] text-[var(--text-muted)] mt-1 uppercase tracking-wider">{t('filter_done')} {progressTugas}%</p>
                     </div>
-                    {/* Progress bar - h-1.5 on mobile (6px), h-2 desktop */}
+                    {}
                     <div className="w-full h-1.5 md:h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
                         <div
                             className="h-full bg-[var(--accent-red)] transition-all duration-1000 ease-out rounded-full"
@@ -183,10 +183,10 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            {/* Bottom section - Tugas Utama + Aktivitas Terbaru */}
-            {/* On mobile: only show Tugas Utama (matching Flutter). Aktivitas Terbaru hidden on mobile. */}
+            {}
+            {}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Tugas Utama - visible on all screens */}
+                {}
                 <Card className="p-0 overflow-hidden border-[var(--border)]">
                     <div className="px-4 md:px-6 py-3.5 md:py-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-secondary)]/30">
                         <h4 className="font-bold text-[13px] md:text-sm">{t('main_tasks')}</h4>
@@ -200,7 +200,7 @@ export default function DashboardPage() {
                         ) : (
                             tugasAktif.slice(0, 5).map((t) => (
                                 <div key={t.id} className="px-4 md:px-6 py-3.5 md:py-4 flex items-center gap-3 hover:bg-[var(--bg-card-hover)] transition-colors">
-                                    {/* Checkbox 16x16 on mobile, matching Flutter */}
+                                    {}
                                     <div className="w-4 h-4 rounded border border-[var(--border)] shrink-0" />
                                     <span className="text-sm font-medium text-[var(--text-primary)] flex-1 truncate">{t.judul}</span>
                                     <span className={cn(
@@ -217,22 +217,22 @@ export default function DashboardPage() {
                     </div>
                 </Card>
 
-                {/* Aktivitas Terbaru - HIDDEN on mobile (Flutter doesn't have this in dashboard) */}
+                {}
                 <Card className="hidden lg:block p-0 overflow-hidden border-[var(--border)]">
                     <div className="px-6 py-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-secondary)]/30">
-                        <h4 className="font-bold text-sm">Aktivitas Terbaru</h4>
-                        <Link href="/dashboard/keuangan" className="text-xs text-[var(--accent-blue)] hover:underline">Lihat Detail</Link>
+                        <h4 className="font-bold text-sm">{t('latest_activity')}</h4>
+                        <Link href="/dashboard/keuangan" className="text-xs text-[var(--accent-blue)] hover:underline">{t('see_details')}</Link>
                     </div>
                     <div className="divide-y divide-[var(--border)]">
                         {totalPemasukan === 0 && totalPengeluaran === 0 ? (
                             <div className="p-10 text-center text-[var(--text-muted)] text-sm italic">
-                                Belum ada aktivitas hari ini
+                                {t('no_activity_today')}
                             </div>
                         ) : (
                             <div className="p-6 space-y-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-[var(--text-muted)] mb-1">Perbandingan Arus Kas</p>
+                                        <p className="text-xs text-[var(--text-muted)] mb-1">{t('cashflow_comparison')}</p>
                                         <div className="flex items-center gap-4">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-3 h-3 rounded-full bg-[var(--accent-green)]" />
@@ -248,8 +248,8 @@ export default function DashboardPage() {
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between text-[10px] text-[var(--text-muted)] uppercase font-bold">
-                                        <span>Distribusi</span>
-                                        <span>{Math.round((totalPengeluaran / (totalPemasukan || 1)) * 100)}% Rasio</span>
+                                        <span>{t('distribution')}</span>
+                                        <span>{Math.round((totalPengeluaran / (totalPemasukan || 1)) * 100)}% {t('ratio')}</span>
                                     </div>
                                     <div className="w-full h-3 bg-[var(--bg-secondary)] rounded-full overflow-hidden flex">
                                         <div
