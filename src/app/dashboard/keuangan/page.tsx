@@ -16,7 +16,7 @@ export default function KeuanganPage() {
     const [tanggal, setTanggal] = useState(hariIni());
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
 
     const {
         transaksi,
@@ -33,12 +33,9 @@ export default function KeuanganPage() {
 
     return (
         <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
-            {}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    {}
                     <h2 className="hidden md:block text-2xl font-bold">{t('daily_finance')}</h2>
-                    {}
                     <div className="flex items-center gap-2 mt-0 md:mt-1">
                         <button onClick={prevDay} className="p-1 hover:bg-[var(--bg-card-hover)] rounded border border-[var(--border)]">
                             <ChevronLeft size={16} />
@@ -47,7 +44,7 @@ export default function KeuanganPage() {
                             className="text-xs font-bold text-[var(--accent-blue)] cursor-pointer hover:underline"
                             onClick={resetToToday}
                         >
-                            {formatTanggalID(tanggal)}
+                            {formatTanggalID(tanggal, dateFnsLocale)}
                         </span>
                         <button onClick={nextDay} className="p-1 hover:bg-[var(--bg-card-hover)] rounded border border-[var(--border)]">
                             <ChevronRight size={16} />
@@ -59,7 +56,6 @@ export default function KeuanganPage() {
                 </Button>
             </div>
 
-            {}
             <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-blue)] p-4">
                 <div className="flex items-center justify-between">
                     <div>
@@ -72,7 +68,6 @@ export default function KeuanganPage() {
                 </div>
             </Card>
 
-            {}
             <div className="grid grid-cols-2 gap-2 md:gap-4">
                 <Card className="bg-[var(--bg-card)] border-l-4 border-l-[var(--accent-green)] p-4">
                     <div className="flex items-center justify-between">
@@ -99,7 +94,6 @@ export default function KeuanganPage() {
                 </Card>
             </div>
 
-            {}
             <div className="space-y-3 md:space-y-4">
                 <div className="flex justify-between items-center px-1">
                     <h3 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-[1.5px]">{t('transactions')}</h3>
@@ -127,10 +121,10 @@ export default function KeuanganPage() {
                     </Card>
                 ) : (
                     <div className="space-y-2">
-                        {transaksi.map((t) => (
+                        {transaksi.map((tItem) => (
                             <TransaksiCard
-                                key={t.id}
-                                transaksi={t}
+                                key={tItem.id}
+                                transaksi={tItem}
                                 onDelete={(id) => {
                                     if (confirm(t('delete_transaction_confirm'))) hapusTransaksi(id);
                                 }}

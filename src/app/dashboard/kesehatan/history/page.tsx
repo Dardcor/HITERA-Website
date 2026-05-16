@@ -20,7 +20,7 @@ export default function KesehatanHistoryPage() {
     const [preset, setPreset] = useState('Minggu');
     const { user } = useAuth();
     const supabase = createClient();
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
 
     const presetMap: Record<string, string> = {
         'Semua': t('filter_all'),
@@ -92,7 +92,6 @@ export default function KesehatanHistoryPage() {
 
     return (
         <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
-            {}
             <div className="flex items-center gap-3 md:gap-4 -ml-2 md:ml-0">
                 <Link href="/dashboard/kesehatan" className="p-2 hover:bg-[var(--bg-card-hover)] rounded-full transition-colors">
                     <ChevronLeft size={24} className="text-[var(--text-primary)]" />
@@ -100,7 +99,6 @@ export default function KesehatanHistoryPage() {
                 <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">{t('health_history')}</h2>
             </div>
 
-            {}
             <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
                 {['Semua', 'Minggu', 'Bulan', 'Tahun'].map((p) => {
                     const isSelected = preset === p;
@@ -121,7 +119,6 @@ export default function KesehatanHistoryPage() {
                 })}
             </div>
 
-            {}
             <Card className="p-4 md:p-6">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 items-end">
                     <Input
@@ -148,7 +145,6 @@ export default function KesehatanHistoryPage() {
                 </div>
             </Card>
 
-            {/* History List */}
             <div className="space-y-3.5 mt-2">
                 {loading ? (
                     <div className="space-y-3">
@@ -162,7 +158,7 @@ export default function KesehatanHistoryPage() {
                     history.map((h) => (
                         <Card key={h.id} className="p-4 md:p-5 flex flex-col gap-4">
                             <div className="flex justify-between items-center px-1">
-                                <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(h.tanggal)}</h4>
+                                <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(h.tanggal, dateFnsLocale)}</h4>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">

@@ -1,4 +1,4 @@
-import { format, addDays, parseISO } from 'date-fns';
+import { format, addDays, parseISO, Locale } from 'date-fns';
 import { id } from 'date-fns/locale';
 
 export function nowWIB(): Date {
@@ -15,25 +15,25 @@ export function formatRupiah(angka: number): string {
   }).format(angka);
 }
 
-export function formatTanggalID(tanggal: string): string {
+export function formatTanggalID(tanggal: string, localeObj: Locale = id): string {
   try {
-    return format(parseISO(tanggal), 'EEEE, d MMMM yyyy', { locale: id });
+    return format(parseISO(tanggal), 'EEEE, d MMMM yyyy', { locale: localeObj });
   } catch (error) {
     return tanggal;
   }
 }
 
-export function formatTanggalSingkat(tanggal: string): string {
+export function formatTanggalSingkat(tanggal: string, localeObj: Locale = id): string {
   try {
-    return format(parseISO(tanggal), 'd MMM', { locale: id });
+    return format(parseISO(tanggal), 'd MMM', { locale: localeObj });
   } catch (error) {
     return tanggal;
   }
 }
 
-export function formatTanggalGroup(tanggal: string): string {
+export function formatTanggalGroup(tanggal: string, localeObj: Locale = id): string {
   try {
-    return format(parseISO(tanggal), 'd MMMM yyyy', { locale: id });
+    return format(parseISO(tanggal), 'd MMMM yyyy', { locale: localeObj });
   } catch (error) {
     return tanggal;
   }

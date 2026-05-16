@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { User as UserIcon, Bell, Settings } from 'lucide-react';
+import { User as UserIcon, Bell } from 'lucide-react';
 import { formatTanggalID, hariIni } from '@/lib/utils';
 import { User } from '@supabase/supabase-js';
 import { useTranslation } from '@/contexts/LanguageContext';
@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export default function Topbar({ user }: { user: User }) {
     const pathname = usePathname();
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
 
     const getPageTitle = () => {
         if (pathname.includes('/keuangan')) return t('finance');
@@ -21,15 +21,14 @@ export default function Topbar({ user }: { user: User }) {
 
     return (
         <>
-            {}
             <header className="hidden md:flex h-16 border-b border-[var(--border)] bg-[var(--bg-primary)] px-4 md:px-8 items-center justify-between sticky top-0 z-30">
                 <div className="flex items-center gap-4">
-                    <h1 className="text-lg font-bold text-[var(--text-primary)]">{getPageTitle()}</h1>
+                    <h1 className="text-lg font-bold text-[var(--text-primary)] capitalize">{getPageTitle()}</h1>
                 </div>
 
                 <div className="flex items-center gap-3 md:gap-6">
                     <div className="hidden lg:block text-right mr-2">
-                        <p className="text-xs text-[var(--text-muted)] font-medium">{formatTanggalID(hariIni())}</p>
+                        <p className="text-xs text-[var(--text-muted)] font-medium">{formatTanggalID(hariIni(), dateFnsLocale)}</p>
                     </div>
 
                     <button className="p-2 text-[var(--text-muted)] hover:text-[var(--accent-blue)] transition-colors">
@@ -50,17 +49,9 @@ export default function Topbar({ user }: { user: User }) {
                 </div>
             </header>
 
-            {}
-            {}
-            {}
             {pathname !== '/dashboard' && (
                 <header className="md:hidden h-14 bg-[var(--bg-primary)] px-4 flex items-center justify-between sticky top-0 z-30">
-                    <h1 className="text-[20px] font-bold text-[var(--text-primary)]">{getPageTitle()}</h1>
-                    {!pathname.includes('/pengaturan') && (
-                        <Link href="/dashboard/pengaturan">
-                            <Settings size={20} className="text-[var(--text-muted)]" />
-                        </Link>
-                    )}
+                    <h1 className="text-[20px] font-bold text-[var(--text-primary)] capitalize">{getPageTitle()}</h1>
                 </header>
             )}
         </>

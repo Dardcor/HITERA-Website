@@ -46,7 +46,7 @@ export default function Sidebar() {
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
                     className="p-2 rounded-lg hover:bg-[var(--bg-card-hover)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all"
-                    title={isCollapsed ? "Buka Sidebar" : "Tutup Sidebar"}
+                    title={isCollapsed ? t('open_sidebar') : t('close_sidebar')}
                 >
                     {isCollapsed ? <Menu size={24} /> : <X size={20} />}
                 </button>
@@ -70,7 +70,7 @@ export default function Sidebar() {
                                 "transition-colors",
                                 isActive ? "text-[var(--accent-blue)]" : "text-[var(--text-muted)] group-hover:text-[var(--text-primary)]"
                             )} />
-                            {!isCollapsed && <span className="text-sm font-bold tracking-tight">{item.name}</span>}
+                            {!isCollapsed && <span className="text-sm font-bold tracking-tight capitalize">{item.name}</span>}
                         </Link>
                     );
                 })}
@@ -82,14 +82,14 @@ export default function Sidebar() {
                     className="flex items-center gap-3 px-3 py-3 rounded-lg text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)] transition-all group"
                 >
                     <Settings size={20} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)]" />
-                    {!isCollapsed && <span className="text-sm font-medium">{t('settings')}</span>}
+                    {!isCollapsed && <span className="text-sm font-medium capitalize">{t('settings')}</span>}
                 </Link>
                 <button
                     onClick={signOut}
                     className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-[var(--accent-red)] hover:bg-[var(--accent-red-dim)] transition-all group"
                 >
                     <LogOut size={20} />
-                    {!isCollapsed && <span className="text-sm font-medium">{t('logout')}</span>}
+                    {!isCollapsed && <span className="text-sm font-medium capitalize">{t('logout')}</span>}
                 </button>
             </div>
         </aside>

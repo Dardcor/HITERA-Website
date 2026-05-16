@@ -14,7 +14,7 @@ import Link from 'next/link';
 
 export default function DashboardPage() {
     const { user } = useAuth();
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
     const tgl = hariIni();
 
     const { totalPemasukan, totalPengeluaran, totalSaldo, trendSaldo, loading: loadK } = useKeuangan(tgl);
@@ -33,17 +33,13 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-8 md:space-y-8 animate-in fade-in duration-150">
-            {}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    {}
-                    <p className="text-[11px] md:text-sm text-[var(--accent-blue)] font-bold uppercase tracking-[1.5px] md:tracking-widest mb-1">{formatTanggalID(tgl)}</p>
-                    {}
+                    <p className="text-[11px] md:text-sm text-[var(--accent-blue)] font-bold uppercase tracking-[1.5px] md:tracking-widest mb-1">{formatTanggalID(tgl, dateFnsLocale)}</p>
                     <h2 className="text-xl md:text-3xl font-bold text-[var(--text-primary)]">
                         {getGreeting()}, {user?.user_metadata?.nama || user?.email?.split('@')[0]}
                     </h2>
                 </div>
-                {}
                 <div className="hidden md:flex gap-2">
                     <Link href="/dashboard/keuangan">
                         <Button variant="primary" className="flex items-center gap-2">
@@ -53,9 +49,7 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {}
             <div className="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-6">
-                {}
                 <Card className="relative overflow-hidden group p-5">
                     <div className="flex justify-between items-start mb-4 md:mb-6">
                         <div className="p-2.5 md:p-3 bg-[var(--accent-blue-dim)] text-[var(--accent-blue)] rounded-xl">
@@ -118,7 +112,6 @@ export default function DashboardPage() {
                     )}
                 </Card>
 
-                {}
                 <Card className="relative overflow-hidden group p-5">
                     <div className="flex justify-between items-start mb-4 md:mb-6">
                         <div className="p-2.5 md:p-3 bg-[var(--accent-green-dim)] text-[var(--accent-green)] rounded-xl">
@@ -150,7 +143,6 @@ export default function DashboardPage() {
                     )}
                 </Card>
 
-                {}
                 <Card className="relative overflow-hidden group p-5">
                     <div className="flex justify-between items-start mb-4 md:mb-6">
                         <div className="p-2.5 md:p-3 bg-[var(--accent-red-dim)] text-[var(--accent-red)] rounded-xl">
@@ -168,7 +160,6 @@ export default function DashboardPage() {
                         </h3>
                         <p className="text-[9px] text-[var(--text-muted)] mt-1 uppercase tracking-wider">{t('filter_done')} {progressTugas}%</p>
                     </div>
-                    {}
                     <div className="w-full h-1.5 md:h-2 bg-[var(--bg-secondary)] rounded-full overflow-hidden">
                         <div
                             className="h-full bg-[var(--accent-red)] transition-all duration-1000 ease-out rounded-full"
@@ -183,10 +174,7 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            {}
-            {}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {}
                 <Card className="p-0 overflow-hidden border-[var(--border)]">
                     <div className="px-4 md:px-6 py-3.5 md:py-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-secondary)]/30">
                         <h4 className="font-bold text-[13px] md:text-sm">{t('main_tasks')}</h4>
@@ -200,7 +188,6 @@ export default function DashboardPage() {
                         ) : (
                             tugasAktif.slice(0, 5).map((t) => (
                                 <div key={t.id} className="px-4 md:px-6 py-3.5 md:py-4 flex items-center gap-3 hover:bg-[var(--bg-card-hover)] transition-colors">
-                                    {}
                                     <div className="w-4 h-4 rounded border border-[var(--border)] shrink-0" />
                                     <span className="text-sm font-medium text-[var(--text-primary)] flex-1 truncate">{t.judul}</span>
                                     <span className={cn(
@@ -217,7 +204,6 @@ export default function DashboardPage() {
                     </div>
                 </Card>
 
-                {}
                 <Card className="hidden lg:block p-0 overflow-hidden border-[var(--border)]">
                     <div className="px-6 py-4 border-b border-[var(--border)] flex justify-between items-center bg-[var(--bg-secondary)]/30">
                         <h4 className="font-bold text-sm">{t('latest_activity')}</h4>

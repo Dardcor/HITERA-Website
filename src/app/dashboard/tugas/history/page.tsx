@@ -21,7 +21,7 @@ export default function TugasHistoryPage() {
     const [preset, setPreset] = useState('Minggu');
     const { user } = useAuth();
     const supabase = createClient();
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
 
     const presetMap: Record<string, string> = {
         'Semua': t('filter_all'),
@@ -96,10 +96,10 @@ export default function TugasHistoryPage() {
         }
     }, [user, fromDate, toDate, filterStatus]);
 
-    const groupedTasks = history.reduce((groups: any, t) => {
-        const date = t.tanggal_target;
+    const groupedTasks = history.reduce((groups: any, tItem) => {
+        const date = tItem.tanggal_target;
         if (!groups[date]) groups[date] = [];
-        groups[date].push(t);
+        groups[date].push(tItem);
         return groups;
     }, {});
 
@@ -107,7 +107,6 @@ export default function TugasHistoryPage() {
 
     return (
         <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
-            {}
             <div className="flex items-center gap-3 md:gap-4 -ml-2 md:ml-0">
                 <Link href="/dashboard/tugas" className="p-2 hover:bg-[var(--bg-card-hover)] rounded-full transition-colors">
                     <ChevronLeft size={24} className="text-[var(--text-primary)]" />
@@ -115,7 +114,6 @@ export default function TugasHistoryPage() {
                 <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">{t('task_history')}</h2>
             </div>
 
-            {}
             <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
                 {['Semua', 'Minggu', 'Bulan', 'Tahun'].map((p) => {
                     const isSelected = preset === p;
@@ -136,7 +134,6 @@ export default function TugasHistoryPage() {
                 })}
             </div>
 
-            {}
             <Card className="p-4 md:p-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 items-end">
                     <Input
@@ -173,7 +170,6 @@ export default function TugasHistoryPage() {
                 </div>
             </Card>
 
-            {/* History List Grouped by Date */}
             <div className="space-y-6 md:space-y-8 mt-2">
                 {loading ? (
                     <div className="space-y-3">
@@ -191,32 +187,32 @@ export default function TugasHistoryPage() {
                         return (
                             <div key={date} className="space-y-2.5">
                                 <div className="flex justify-between items-center px-1">
-                                    <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(date)}</h3>
+                                    <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(date, dateFnsLocale)}</h3>
                                     <p className="text-[10px] font-bold text-[var(--accent-blue)]">
                                         {finishedCount}/{items.length} Selesai
                                     </p>
                                 </div>
                                 <div className="space-y-1.5">
-                                    {items.map((t: Tugas) => {
-                                        const isSelesai = t.status === 'selesai';
+                                    {items.map((tItem: Tugas) => {
+                                        const isSelesai = tItem.status === 'selesai';
                                         return (
-                                            <div key={t.id} className={cn(
+                                            <div key={tItem.id} className={cn(
                                                 "flex items-center gap-3 p-3.5 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl transition-all",
                                                 isSelesai && "opacity-60"
                                             )}>
                                                 <div className={cn(
                                                     "w-2 h-2 rounded-full shrink-0",
-                                                    t.prioritas === 'tinggi' ? "bg-[var(--accent-red)]" :
-                                                        t.prioritas === 'sedang' ? "bg-[var(--accent-yellow)]" :
+                                                    tItem.prioritas === 'tinggi' ? "bg-[var(--accent-red)]" :
+                                                        tItem.prioritas === 'sedang' ? "bg-[var(--accent-yellow)]" :
                                                             "bg-[var(--accent-blue)]"
                                                 )} />
                                                 <div className="flex-1 min-w-0">
                                                     <p className={cn(
                                                         "text-sm font-bold truncate",
                                                         isSelesai && "line-through text-[var(--text-muted)]"
-                                                    )}>{t.judul}</p>
-                                                    {t.deskripsi && (
-                                                        <p className="text-[10px] text-[var(--text-muted)] truncate">{t.deskripsi}</p>
+                                                    )}>{tItem.judul}</p>
+                                                    {tItem.deskripsi && (
+                                                        <p className="text-[10px] text-[var(--text-muted)] truncate">{tItem.deskripsi}</p>
                                                     )}
                                                 </div>
                                                 <div className="shrink-0">

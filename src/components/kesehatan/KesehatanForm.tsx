@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { KesehatanForm as KForm } from '@/types';
 import { useKesehatan } from '@/hooks/useKesehatan';
+import { useTranslation } from '@/contexts/LanguageContext';
 import { Minus, Plus } from 'lucide-react';
 
 interface Props {
@@ -23,6 +24,7 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { simpanData } = useKesehatan(tanggal);
+    const { t } = useTranslation();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,7 +47,7 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-                <label className="text-xs font-medium text-[var(--text-muted)] ml-1">Air Minum (Gelas 250ml)</label>
+                <label className="text-xs font-medium text-[var(--text-muted)] ml-1">{t('water_intake')} (250ml)</label>
                 <div className="flex items-center gap-4 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-3">
                     <Button
                         type="button"
@@ -55,7 +57,7 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
                     >
                         <Minus size={18} />
                     </Button>
-                    <div className="flex-1 text-center font-bold text-lg">{airMinum} <span className="text-xs text-[var(--text-muted)]">Gelas</span></div>
+                    <div className="flex-1 text-center font-bold text-lg">{airMinum} <span className="text-xs text-[var(--text-muted)]">{t('water_unit')}</span></div>
                     <Button
                         type="button"
                         variant="ghost"
@@ -68,7 +70,7 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
             </div>
 
             <Input
-                label="Jam Tidur (jam)"
+                label={`${t('sleep_hours')} (${t('hours').toLowerCase()})`}
                 type="number"
                 step="0.5"
                 value={jamTidur}
@@ -77,7 +79,7 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
             />
 
             <div className="space-y-2">
-                <label className="text-xs font-medium text-[var(--text-muted)] ml-1">Durasi Olahraga</label>
+                <label className="text-xs font-medium text-[var(--text-muted)] ml-1">{t('exercise_duration')}</label>
                 <div className="flex gap-2.5">
                     <div className="flex-1 flex items-center gap-2 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-2.5">
                         <Button
@@ -88,7 +90,7 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
                         >
                             <Minus size={16} />
                         </Button>
-                        <div className="flex-1 text-center font-bold text-base">{olahragaJam} <span className="text-[10px] text-[var(--text-muted)]">Jam</span></div>
+                        <div className="flex-1 text-center font-bold text-base">{olahragaJam} <span className="text-[10px] text-[var(--text-muted)]">{t('exercise_jam')}</span></div>
                         <Button
                             type="button"
                             variant="ghost"
@@ -107,7 +109,7 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
                         >
                             <Minus size={16} />
                         </Button>
-                        <div className="flex-1 text-center font-bold text-base">{olahragaMenit} <span className="text-[10px] text-[var(--text-muted)]">Mnt</span></div>
+                        <div className="flex-1 text-center font-bold text-base">{olahragaMenit} <span className="text-[10px] text-[var(--text-muted)]">{t('exercise_mnt')}</span></div>
                         <Button
                             type="button"
                             variant="ghost"
@@ -121,15 +123,15 @@ export default function KesehatanForm({ initialData, tanggal, onSuccess, onCance
             </div>
 
             <Textarea
-                label="Catatan Hari Ini"
+                label={t('notes')}
                 value={catatan}
                 onChange={(e) => setCatatan(e.target.value)}
-                placeholder="Bagaimana perasaanmu hari ini?"
+                placeholder={t('how_feeling')}
             />
 
             <div className="flex flex-col md:flex-row justify-end gap-3 pt-2">
-                <Button variant="secondary" type="button" onClick={onCancel} className="w-full md:w-auto order-2 md:order-1">Batal</Button>
-                <Button type="submit" isLoading={isSubmitting} className="w-full md:w-auto order-1 md:order-2">Simpan Data Kesehatan</Button>
+                <Button variant="secondary" type="button" onClick={onCancel} className="w-full md:w-auto order-2 md:order-1">{t('cancel')}</Button>
+                <Button type="submit" isLoading={isSubmitting} className="w-full md:w-auto order-1 md:order-2">{t('save_health_data')}</Button>
             </div>
         </form>
     );

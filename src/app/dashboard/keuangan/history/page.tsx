@@ -21,7 +21,7 @@ export default function KeuanganHistoryPage() {
     const [preset, setPreset] = useState('Minggu');
     const { user } = useAuth();
     const supabase = createClient();
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
 
     const presetMap: Record<string, string> = {
         'Semua': t('filter_all'),
@@ -97,10 +97,10 @@ export default function KeuanganHistoryPage() {
         }
     }, [user, fromDate, toDate, filterJenis]);
 
-    const groupedTransaksi = transaksi.reduce((groups: any, t) => {
-        const date = t.tanggal;
+    const groupedTransaksi = transaksi.reduce((groups: any, tItem) => {
+        const date = tItem.tanggal;
         if (!groups[date]) groups[date] = [];
-        groups[date].push(t);
+        groups[date].push(tItem);
         return groups;
     }, {});
 
@@ -108,7 +108,6 @@ export default function KeuanganHistoryPage() {
 
     return (
         <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
-            {}
             <div className="flex items-center gap-3 md:gap-4 -ml-2 md:ml-0">
                 <Link href="/dashboard/keuangan" className="p-2 hover:bg-[var(--bg-card-hover)] rounded-full transition-colors">
                     <ChevronLeft size={24} className="text-[var(--text-primary)]" />
@@ -116,7 +115,6 @@ export default function KeuanganHistoryPage() {
                 <h2 className="text-[20px] md:text-2xl font-bold text-[var(--text-primary)]">{t('transaction_history')}</h2>
             </div>
 
-            {}
             <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
                 {['Semua', 'Minggu', 'Bulan', 'Tahun'].map((p) => {
                     const isSelected = preset === p;
@@ -137,7 +135,6 @@ export default function KeuanganHistoryPage() {
                 })}
             </div>
 
-            {}
             <Card className="p-4 md:p-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 items-end">
                     <Input
@@ -176,7 +173,6 @@ export default function KeuanganHistoryPage() {
                 </div>
             </Card>
 
-            {/* History List Grouped by Date */}
             <div className="space-y-6 md:space-y-8 mt-2">
                 {loading ? (
                     <div className="space-y-3">
@@ -195,31 +191,31 @@ export default function KeuanganHistoryPage() {
                         return (
                             <div key={date} className="space-y-2.5">
                                 <div className="flex justify-between items-center px-1">
-                                    <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(date)}</h3>
+                                    <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(date, dateFnsLocale)}</h3>
                                     <div className="flex gap-2.5 text-[10px] font-bold">
                                         <span className="text-[var(--accent-green)]">+{formatRupiah(dailyIncoming)}</span>
                                         <span className="text-[var(--accent-red)]">-{formatRupiah(dailyOutgoing)}</span>
                                     </div>
                                 </div>
                                 <div className="space-y-1.5">
-                                    {items.map((t: Transaksi) => {
-                                        const isPemasukan = t.jenis === 'pemasukan';
+                                    {items.map((tItem: Transaksi) => {
+                                        const isPemasukan = tItem.jenis === 'pemasukan';
                                         return (
-                                            <div key={t.id} className="flex items-center gap-3 p-3.5 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl">
+                                            <div key={tItem.id} className="flex items-center gap-3 p-3.5 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl">
                                                 <div className={cn(
                                                     "w-2 h-2 rounded-full shrink-0",
                                                     isPemasukan ? "bg-[var(--accent-green)]" : "bg-[var(--accent-red)]"
                                                 )} />
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-bold text-[var(--text-primary)] truncate">{t.kategori}</p>
-                                                    <p className="text-[10px] text-[var(--text-muted)] truncate">{t.deskripsi || '-'}</p>
+                                                    <p className="text-sm font-bold text-[var(--text-primary)] truncate">{tItem.kategori}</p>
+                                                    <p className="text-[10px] text-[var(--text-muted)] truncate">{tItem.deskripsi || '-'}</p>
                                                 </div>
                                                 <div className="text-right shrink-0">
                                                     <p className={cn(
                                                         "text-sm font-bold",
                                                         isPemasukan ? "text-[var(--accent-green)]" : "text-[var(--accent-red)]"
                                                     )}>
-                                                        {isPemasukan ? '+' : '-'} {formatRupiah(t.jumlah)}
+                                                        {isPemasukan ? '+' : '-'} {formatRupiah(tItem.jumlah)}
                                                     </p>
                                                 </div>
                                             </div>

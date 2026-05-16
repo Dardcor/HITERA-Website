@@ -15,14 +15,14 @@ export default function KesehatanPage() {
     const [tanggal, setTanggal] = useState(hariIni());
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
 
     const { data, loading } = useKesehatan(tanggal);
 
     const prevDay = () => setTanggal(tambahHari(tanggal, -1));
     const nextDay = () => setTanggal(tambahHari(tanggal, 1));
 
-        const MetrikCard = ({ icon: Icon, color, bgColor, label, value, unit }: any) => (
+    const MetrikCard = ({ icon: Icon, color, bgColor, label, value, unit }: any) => (
         <Card className="flex flex-col justify-between gap-3 p-3.5 md:p-5 min-h-[100px]">
             <div className={cn("p-1.5 w-fit rounded-lg", bgColor)}>
                 <Icon size={18} className={color} />
@@ -39,7 +39,6 @@ export default function KesehatanPage() {
 
     return (
         <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
-            {}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="hidden md:block text-2xl font-bold">{t('daily_health')}</h2>
@@ -48,7 +47,7 @@ export default function KesehatanPage() {
                             <ChevronLeft size={16} />
                         </button>
                         <span className="text-xs font-bold text-[var(--accent-blue)]">
-                            {formatTanggalID(tanggal)}
+                            {formatTanggalID(tanggal, dateFnsLocale)}
                         </span>
                         <button onClick={nextDay} className="p-1 hover:bg-[var(--bg-card-hover)] rounded border border-[var(--border)]">
                             <ChevronRight size={16} />
@@ -60,7 +59,6 @@ export default function KesehatanPage() {
                 </Button>
             </div>
 
-            {}
             {!loading && !data ? (
                 <Card className="flex flex-col items-center justify-center py-16 md:py-20 text-center">
                     <div className="w-[72px] h-[72px] bg-[var(--bg-secondary)] rounded-full flex items-center justify-center text-[var(--accent-blue)] mb-5 md:mb-6">
@@ -75,7 +73,7 @@ export default function KesehatanPage() {
                     </Button>
                 </Card>
             ) : (
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-4">
                     <MetrikCard
                         icon={Droplet}
                         color="text-cyan-500"
@@ -100,7 +98,6 @@ export default function KesehatanPage() {
                         value={`${data?.olahraga_jam ?? 0}${t('hour_short')} ${data?.olahraga_menit ?? 0}${t('minute_short')}`}
                         unit=""
                     />
-                    {/* Catatan card - matches Flutter _catatanCard */}
                     <Card className="flex flex-col justify-between gap-3 p-3.5 md:p-5 col-span-2 md:col-span-1 min-h-[100px]">
                         <div className="p-1.5 w-fit rounded-lg bg-amber-500/10">
                             <Clipboard size={18} className="text-amber-500" />
@@ -115,7 +112,6 @@ export default function KesehatanPage() {
                 </div>
             )}
 
-            {}
             <div className="pt-2 md:pt-6">
                 <div className="flex justify-between items-center mb-3 md:mb-4 px-1">
                     <h3 className="text-xs font-bold uppercase tracking-[1.5px]">{t('last_7_days')}</h3>

@@ -15,7 +15,7 @@ export default function TugasPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [filter, setFilter] = useState<'semua' | 'aktif' | 'selesai'>('semua');
 
-    const { t } = useTranslation();
+    const { t, dateFnsLocale } = useTranslation();
 
     const {
         tugas,
@@ -28,18 +28,16 @@ export default function TugasPage() {
 
     const displayTugas = filter === 'semua' ? tugas : filter === 'aktif' ? tugasAktif : tugasSelesai;
 
-    
     const grouped: Record<string, typeof tugas> = {};
-    displayTugas.forEach(t => {
-        const key = t.tanggal_target;
+    displayTugas.forEach(tItem => {
+        const key = tItem.tanggal_target;
         if (!grouped[key]) grouped[key] = [];
-        grouped[key].push(t);
+        grouped[key].push(tItem);
     });
     const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
 
     return (
         <div className="space-y-4 md:space-y-6 animate-in fade-in duration-150 pb-20">
-            {}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="hidden md:block text-2xl font-bold">{t('tasks')}</h2>
@@ -49,7 +47,6 @@ export default function TugasPage() {
                 </Button>
             </div>
 
-            {}
             <div className="space-y-4">
                 <div className="flex items-center justify-between gap-4 px-1">
                     <div className="flex bg-[var(--bg-secondary)] p-1 rounded-lg border border-[var(--border)] overflow-x-auto flex-1">
@@ -70,7 +67,6 @@ export default function TugasPage() {
                     </div>
                 </div>
 
-                {}
                 {loading ? (
                     <div className="space-y-2">
                         {[1, 2, 3].map(i => <div key={i} className="h-[72px] w-full bg-[var(--bg-card-hover)] animate-pulse rounded-xl" />)}
@@ -87,13 +83,13 @@ export default function TugasPage() {
                         {sortedDates.map(date => (
                             <div key={date}>
                                 <p className="text-xs font-bold text-[var(--accent-blue)] mb-2 tracking-wide">
-                                    {formatTanggalGroup(date)}
+                                    {formatTanggalGroup(date, dateFnsLocale)}
                                 </p>
                                 <div className="space-y-2">
-                                    {grouped[date].map((t) => (
+                                    {grouped[date].map((tItem) => (
                                         <TugasItem
-                                            key={t.id}
-                                            tugas={t}
+                                            key={tItem.id}
+                                            tugas={tItem}
                                             onToggle={toggleSelesai}
                                             onDelete={(id) => {
                                                 if (confirm(t('delete_task_confirm'))) deleteTugas(id);

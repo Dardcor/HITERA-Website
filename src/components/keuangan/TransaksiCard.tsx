@@ -25,7 +25,7 @@ const getIcon = (kategori: string) => {
 
 export default function TransaksiCard({ transaksi, onDelete }: Props) {
     const isPemasukan = transaksi.jenis === 'pemasukan';
-    const { t } = useTranslation();
+    const { t, localeTag } = useTranslation();
 
     return (
         <div className="group flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl hover:bg-[var(--bg-card-hover)] transition-all gap-3">
@@ -55,7 +55,7 @@ export default function TransaksiCard({ transaksi, onDelete }: Props) {
                     {formatRupiah(transaksi.jumlah)}
                 </p>
                 <p className="text-[10px] text-[var(--text-muted)]">
-                    {new Date(transaksi.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    {new Date(transaksi.created_at).toLocaleDateString(localeTag, { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </p>
             </div>
 

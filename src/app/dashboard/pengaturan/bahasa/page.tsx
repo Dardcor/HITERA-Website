@@ -15,15 +15,15 @@ const BAHASA_OPTIONS = [
 ];
 
 export default function BahasaPage() {
-    const { settings, loading, updateSettings } = useSettings();
+    const { settings, loading } = useSettings();
     const { error: toastError } = useToast();
-    const { t } = useTranslation();
+    const { t, changeLanguage } = useTranslation();
 
     const handleSelect = async (value: string) => {
         if (settings.bahasa === value) return;
         
         try {
-            await updateSettings({ bahasa: value });
+            await changeLanguage(value);
         } catch (err) {
             toastError(t('language_update_failed'));
         }

@@ -6,14 +6,12 @@ import { Input, Select, Textarea } from '@/components/ui/Input';
 import { TransaksiForm as TForm } from '@/types';
 import { useKeuangan } from '@/hooks/useKeuangan';
 import { hariIni, cn } from '@/lib/utils';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 interface Props {
     onSuccess: () => void;
     onCancel: () => void;
 }
-
-const KATEGORI_PEMASUKAN = ['Gaji', 'Freelance', 'Investasi', 'Hadiah', 'Lainnya'];
-const KATEGORI_PENGELUARAN = ['Makanan', 'Transport', 'Belanja', 'Tagihan', 'Kesehatan', 'Hiburan', 'Pendidikan', 'Lainnya'];
 
 export default function TransaksiForm({ onSuccess, onCancel }: Props) {
     const [jenis, setJenis] = useState<'pemasukan' | 'pengeluaran'>('pengeluaran');
@@ -24,15 +22,25 @@ export default function TransaksiForm({ onSuccess, onCancel }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { tambahTransaksi } = useKeuangan(tanggal);
+    const { t } = useTranslation();
+
+    // Use translation keys for categories
+    const KATEGORI_PEMASUKAN_KEYS = ['cat_salary', 'cat_freelance', 'cat_investment', 'cat_gift', 'cat_other'];
+    const KATEGORI_PENGELUARAN_KEYS = ['cat_food', 'cat_transport', 'cat_shopping', 'cat_bills', 'cat_health', 'cat_entertainment', 'cat_education', 'cat_other'];
+
+    // DB values remain in Indonesian for consistency with existing data
+    const KATEGORI_PEMASUKAN_VALUES = ['Gaji', 'Freelance', 'Investasi', 'Hadiah', 'Lainnya'];
+    const KATEGORI_PENGELUARAN_VALUES = ['Makanan', 'Transport', 'Belanja', 'Tagihan', 'Kesehatan', 'Hiburan', 'Pendidikan', 'Lainnya'];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
+        const kategoriValues = jenis === 'pemasukan' ? KATEGORI_PEMASUKAN_VALUES : KATEGORI_PENGELUARAN_VALUES;
         const data: TForm = {
             jenis,
             jumlah: Number(jumlah),
-            kategori: kategori || (jenis === 'pemasukan' ? KATEGORI_PEMASUKAN[0] : KATEGORI_PENGELUARAN[0]),
+            kategori: kategori || (jenis === 'pemasukan' ? KATEGORI_PEMASUKAN_VALUES[0] : KATEGORI_PENGELUARAN_VALUES[0]),
             deskripsi,
             tanggal,
         };
@@ -42,7 +50,8 @@ export default function TransaksiForm({ onSuccess, onCancel }: Props) {
         onSuccess();
     };
 
-    const kategoriList = jenis === 'pemasukan' ? KATEGORI_PEMASUKAN : KATEGORI_PENGELUARAN;
+    const kategoriKeys = jenis === 'pemasukan' ? KATEGORI_PEMASUKAN_KEYS : KATEGORI_PENGELUARAN_KEYS;
+    const kategoriValues = jenis === 'pemasukan' ? KATEGORI_PEMASUKAN_VALUES : KATEGORI_PENGELUARAN_VALUES;
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -55,7 +64,7 @@ export default function TransaksiForm({ onSuccess, onCancel }: Props) {
                         jenis === 'pemasukan' ? "bg-[var(--accent-green)] text-[#0a0a0f]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                     )}
                 >
-                    Pemasukan
+                    {t('type_income')}
                 </button>
                 <button
                     type="button"
@@ -65,12 +74,12 @@ export default function TransaksiForm({ onSuccess, onCancel }: Props) {
                         jenis === 'pengeluaran' ? "bg-[var(--accent-red)] text-white" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                     )}
                 >
-                    Pengeluaran
+                    {t('type_expense')}
                 </button>
             </div>
 
             <Input
-                label="Jumlah (Rp)"
+                label={`${t('amount')} (Rp)`}
                 type="number"
                 value={jumlah}
                 onChange={(e) => setJumlah(e.target.value)}
@@ -79,18 +88,18 @@ export default function TransaksiForm({ onSuccess, onCancel }: Props) {
             />
 
             <Select
-                label="Kategori"
+                label={t('category')}
                 value={kategori}
                 onChange={(e) => setKategori(e.target.value)}
                 required
             >
-                {kategoriList.map((kat) => (
-                    <option key={kat} value={kat}>{kat}</option>
+                {kategoriKeys.map((key, i) => (
+                    <option key={kategoriValues[i]} value={kategoriValues[i]}>{t(key)}</option>
                 ))}
             </Select>
 
             <Input
-                label="Tanggal"
+                label={t('date')}
                 type="date"
                 value={tanggal}
                 onChange={(e) => setTanggal(e.target.value)}
@@ -98,15 +107,15 @@ export default function TransaksiForm({ onSuccess, onCancel }: Props) {
             />
 
             <Textarea
-                label="Deskripsi (Opsional)"
+                label={t('description_optional')}
                 value={deskripsi}
                 onChange={(e) => setDeskripsi(e.target.value)}
-                placeholder="Contoh: Makan siang di kantor"
+                placeholder={t('ex_hint')}
             />
 
             <div className="flex flex-col md:flex-row justify-end gap-3 pt-2">
-                <Button variant="secondary" type="button" onClick={onCancel} className="w-full md:w-auto order-2 md:order-1">Batal</Button>
-                <Button type="submit" isLoading={isSubmitting} className="w-full md:w-auto order-1 md:order-2">Simpan Transaksi</Button>
+                <Button variant="secondary" type="button" onClick={onCancel} className="w-full md:w-auto order-2 md:order-1">{t('cancel')}</Button>
+                <Button type="submit" isLoading={isSubmitting} className="w-full md:w-auto order-1 md:order-2">{t('save_transaction')}</Button>
             </div>
         </form>
     );
