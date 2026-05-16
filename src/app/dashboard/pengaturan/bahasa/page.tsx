@@ -7,20 +7,20 @@ import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
 
 const BAHASA_OPTIONS = [
-    { value: 'id', label: 'Indonesia 🇮🇩' },
-    { value: 'en', label: 'English 🇬🇧' },
-    { value: 'ms', label: 'Malaysia 🇲🇾' },
-    { value: 'ja', label: 'Japan 🇯🇵' },
-    { value: 'zh', label: 'China 🇨🇳' },
+    { value: 'id', label: 'Indonesia', flag: 'https://flagcdn.com/id.svg' },
+    { value: 'en', label: 'English', flag: 'https://flagcdn.com/gb.svg' },
+    { value: 'ms', label: 'Malaysia', flag: 'https://flagcdn.com/my.svg' },
+    { value: 'ja', label: 'Japan', flag: 'https://flagcdn.com/jp.svg' },
+    { value: 'zh', label: 'China', flag: 'https://flagcdn.com/cn.svg' },
 ];
 
 export default function BahasaPage() {
     const { settings, loading } = useSettings();
     const { error: toastError } = useToast();
-    const { t, changeLanguage } = useTranslation();
+    const { t, changeLanguage, locale } = useTranslation();
 
     const handleSelect = async (value: string) => {
-        if (settings.bahasa === value) return;
+        if (locale === value) return;
         
         try {
             await changeLanguage(value);
@@ -45,7 +45,7 @@ export default function BahasaPage() {
             ) : (
                 <div className="space-y-3">
                     {BAHASA_OPTIONS.map((option) => {
-                        const isSelected = settings.bahasa === option.value;
+                        const isSelected = locale === option.value;
                         
                         return (
                             <button
@@ -57,8 +57,15 @@ export default function BahasaPage() {
                                     : 'bg-[var(--bg-card)] border-[var(--border)] hover:border-[var(--accent-blue)]'
                                 }`}
                             >
-                                <span className={`text-base ${isSelected ? 'font-bold' : ''}`}>
-                                    {option.label}
+                                <span className={`text-base flex items-center gap-3 ${isSelected ? 'font-bold' : ''}`}>
+                                    <div className="w-8 h-6 relative rounded-sm overflow-hidden border border-[var(--border)]">
+                                        <img 
+                                            src={option.flag} 
+                                            alt={`Flag of ${option.label}`} 
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <span>{option.label}</span>
                                 </span>
                                 {isSelected && (
                                     <Check className="text-[var(--accent-blue)]" size={20} />

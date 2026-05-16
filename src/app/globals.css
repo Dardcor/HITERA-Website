@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+:root[data-theme='dark'] {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-card: #16161f;
+  --bg-card-hover: #1e1e2a;
+  --border: #2a2a3a;
+  --border-focus: #00c2ff;
+  --text-primary: #f0f0ff;
+  --text-secondary: #8888aa;
+  --text-muted: #555570;
+  --accent-blue: #00c2ff;
+  --accent-blue-dim: rgba(0, 194, 255, 0.11);
+  --accent-green: #00e676;
+  --accent-green-dim: rgba(0, 230, 118, 0.11);
+  --accent-red: #ff4d6d;
+  --accent-red-dim: rgba(255, 77, 109, 0.11);
+  --accent-yellow: #ffd60a;
+  --accent-yellow-dim: rgba(255, 214, 10, 0.11);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme='light'] {
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f3f5;
+  --border: #e9ecef;
+  --border-focus: #00c2ff;
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #868e96;
+  --accent-blue: #00c2ff;
+  --accent-blue-dim: rgba(0, 194, 255, 0.11);
+  --accent-green: #00e676;
+  --accent-green-dim: rgba(0, 230, 118, 0.11);
+  --accent-red: #ff4d6d;
+  --accent-red-dim: rgba(255, 77, 109, 0.11);
+  --accent-yellow: #ffd60a;
+  --accent-yellow-dim: rgba(255, 214, 10, 0.11);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+}
+
 :root {
   --bg-primary: #0a0a0f;
   --bg-secondary: #111118;
@@ -47,7 +93,6 @@ body {
   }
 }
 
-/* Custom Animations to replace tailwind-animate plugin */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

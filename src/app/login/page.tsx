@@ -30,12 +30,10 @@ export default function LoginPage() {
 
             if (error) throw error;
 
-            success('Login berhasil!');
-            router.push('/dashboard');
+            router.push('/loading');
             router.refresh();
         } catch (err: any) {
             toastError(err.message || 'Gagal login. Silakan cek email & password.');
-        } finally {
             setIsLoading(false);
         }
     };

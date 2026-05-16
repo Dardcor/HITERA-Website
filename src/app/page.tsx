@@ -7,19 +7,24 @@ import { Card } from '@/components/ui/Card';
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] overflow-x-hidden">
-      <nav className="container mx-auto px-6 py-6 flex items-center justify-between">
-        <Image src="/logo.png" alt="HITERA" width={120} height={40} className="h-10 w-auto" />
-        <div className="flex items-center gap-4">
-          <Link href="/login">
-            <Button variant="ghost" className="hidden sm:flex">Masuk</Button>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--bg-primary)]/80 backdrop-blur-md border-b border-[var(--border)] transition-all">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <Image src="/logo.png" alt="HITERA Logo" width={40} height={40} className="h-10 w-auto" />
+            <span className="text-xl md:text-2xl font-bold tracking-widest text-[var(--text-primary)]">HITERA</span>
           </Link>
-          <Link href="/register">
-            <Button>Mulai Gratis</Button>
-          </Link>
+          <div className="flex items-center gap-3 md:gap-4">
+            <Link href="/login">
+              <Button variant="ghost" className="hidden sm:flex">Masuk</Button>
+            </Link>
+            <Link href="/register">
+              <Button>Daftar</Button>
+            </Link>
+          </div>
         </div>
       </nav>
 
-      <section className="container mx-auto px-6 pt-20 pb-32 flex flex-col items-center text-center">
+      <section className="container mx-auto px-6 pt-32 md:pt-40 pb-32 flex flex-col items-center text-center">
         <h1 className="text-5xl md:text-7xl font-bold text-[var(--text-primary)] mb-6 tracking-tight leading-tight max-w-4xl animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
           Atur Hidup Jadi <span className="text-[var(--accent-blue)]">Lebih Mudah</span> & Presisi
         </h1>

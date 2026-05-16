@@ -36,6 +36,7 @@ export interface Tugas {
   status: 'aktif' | 'selesai' | 'ditunda';
   tanggal_target: string;
   deadline?: string;
+  waktu_deadline?: string;
   tanggal_selesai?: string;
   created_at: string;
 }

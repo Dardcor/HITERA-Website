@@ -46,11 +46,9 @@ export default function RegisterPage() {
 
             if (error) throw error;
 
-            success('Registrasi berhasil! Menyiapkan dashboard...');
-            router.push('/dashboard');
+            router.push('/loading');
         } catch (err: any) {
             toastError(err.message || 'Gagal registrasi.');
-        } finally {
             setIsLoading(false);
         }
     };
@@ -60,7 +58,7 @@ export default function RegisterPage() {
             <Card className="w-full max-w-md p-8">
                 <div className="text-center mb-8">
                     <Image src="/logo.png" alt="Daftar HITERA" width={160} height={48} className="h-12 w-auto mx-auto mb-2" />
-                    <p className="text-[var(--text-secondary)]">Mulai manajemen hidup yang lebih baik</p>
+                    <p className="text-[var(--text-secondary)]">Daftar Sekarang</p>
                 </div>
 
                 <form onSubmit={handleRegister} className="space-y-5">

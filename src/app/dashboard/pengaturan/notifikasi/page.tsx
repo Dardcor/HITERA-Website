@@ -3,21 +3,95 @@
 import { useSettings } from '@/hooks/useSettings';
 import { Card } from '@/components/ui/Card';
 import { useToast } from '@/components/ui/Toast';
-import { ChevronLeft, Loader2 } from 'lucide-react';
+import { ChevronLeft, Loader2, Wallet, HeartPulse, CheckSquare, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function NotifikasiPage() {
     const { settings, loading, updateSettings } = useSettings();
     const { error: toastError } = useToast();
     const { t } = useTranslation();
 
-    const handleToggle = async (enabled: boolean) => {
-        try {
-            await updateSettings({ notifikasi_enabled: enabled });
-        } catch (err) {
-            toastError(t('notification_update_failed'));
-        }
+    const NotificationCard = ({ 
+        title, 
+        description, 
+        icon: Icon, 
+        fieldEnabled, 
+        fieldTime,
+        defaultTime 
+    }: { 
+        title: string, 
+        description: string, 
+        icon: any, 
+        fieldEnabled: 'keuangan_notif_enabled' | 'kesehatan_notif_enabled' | 'tugas_notif_enabled',
+        fieldTime: 'keuangan_notif_time' | 'kesehatan_notif_time' | 'tugas_notif_time',
+        defaultTime: string 
+    }) => {
+        const isEnabled = settings[fieldEnabled] ?? false;
+        const timeValue = settings[fieldTime] ?? defaultTime;
+
+        const handleToggle = async (enabled: boolean) => {
+            try {
+                await updateSettings({ [fieldEnabled]: enabled });
+            } catch (err) {
+                toastError(t('notification_update_failed') || 'Gagal mengubah pengaturan notifikasi');
+            }
+        };
+
+        const handleTimeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+            try {
+                await updateSettings({ [fieldTime]: e.target.value });
+            } catch (err) {
+                toastError(t('notification_update_failed') || 'Gagal mengubah jam notifikasi');
+            }
+        };
+
+        return (
+            <Card className="mb-4 overflow-hidden border border-[var(--border)]">
+                <div className="p-4 flex items-start gap-3">
+                    <Icon size={28} className="text-[var(--text-primary)] mt-1" />
+                    <div className="flex-1">
+                        <h3 className="font-bold text-[var(--text-primary)] text-base">{title}</h3>
+                        <p className="text-sm text-[var(--text-muted)] mt-1">{description}</p>
+                    </div>
+                </div>
+                
+                <div className="h-[1px] bg-[var(--border)] w-full"></div>
+                
+                <div className="px-4 py-2 flex items-center justify-between">
+                    <span className="text-sm text-[var(--text-primary)]">Aktifkan</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                            type="checkbox" 
+                            className="sr-only peer"
+                            checked={isEnabled}
+                            onChange={(e) => handleToggle(e.target.checked)}
+                        />
+                        <div className="w-11 h-6 bg-[var(--bg-secondary)] border border-[var(--border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--accent-blue)]"></div>
+                    </label>
+                </div>
+                
+                {isEnabled && (
+                    <>
+                        <div className="h-[1px] bg-[var(--border)] w-full"></div>
+                        <div className="px-4 py-4 flex items-center justify-between group cursor-pointer relative">
+                            <span className="text-sm text-[var(--text-primary)]">Jam Notifikasi</span>
+                            <div className="flex items-center gap-1">
+                                <span className="text-sm font-semibold text-[var(--accent-blue)]">{timeValue}</span>
+                                <ChevronRight size={16} className="text-[var(--text-muted)]" />
+                            </div>
+                            <input 
+                                type="time" 
+                                value={timeValue}
+                                onChange={handleTimeChange}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            />
+                        </div>
+                    </>
+                )}
+            </Card>
+        );
     };
 
     return (
@@ -34,22 +108,32 @@ export default function NotifikasiPage() {
                     <Loader2 size={24} className="animate-spin text-[var(--accent-blue)]" />
                 </div>
             ) : (
-                <Card className="p-4 md:p-6 flex items-center justify-between">
-                    <div>
-                        <h3 className="font-bold text-lg">{t('notification_reminder')}</h3>
-                        <p className="text-sm text-[var(--text-muted)] mt-1">{t('notification_reminder_desc')}</p>
-                    </div>
-                    
-                    <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                            type="checkbox" 
-                            className="sr-only peer"
-                            checked={settings.notifikasi_enabled}
-                            onChange={(e) => handleToggle(e.target.checked)}
-                        />
-                        <div className="w-11 h-6 bg-[var(--bg-secondary)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--accent-blue)]"></div>
-                    </label>
-                </Card>
+                <div className="space-y-4">
+                    <NotificationCard 
+                        title="Keuangan" 
+                        description="Pengingat untuk mencatat keuangan harian" 
+                        icon={Wallet}
+                        fieldEnabled="keuangan_notif_enabled"
+                        fieldTime="keuangan_notif_time"
+                        defaultTime="08:00"
+                    />
+                    <NotificationCard 
+                        title="Kesehatan" 
+                        description="Pengingat untuk mencatat kesehatan harian" 
+                        icon={HeartPulse}
+                        fieldEnabled="kesehatan_notif_enabled"
+                        fieldTime="kesehatan_notif_time"
+                        defaultTime="09:00"
+                    />
+                    <NotificationCard 
+                        title="Tugas" 
+                        description="Pengingat untuk mengecek daftar tugas" 
+                        icon={CheckSquare}
+                        fieldEnabled="tugas_notif_enabled"
+                        fieldTime="tugas_notif_time"
+                        defaultTime="07:00"
+                    />
+                </div>
             )}
         </div>
     );

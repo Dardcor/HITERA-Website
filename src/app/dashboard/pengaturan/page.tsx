@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { 
@@ -11,13 +12,16 @@ import {
     Trash2, 
     Globe, 
     LogOut,
-    ChevronRight 
+    ChevronRight,
+    Sun,
+    Moon
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function PengaturanMenuPage() {
     const { signOut } = useAuth();
     const { t } = useTranslation();
+    const { theme, toggleTheme } = useTheme();
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
     const handleLogout = async () => {
@@ -52,6 +56,15 @@ export default function PengaturanMenuPage() {
                     <span className="ml-4 font-medium flex-1">{t('language')}</span>
                     <ChevronRight size={20} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
                 </Link>
+
+                <button 
+                    onClick={toggleTheme}
+                    className="w-full flex items-center p-4 md:px-6 hover:bg-[var(--bg-secondary)] transition-colors border-b border-[var(--border)] group"
+                >
+                    {theme === 'dark' ? <Sun size={24} className="text-[var(--text-primary)]" /> : <Moon size={24} className="text-[var(--text-primary)]" />}
+                    <span className="ml-4 font-medium flex-1 text-left">Tema</span>
+                    <span className="text-sm font-medium text-[var(--text-muted)] capitalize">{theme === 'dark' ? 'Gelap' : 'Terang'}</span>
+                </button>
 
                 <button 
                     onClick={() => setShowLogoutConfirm(true)}

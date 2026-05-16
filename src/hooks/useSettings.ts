@@ -5,6 +5,12 @@ import { createClient } from '@/lib/supabase/client';
 export interface UserSettings {
   notifikasi_enabled: boolean;
   bahasa: string;
+  keuangan_notif_enabled?: boolean;
+  kesehatan_notif_enabled?: boolean;
+  tugas_notif_enabled?: boolean;
+  keuangan_notif_time?: string;
+  kesehatan_notif_time?: string;
+  tugas_notif_time?: string;
 }
 
 export function useSettings() {
@@ -14,6 +20,9 @@ export function useSettings() {
   const [settings, setSettings] = useState<UserSettings>({
     notifikasi_enabled: false,
     bahasa: 'id',
+    keuangan_notif_enabled: false,
+    kesehatan_notif_enabled: false,
+    tugas_notif_enabled: false,
   });
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +40,12 @@ export function useSettings() {
         setSettings({
           notifikasi_enabled: data.notifikasi_enabled ?? false,
           bahasa: data.bahasa ?? 'id',
+          keuangan_notif_enabled: data.keuangan_notif_enabled ?? false,
+          kesehatan_notif_enabled: data.kesehatan_notif_enabled ?? false,
+          tugas_notif_enabled: data.tugas_notif_enabled ?? false,
+          keuangan_notif_time: data.keuangan_notif_time,
+          kesehatan_notif_time: data.kesehatan_notif_time,
+          tugas_notif_time: data.tugas_notif_time,
         });
       } else {
         
@@ -38,6 +53,9 @@ export function useSettings() {
           user_id: user.id,
           notifikasi_enabled: false,
           bahasa: 'id',
+          keuangan_notif_enabled: false,
+          kesehatan_notif_enabled: false,
+          tugas_notif_enabled: false,
         });
       }
     } catch (err) {

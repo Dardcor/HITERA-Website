@@ -186,17 +186,17 @@ export default function DashboardPage() {
                                 {t('no_active_tasks')}
                             </div>
                         ) : (
-                            tugasAktif.slice(0, 5).map((t) => (
-                                <div key={t.id} className="px-4 md:px-6 py-3.5 md:py-4 flex items-center gap-3 hover:bg-[var(--bg-card-hover)] transition-colors">
+                            tugasAktif.slice(0, 5).map((tugasItem) => (
+                                <div key={tugasItem.id} className="px-4 md:px-6 py-3.5 md:py-4 flex items-center gap-3 hover:bg-[var(--bg-card-hover)] transition-colors">
                                     <div className="w-4 h-4 rounded border border-[var(--border)] shrink-0" />
-                                    <span className="text-sm font-medium text-[var(--text-primary)] flex-1 truncate">{t.judul}</span>
+                                    <span className="text-sm font-medium text-[var(--text-primary)] flex-1 truncate">{tugasItem.judul}</span>
                                     <span className={cn(
                                         "ml-auto text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-[0.5px] shrink-0",
-                                        t.prioritas === 'tinggi' ? "bg-[var(--accent-red-dim)] text-[var(--accent-red)]" :
-                                            t.prioritas === 'sedang' ? "bg-[var(--accent-yellow-dim)] text-[var(--accent-yellow)]" :
+                                        tugasItem.prioritas === 'tinggi' ? "bg-[var(--accent-red-dim)] text-[var(--accent-red)]" :
+                                            tugasItem.prioritas === 'sedang' ? "bg-[var(--accent-yellow-dim)] text-[var(--accent-yellow)]" :
                                                 "bg-[var(--accent-blue-dim)] text-[var(--accent-blue)]"
                                     )}>
-                                        {t.prioritas === 'tinggi' ? t('priority_high') : t.prioritas === 'sedang' ? t('priority_medium') : t('priority_low')}
+                                        {tugasItem.prioritas === 'tinggi' ? t('priority_high') : tugasItem.prioritas === 'sedang' ? t('priority_medium') : t('priority_low')}
                                     </span>
                                 </div>
                             ))

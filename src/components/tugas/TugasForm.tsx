@@ -19,6 +19,7 @@ export default function TugasForm({ onSuccess, onCancel }: Props) {
     const [deskripsi, setDeskripsi] = useState('');
     const [prioritas, setPrioritas] = useState<'rendah' | 'sedang' | 'tinggi'>('sedang');
     const [deadline, setDeadline] = useState('');
+    const [waktuDeadline, setWaktuDeadline] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { addTugas } = useTugas();
@@ -36,6 +37,7 @@ export default function TugasForm({ onSuccess, onCancel }: Props) {
             status: 'aktif',
             tanggal_target: hariIni(),
             deadline: deadline || undefined,
+            waktu_deadline: waktuDeadline || undefined,
         });
 
         setIsSubmitting(false);
@@ -65,25 +67,47 @@ export default function TugasForm({ onSuccess, onCancel }: Props) {
                 onChange={(e) => setDeskripsi(e.target.value)}
             />
 
-            <div className="space-y-2">
-                <label className="text-xs font-medium text-[var(--text-muted)] ml-1">{t('deadline_optional')}</label>
-                <div className="relative">
-                    <input
-                        type="date"
-                        value={deadline}
-                        onChange={(e) => setDeadline(e.target.value)}
-                        min={nowWIB().toISOString().split('T')[0]}
-                        className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:outline-none transition-colors [color-scheme:dark]"
-                    />
-                    {deadline && (
-                        <button
-                            type="button"
-                            onClick={() => setDeadline('')}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-                        >
-                            <X size={16} />
-                        </button>
-                    )}
+            <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                    <label className="text-xs font-medium text-[var(--text-muted)] ml-1">{t('deadline_optional')}</label>
+                    <div className="relative">
+                        <input
+                            type="date"
+                            value={deadline}
+                            onChange={(e) => setDeadline(e.target.value)}
+                            min={nowWIB().toISOString().split('T')[0]}
+                            className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:outline-none transition-colors [color-scheme:dark]"
+                        />
+                        {deadline && (
+                            <button
+                                type="button"
+                                onClick={() => setDeadline('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <label className="text-xs font-medium text-[var(--text-muted)] ml-1">Jam Deadline</label>
+                    <div className="relative">
+                        <input
+                            type="time"
+                            value={waktuDeadline}
+                            onChange={(e) => setWaktuDeadline(e.target.value)}
+                            className="w-full bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:border-[var(--border-focus)] focus:outline-none transition-colors [color-scheme:dark]"
+                        />
+                        {waktuDeadline && (
+                            <button
+                                type="button"
+                                onClick={() => setWaktuDeadline('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
