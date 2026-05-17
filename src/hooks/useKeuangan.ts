@@ -99,7 +99,11 @@ export function useKeuangan(tanggal: string) {
         if (!user) return;
         try {
             const { error } = await supabase.from('transaksi').insert([
-                { ...data, user_id: user.id }
+                { 
+                    ...data, 
+                    user_id: user.id,
+                    created_at: new Date().toISOString()
+                }
             ]);
             if (error) throw error;
             success('Transaksi berhasil ditambahkan.');
@@ -110,6 +114,10 @@ export function useKeuangan(tanggal: string) {
     };
 
     const hapusTransaksi = async (id: string) => {
+        if (!id || id === 'undefined' || id === 'null') {
+            console.error('Safety guard: Prevented hapusTransaksi with invalid ID');
+            return;
+        }
         try {
             const { error } = await supabase.from('transaksi').delete().eq('id', id);
             if (error) throw error;

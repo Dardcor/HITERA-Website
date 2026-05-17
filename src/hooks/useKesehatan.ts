@@ -44,6 +44,7 @@ export function useKesehatan(tanggal: string) {
                 ...formData,
                 user_id: user.id,
                 tanggal: tanggal,
+                created_at: new Date().toISOString()
             }, { onConflict: 'user_id,tanggal' });
 
             if (error) throw error;

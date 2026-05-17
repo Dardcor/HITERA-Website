@@ -11,6 +11,7 @@ import { ChevronLeft, Search, ListTodo, CheckCircle2, Clock } from 'lucide-react
 import { useTranslation } from '@/contexts/LanguageContext';
 import { Tugas } from '@/types';
 import Link from 'next/link';
+import { format } from 'date-fns';
 
 export default function TugasHistoryPage() {
     const [history, setHistory] = useState<Tugas[]>([]);
@@ -22,6 +23,14 @@ export default function TugasHistoryPage() {
     const { user } = useAuth();
     const supabase = createClient();
     const { t, dateFnsLocale } = useTranslation();
+
+    const formatWaktu = (created_at: string) => {
+        let dateStr = created_at;
+        if (dateStr && !dateStr.endsWith('Z') && !dateStr.includes('+')) {
+            dateStr += 'Z';
+        }
+        return format(new Date(dateStr), 'HH:mm - d MMM yyyy', { locale: dateFnsLocale });
+    };
 
     const presetMap: Record<string, string> = {
         'Semua': t('filter_all'),
@@ -211,8 +220,14 @@ export default function TugasHistoryPage() {
                                                         "text-sm font-bold truncate",
                                                         isSelesai && "line-through text-[var(--text-muted)]"
                                                     )}>{tItem.judul}</p>
+                                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                                        <Clock size={10} className="text-[var(--text-muted)]" />
+                                                        <span className="text-[10px] text-[var(--text-muted)] font-medium">
+                                                            Dibuat: {formatWaktu(tItem.created_at)}
+                                                        </span>
+                                                    </div>
                                                     {tItem.deskripsi && (
-                                                        <p className="text-[10px] text-[var(--text-muted)] truncate">{tItem.deskripsi}</p>
+                                                        <p className="text-[10px] text-[var(--text-muted)] truncate mt-0.5">{tItem.deskripsi}</p>
                                                     )}
                                                 </div>
                                                 <div className="shrink-0">

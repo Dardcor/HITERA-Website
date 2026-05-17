@@ -7,10 +7,11 @@ import { formatTanggalID, hariIni, nowWIB, cn } from '@/lib/utils';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { ChevronLeft, Search, Droplet, Moon, Clipboard } from 'lucide-react';
+import { ChevronLeft, Search, Droplet, Moon, Clipboard, Dumbbell } from 'lucide-react';
 import { useTranslation } from '@/contexts/LanguageContext';
 import { DataKesehatan } from '@/types';
 import Link from 'next/link';
+import { format } from 'date-fns';
 
 export default function KesehatanHistoryPage() {
     const [history, setHistory] = useState<DataKesehatan[]>([]);
@@ -21,6 +22,14 @@ export default function KesehatanHistoryPage() {
     const { user } = useAuth();
     const supabase = createClient();
     const { t, dateFnsLocale } = useTranslation();
+
+    const formatWaktu = (created_at: string) => {
+        let dateStr = created_at;
+        if (dateStr && !dateStr.endsWith('Z') && !dateStr.includes('+')) {
+            dateStr += 'Z';
+        }
+        return format(new Date(dateStr), 'HH:mm - d MMM yyyy', { locale: dateFnsLocale });
+    };
 
     const presetMap: Record<string, string> = {
         'Semua': t('filter_all'),
@@ -158,16 +167,16 @@ export default function KesehatanHistoryPage() {
                     history.map((h) => (
                         <Card key={h.id} className="p-4 md:p-5 flex flex-col gap-4">
                             <div className="flex justify-between items-center px-1">
-                                <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatTanggalID(h.tanggal, dateFnsLocale)}</h4>
+                                <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[1.5px]">{formatWaktu(h.created_at)}</h4>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 <div className="flex items-center gap-3 p-3 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border)]">
                                     <div className="p-1.5 bg-cyan-500/10 rounded-lg">
                                         <Droplet size={14} className="text-cyan-500" />
                                     </div>
                                     <div>
-                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">Air Minum</p>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">{t('water_short')}</p>
                                         <p className="text-sm font-bold">{h.air_minum || '0'} <span className="text-[10px] font-normal opacity-70">gls</span></p>
                                     </div>
                                 </div>
@@ -176,8 +185,19 @@ export default function KesehatanHistoryPage() {
                                         <Moon size={14} className="text-indigo-500" />
                                     </div>
                                     <div>
-                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">Jam Tidur</p>
-                                        <p className="text-sm font-bold">{h.jam_tidur || '0'} <span className="text-[10px] font-normal opacity-70">jam</span></p>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">{t('sleep_short')}</p>
+                                        <p className="text-sm font-bold">{h.jam_tidur || '0'} <span className="text-[10px] font-normal opacity-70">{t('hours').toLowerCase()}</span></p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3 p-3 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border)] col-span-2 sm:col-span-1">
+                                    <div className="p-1.5 bg-emerald-500/10 rounded-lg">
+                                        <Dumbbell size={14} className="text-emerald-500" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">{t('exercise_short')}</p>
+                                        <p className="text-sm font-bold">
+                                            {h.olahraga_jam ?? 0}{t('hour_short')} {h.olahraga_menit ?? 0}{t('minute_short')}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -186,7 +206,7 @@ export default function KesehatanHistoryPage() {
                                 <div className="p-3 bg-[var(--bg-secondary)]/50 rounded-lg border border-[var(--border)] border-dashed">
                                     <div className="flex items-center gap-2 mb-1">
                                         <Clipboard size={12} className="text-amber-500" />
-                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">Catatan</p>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase">{t('notes_label')}</p>
                                     </div>
                                     <p className="text-[11px] text-[var(--text-secondary)] italic leading-relaxed">{h.catatan}</p>
                                 </div>

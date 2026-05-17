@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useKesehatan } from '@/hooks/useKesehatan';
 import { hariIni, tambahHari, formatTanggalID, cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
@@ -10,17 +10,55 @@ import { useTranslation } from '@/contexts/LanguageContext';
 import { ChevronLeft, ChevronRight, Edit3, HeartPulse, Droplet, Moon, Clipboard, Dumbbell } from 'lucide-react';
 import KesehatanForm from '@/components/kesehatan/KesehatanForm';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { format } from 'date-fns';
 
 export default function KesehatanPage() {
     const [tanggal, setTanggal] = useState(hariIni());
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [history, setHistory] = useState<any[]>([]);
+    const [historyLoading, setHistoryLoading] = useState(true);
 
     const { t, dateFnsLocale } = useTranslation();
+    const supabase = createClient();
 
     const { data, loading } = useKesehatan(tanggal);
 
     const prevDay = () => setTanggal(tambahHari(tanggal, -1));
     const nextDay = () => setTanggal(tambahHari(tanggal, 1));
+
+    const fetchRecentHistory = async () => {
+        setHistoryLoading(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            const { data: resData, error } = await supabase
+                .from('kesehatan')
+                .select('*')
+                .eq('user_id', user.id)
+                .gte('tanggal', '2020-01-01')
+                .lte('tanggal', hariIni())
+                .order('tanggal', { ascending: false });
+            if (error) throw error;
+            setHistory(resData || []);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setHistoryLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchRecentHistory();
+    }, [tanggal]);
+
+    const formatWaktu = (created_at: string) => {
+        let dateStr = created_at;
+        if (dateStr && !dateStr.endsWith('Z') && !dateStr.includes('+')) {
+            dateStr += 'Z';
+        }
+        return format(new Date(dateStr), 'HH:mm - d MMM yyyy', { locale: dateFnsLocale });
+    };
 
     const MetrikCard = ({ icon: Icon, color, bgColor, label, value, unit }: any) => (
         <Card className="flex flex-col justify-between gap-3 p-3.5 md:p-5 min-h-[100px]">
@@ -119,11 +157,53 @@ export default function KesehatanPage() {
                         {t('see_all')}
                     </Link>
                 </div>
-                <Card className="p-5 md:p-6">
-                    <p className="text-sm text-[var(--text-muted)] italic">
-                        {t('trend_analysis_hint')}
-                    </p>
-                </Card>
+                {historyLoading ? (
+                    <div className="space-y-3">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="h-[72px] w-full bg-[var(--bg-card-hover)] animate-pulse rounded-xl" />
+                        ))}
+                    </div>
+                ) : history.length === 0 ? (
+                    <Card className="p-5 text-center">
+                        <p className="text-sm text-[var(--text-muted)] italic">
+                            {t('no_health_history')}
+                        </p>
+                    </Card>
+                ) : (
+                    <div className="space-y-3">
+                        {history.map((h) => (
+                            <Card key={h.id} className="p-4 md:p-5 flex flex-col gap-4">
+                                <div>
+                                    <h4 className="text-xs font-bold text-[var(--accent-blue)]">
+                                        {formatWaktu(h.created_at)}
+                                    </h4>
+                                </div>
+                                <div className="flex flex-wrap gap-x-6 gap-y-2">
+                                    <div>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wide">{t('water_short')}</p>
+                                        <p className="text-sm font-bold mt-0.5">{h.air_minum ?? '-'} gls</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wide">{t('sleep_short')}</p>
+                                        <p className="text-sm font-bold mt-0.5">{h.jam_tidur ?? '-'} {t('hours').toLowerCase()}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wide">{t('exercise_short')}</p>
+                                        <p className="text-sm font-bold mt-0.5">
+                                            {h.olahraga_jam ?? 0}{t('hour_short')} {h.olahraga_menit ?? 0}{t('minute_short')}
+                                        </p>
+                                    </div>
+                                </div>
+                                {h.catatan && (
+                                    <div className="pt-3 border-t border-[var(--border)]">
+                                        <p className="text-[9px] text-[var(--text-muted)] font-bold uppercase tracking-wide">{t('notes_label')}</p>
+                                        <p className="text-xs text-[var(--text-secondary)] italic mt-1 leading-relaxed">{h.catatan}</p>
+                                    </div>
+                                )}
+                            </Card>
+                        ))}
+                    </div>
+                )}
             </div>
 
             <Modal
@@ -134,7 +214,10 @@ export default function KesehatanPage() {
                 <KesehatanForm
                     initialData={data}
                     tanggal={tanggal}
-                    onSuccess={() => setIsModalOpen(false)}
+                    onSuccess={() => {
+                        setIsModalOpen(false);
+                        fetchRecentHistory();
+                    }}
                     onCancel={() => setIsModalOpen(false)}
                 />
             </Modal>

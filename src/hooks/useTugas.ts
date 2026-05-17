@@ -42,7 +42,8 @@ export function useTugas() {
         try {
             const { error } = await supabase.from('tugas').insert([{
                 ...data,
-                user_id: user.id
+                user_id: user.id,
+                created_at: new Date().toISOString()
             }]);
             if (error) throw error;
             success('Tugas berhasil ditambahkan.');
@@ -53,6 +54,10 @@ export function useTugas() {
     };
 
     const toggleSelesai = async (id: string, currentStatus: string) => {
+        if (!id || id === 'undefined' || id === 'null') {
+            console.error('Safety guard: Prevented toggleSelesai with invalid ID');
+            return;
+        }
         const newStatus = currentStatus === 'selesai' ? 'aktif' : 'selesai';
         try {
             const { error } = await supabase
@@ -70,6 +75,10 @@ export function useTugas() {
     };
 
     const deleteTugas = async (id: string) => {
+        if (!id || id === 'undefined' || id === 'null') {
+            console.error('Safety guard: Prevented deleteTugas with invalid ID');
+            return;
+        }
         try {
             const { error } = await supabase.from('tugas').delete().eq('id', id);
             if (error) throw error;

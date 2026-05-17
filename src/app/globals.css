@@ -26,7 +26,7 @@
 }
 
 :root[data-theme='light'] {
-  --bg-primary: #f8f9fa;
+  --bg-primary: #E5E7EB;
   --bg-secondary: #ffffff;
   --bg-card: #ffffff;
   --bg-card-hover: #f1f3f5;

@@ -11,6 +11,7 @@ import {
     Bell, 
     Trash2, 
     Globe, 
+    MapPin,
     LogOut,
     ChevronRight,
     Sun,
@@ -42,6 +43,12 @@ export default function PengaturanMenuPage() {
                 <Link href="/dashboard/pengaturan/notifikasi" className="flex items-center p-4 md:px-6 hover:bg-[var(--bg-secondary)] transition-colors border-b border-[var(--border)] group">
                     <Bell size={24} className="text-[var(--text-primary)]" />
                     <span className="ml-4 font-medium flex-1">{t('notifications')}</span>
+                    <ChevronRight size={20} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
+                </Link>
+
+                <Link href="/dashboard/pengaturan/lokasi" className="flex items-center p-4 md:px-6 hover:bg-[var(--bg-secondary)] transition-colors border-b border-[var(--border)] group">
+                    <MapPin size={24} className="text-[var(--text-primary)]" />
+                    <span className="ml-4 font-medium flex-1">Lokasi</span>
                     <ChevronRight size={20} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
                 </Link>
 

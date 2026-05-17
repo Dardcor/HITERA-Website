@@ -5,10 +5,27 @@ export default function SplashScreen() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        // Create keyframes dynamically
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes splashFadeOut {
+                from { opacity: 1; visibility: visible; }
+                to { opacity: 0; visibility: hidden; }
+            }
+            @keyframes ringSpin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 3000);
-        return () => clearTimeout(timer);
+        }, 5000);
+        return () => {
+            clearTimeout(timer);
+            document.head.removeChild(style);
+        };
     }, []);
 
     if (!isLoading) return null;
@@ -16,31 +33,50 @@ export default function SplashScreen() {
     return (
         <div style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-            backgroundColor: 'var(--bg-primary)',
+            backgroundColor: 'var(--bg-primary, #0a0a0f)',
             zIndex: 9999,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexDirection: 'column',
-            animation: 'splashFadeOut 0.5s ease-in-out 2.5s forwards'
+            animation: 'splashFadeOut 0.5s ease-in-out 4.5s forwards'
         }}>
             <div style={{
+                position: 'relative',
+                width: '140px',
+                height: '140px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                animation: 'pulseGlow 2s infinite alternate, trackingIn 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards',
-                padding: '0 20px'
+                justifyContent: 'center'
             }}>
-                <img src="/logo.png" alt="HITERA" style={{ height: 'clamp(64px, 12vw, 100px)' }} />
-            </div>
-
-            <div style={{
-                width: '180px', height: '3px', background: 'rgba(139, 92, 246, 0.1)',
-                marginTop: '40px', overflow: 'hidden', position: 'relative', borderRadius: '4px'
-            }}>
+                {/* 4-color spinning ring */}
                 <div style={{
-                    position: 'absolute', top: 0, left: 0, bottom: 0, width: '40%',
-                    background: 'linear-gradient(90deg, transparent, var(--accent-hover), transparent)',
-                    animation: 'slideRight 1s ease-in-out infinite', borderRadius: '4px'
-                }}></div>
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    borderRadius: '50%',
+                    background: 'conic-gradient(#10B981 0% 25%, #EF4444 25% 50%, #F59E0B 50% 75%, #3B82F6 75% 100%)',
+                    animation: 'ringSpin 1.5s linear infinite'
+                }} />
+                
+                {/* Inner mask to create the ring effect */}
+                <div style={{
+                    position: 'absolute',
+                    top: '6px', left: '6px', right: '6px', bottom: '6px',
+                    backgroundColor: 'var(--bg-primary, #0a0a0f)',
+                    borderRadius: '50%'
+                }} />
+
+                {/* Logo perfectly centered and filling the inner space */}
+                <img 
+                    src="/logo.png" 
+                    alt="HITERA" 
+                    style={{ 
+                        position: 'relative', 
+                        zIndex: 1, 
+                        width: '120px', 
+                        height: '120px', 
+                        borderRadius: '50%',
+                        objectFit: 'cover'
+                    }} 
+                />
             </div>
         </div>
     );

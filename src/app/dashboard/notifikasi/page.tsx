@@ -101,7 +101,13 @@ export default function RiwayatNotifikasiPage() {
                                             {notif.tipe === 'deadline' ? 'Peringatan Deadline!' : notif.tipe}
                                         </h4>
                                         <span className="text-xs text-[var(--text-muted)] whitespace-nowrap ml-2">
-                                            {format(new Date(notif.created_at), 'dd MMM HH:mm', { locale: id })}
+                                            {(() => {
+                                                let dateStr = notif.created_at;
+                                                if (dateStr && !dateStr.endsWith('Z') && !dateStr.includes('+')) {
+                                                    dateStr += 'Z';
+                                                }
+                                                return format(new Date(dateStr), 'HH:mm - dd MMMM yyyy', { locale: id });
+                                            })()}
                                         </span>
                                     </div>
                                     <p className="text-sm text-[var(--text-secondary)]">{notif.pesan}</p>

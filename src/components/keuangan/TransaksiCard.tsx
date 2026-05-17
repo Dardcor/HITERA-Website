@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Transaksi } from '@/types';
 import { formatRupiah, cn } from '@/lib/utils';
 import { useTranslation } from '@/contexts/LanguageContext';
@@ -26,6 +27,18 @@ const getIcon = (kategori: string) => {
 export default function TransaksiCard({ transaksi, onDelete }: Props) {
     const isPemasukan = transaksi.jenis === 'pemasukan';
     const { t, localeTag } = useTranslation();
+    const [formattedTime, setFormattedTime] = useState<string>('');
+
+    useEffect(() => {
+        let dateStr = transaksi.created_at;
+        if (dateStr && !dateStr.endsWith('Z') && !dateStr.includes('+')) {
+            dateStr += 'Z';
+        }
+        const d = new Date(dateStr);
+        const jam = d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Jakarta' });
+        const tgl = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' });
+        setFormattedTime(`${jam} - ${tgl}`);
+    }, [transaksi.created_at]);
 
     return (
         <div className="group flex items-center p-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl hover:bg-[var(--bg-card-hover)] transition-all gap-3">
@@ -55,7 +68,7 @@ export default function TransaksiCard({ transaksi, onDelete }: Props) {
                     {formatRupiah(transaksi.jumlah)}
                 </p>
                 <p className="text-[10px] text-[var(--text-muted)]">
-                    {new Date(transaksi.created_at).toLocaleDateString(localeTag, { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    {formattedTime}
                 </p>
             </div>
 

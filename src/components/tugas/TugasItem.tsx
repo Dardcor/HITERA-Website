@@ -4,6 +4,7 @@ import { Tugas } from '@/types';
 import { cn, formatTanggalSingkat, nowWIB } from '@/lib/utils';
 import { useTranslation } from '@/contexts/LanguageContext';
 import { Check, Trash2, Clock } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface Props {
     tugas: Tugas;
@@ -14,6 +15,14 @@ interface Props {
 export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
     const isSelesai = tugas.status === 'selesai';
     const { t, dateFnsLocale } = useTranslation();
+
+    const formatWaktu = (created_at: string) => {
+        let dateStr = created_at;
+        if (dateStr && !dateStr.endsWith('Z') && !dateStr.includes('+')) {
+            dateStr += 'Z';
+        }
+        return format(new Date(dateStr), 'HH:mm - d MMM yyyy', { locale: dateFnsLocale });
+    };
 
     const prioritasColor: Record<string, string> = {
         tinggi: "bg-[var(--accent-red)]",
@@ -48,8 +57,14 @@ export default function TugasItem({ tugas, onToggle, onDelete }: Props) {
                     )}>
                         {tugas.judul}
                     </h4>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                        <Clock size={10} className="text-[var(--text-muted)]" />
+                        <span className="text-[10px] text-[var(--text-muted)] font-medium">
+                            Dibuat: {formatWaktu(tugas.created_at)}
+                        </span>
+                    </div>
                     {tugas.deskripsi && (
-                        <p className="text-[10px] text-[var(--text-muted)] line-clamp-1 truncate">
+                        <p className="text-[10px] text-[var(--text-muted)] line-clamp-1 truncate mt-0.5">
                             {tugas.deskripsi}
                         </p>
                     )}

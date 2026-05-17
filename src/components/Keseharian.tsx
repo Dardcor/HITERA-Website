@@ -55,7 +55,8 @@ export default function KeseharianView() {
         const { error } = await supabase.from('keseharian_todos').insert({
             user_id: user.id,
             text: newTodo,
-            date: today
+            date: today,
+            created_at: new Date().toISOString()
         });
 
         if (error) alert('Gagal tambah tugas: ' + error.message);
@@ -66,6 +67,10 @@ export default function KeseharianView() {
     };
 
     const toggleTodo = async (id: string, currentStatus: boolean) => {
+        if (!id || id === 'undefined' || id === 'null') {
+            console.error('Safety guard: Prevented toggleTodo with invalid ID');
+            return;
+        }
         const { error } = await supabase
             .from('keseharian_todos')
             .update({ is_done: !currentStatus })
@@ -76,6 +81,10 @@ export default function KeseharianView() {
     };
 
     const deleteTodo = async (id: string) => {
+        if (!id || id === 'undefined' || id === 'null') {
+            console.error('Safety guard: Prevented deleteTodo with invalid ID');
+            return;
+        }
         const { error } = await supabase
             .from('keseharian_todos')
             .delete()

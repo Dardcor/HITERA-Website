@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { ChevronLeft, Loader2, Wallet, HeartPulse, CheckSquare, ChevronRight } from 'lucide-react';
 import { useTranslation } from '@/contexts/LanguageContext';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export default function NotifikasiPage() {
     const { settings, loading, updateSettings } = useSettings();
@@ -29,7 +29,10 @@ export default function NotifikasiPage() {
         defaultTime: string 
     }) => {
         const isEnabled = settings[fieldEnabled] ?? false;
-        const timeValue = settings[fieldTime] ?? defaultTime;
+        let timeValue = settings[fieldTime] ?? defaultTime;
+        if (timeValue.length > 5) timeValue = timeValue.substring(0, 5); // ensure HH:mm
+
+        const inputRef = useRef<HTMLInputElement>(null);
 
         const handleToggle = async (enabled: boolean) => {
             try {
@@ -75,18 +78,28 @@ export default function NotifikasiPage() {
                 {isEnabled && (
                     <>
                         <div className="h-[1px] bg-[var(--border)] w-full"></div>
-                        <div className="px-4 py-4 flex items-center justify-between group cursor-pointer relative">
+                        <div 
+                            className="px-4 py-4 flex items-center justify-between group cursor-pointer relative"
+                            onClick={() => {
+                                try {
+                                    inputRef.current?.showPicker();
+                                } catch (e) {
+                                    inputRef.current?.focus();
+                                }
+                            }}
+                        >
                             <span className="text-sm text-[var(--text-primary)]">Jam Notifikasi</span>
                             <div className="flex items-center gap-1">
-                                <span className="text-sm font-semibold text-[var(--accent-blue)]">{timeValue}</span>
+                                <input 
+                                    ref={inputRef}
+                                    type="time" 
+                                    value={timeValue}
+                                    onChange={handleTimeChange}
+                                    className="bg-transparent text-sm font-semibold text-[var(--accent-blue)] outline-none cursor-pointer"
+                                    style={{ colorScheme: 'dark' }}
+                                />
                                 <ChevronRight size={16} className="text-[var(--text-muted)]" />
                             </div>
-                            <input 
-                                type="time" 
-                                value={timeValue}
-                                onChange={handleTimeChange}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            />
                         </div>
                     </>
                 )}
